@@ -5,11 +5,9 @@ package leetcode.editor;
 //ClassName: ListGenerator
 //Author: Zeshi(Jesse) Yang
 //Date: 2020-11-30 星期一 16:48
-// this is my community version
 public class ListGenerator {
 	public static ListNode generateSingleListOfListNode(String data) {
 		String s = data.replaceAll("\\s*", "");
-		// oh my god
 		String[] strArr = s.split(",");
 		ListNode dummy = new ListNode();
 		ListNode prev = dummy;
