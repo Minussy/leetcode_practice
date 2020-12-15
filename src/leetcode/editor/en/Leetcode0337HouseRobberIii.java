@@ -67,7 +67,7 @@ public class Leetcode0337HouseRobberIii{
  *     }
  * }
  */
-// T(n) = O(n), S(n) = O(n)
+// T(n) = O(n), S(n) = O(n), great
 // 0 ms,击败了100.00% 的Java用户, 38.7 MB,击败了55.24% 的Java用户
 class Solution {
     
