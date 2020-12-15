@@ -1923,6 +1923,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0629KInversePairsArray.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0629KInversePairsArray.java" />
+              <option name="questionId" value="629" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0642DesignSearchAutocompleteSystem.java">
           <value>
             <LeetcodeEditor>
