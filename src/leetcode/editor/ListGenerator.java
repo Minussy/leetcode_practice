@@ -9,6 +9,7 @@ package leetcode.editor;
 public class ListGenerator {
 	public static ListNode generateSingleListOfListNode(String data) {
 		String s = data.replaceAll("\\s*", "");
+		// oh my god
 		String[] strArr = s.split(",");
 		ListNode dummy = new ListNode();
 		ListNode prev = dummy;
