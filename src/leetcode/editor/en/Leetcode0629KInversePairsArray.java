@@ -49,7 +49,7 @@ public class Leetcode0629KInversePairsArray{
         Solution sol = new Leetcode0629KInversePairsArray().new Solution();
         // TO TEST
         int n = 1000;
-        int k = 1000;
+        int k = 3;
         int res = sol.kInversePairs(n, k);
         System.out.println(res);
     }
@@ -128,6 +128,7 @@ class Solution1 {
 }
 
 // Solution 2: DP T(n,k） = O(n * k), S(n, k) = O(n * k)
+// 29 ms,击败了37.50% 的Java用户, 48.3 MB,击败了19.32% 的Java用户
 /*
 f(n,k) = f(n-1,k)+f(n-1,k-1) + f(n-1,k-2) + f(n-1,k-3) + ... + f(n-1,k-n+2) + f(n-1,k-n+1)
 f(n,k+1) = f(n-1,k+1) + f(n-1,k) + f(n-1,k-1) + f(n-1,k-2) + ... + f(n-1,k-n+3) + f(n-1,k-n+2)
@@ -135,7 +136,6 @@ f(n,k+1) = f(n-1,k+1) + f(n-1,k) + f(n-1,k-1) + f(n-1,k-2) + ... + f(n-1,k-n+3) 
 所以f(n,k+1) = f(n-1,k+1) - f(n-1,k-n+1) + f(n,k);
 将k替换成k-1得到f(n,k) = f(n-1,k) - f(n-1,k-n) + f(n,k-1);
 对于f(x, y), x >= 0, 0 <= y <= (x-1)*x/2,否则f(x, y)的值为0
-
  */
 class Solution2 {
     
@@ -162,6 +162,53 @@ class Solution2 {
             }
         }
         return (int) dp[n][k];
+    }
+}
+
+// Solution 3: DFS with pruning，原理公式同Solution 2
+// 51 ms,击败了22.73% 的Java用户, 83.9 MB,击败了6.82% 的Java用户
+class Solution3 {
+    
+    int module = (int) Math.pow(10, 9) + 7;
+    
+    public int kInversePairs(int n, int k) {
+        Long[][] dp = new Long[n + 1][k + 1];
+        if (k > n * (n - 1) / 2 || k < 0) {
+            return 0;
+        }
+        if (k == 0 || k == n * (n - 1) / 2) {
+            return 1;
+        }
+        int res =  (int) (nkInversePairs(n, k, dp) % module);
+        return res;
+    }
+    
+    private long nkInversePairs(int n, int k, Long[][] dp) {
+        // base case
+        if (n == 0) {
+            if (k == 0) {
+                return 1;
+            } else {
+                return 0;
+            }
+        }
+        if (k > n * (n - 1) / 2 || k < 0) {
+            return 0;
+        }
+        if (dp[n][k] != null) {
+            return dp[n][k];
+        }
+        if (k == 0 || k == n * (n - 1) / 2) {
+            dp[n][k] = 1L;
+            return 1;
+        }
+        
+        dp[n][k] = (nkInversePairs(n - 1, k, dp) + nkInversePairs(n, k - 1, dp)
+                - nkInversePairs(n - 1, k - n, dp))  % module;
+        if (dp[n][k] < 0) {
+            dp[n][k] += module;
+        }
+        return dp[n][k];
     }
 }
 }
