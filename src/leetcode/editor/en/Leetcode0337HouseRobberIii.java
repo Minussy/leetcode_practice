@@ -72,17 +72,24 @@ public class Leetcode0337HouseRobberIii{
 class Solution {
     
     public int rob(TreeNode root) {
-        int[] answer = maxValueFromHereWithWithout(root);
+        int[] answer = robFrom(root);
         return Math.max(answer[0], answer[1]);
     }
     
-    public int[] maxValueFromHereWithWithout(TreeNode node) {
+    /**
+     *
+     * @param node: the start point of the recursion
+     * @return : the int array {res1, res2}
+     * res1 means the largest rob value from here and rob this node
+     * res2 mean the largest rob value from here but not rob this node
+     */
+    public int[] robFrom(TreeNode node) {
         // return rob this node, and not rob this node
         if (node == null) {
             return new int[]{0, 0};
         }
-        int left[] = maxValueFromHereWithWithout(node.left);
-        int right[] = maxValueFromHereWithWithout(node.right);
+        int left[] = robFrom(node.left);
+        int right[] = robFrom(node.right);
         int rob = node.val + left[1] + right[1];
         int notRob = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
         return new int[]{rob, notRob};
