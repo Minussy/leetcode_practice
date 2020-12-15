@@ -57,7 +57,7 @@ class Solution {
         merge(start, mid, end, nums, helper);
     }
     
-    // merge helper nums[start]- nums[mid], and nums[mid + 1] to nums[end]
+    // merge maxValueFromHereWithWithout nums[start]- nums[mid], and nums[mid + 1] to nums[end]
     private void merge(int start, int mid, int end, int[] nums, int[] helper) {
         int index = start;
         int left = start;
@@ -73,13 +73,13 @@ class Solution {
             helper[index++] = nums[left++];
         }
         // while (right <= end) {
-        //     helper[index++] = nums[right++];
+        //     maxValueFromHereWithWithout[index++] = nums[right++];
         // }
         System.arraycopy(helper, start, nums, start, right - start);
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: merge sort with helper array
+// Solution 1: merge sort with maxValueFromHereWithWithout array
 class Solution1 {
     
     public int[] sortArray(int[] nums) {
@@ -104,7 +104,7 @@ class Solution1 {
         merge(start, mid, end, nums, helper);
     }
     
-    // merge helper nums[start]- nums[mid], and nums[mid + 1] to nums[end]
+    // merge maxValueFromHereWithWithout nums[start]- nums[mid], and nums[mid + 1] to nums[end]
     private void merge(int start, int mid, int end, int[] nums, int[] helper) {
         int index = start;
         int left = start;

@@ -67,9 +67,24 @@ public class Leetcode0337HouseRobberIii{
  *     }
  * }
  */
+// T(n) = O(n), S(n) = O(n)
 class Solution {
+    
     public int rob(TreeNode root) {
-        
+        int[] answer = maxValueFromHereWithWithout(root);
+        return Math.max(answer[0], answer[1]);
+    }
+    
+    public int[] maxValueFromHereWithWithout(TreeNode node) {
+        // return rob this node, and not rob this node
+        if (node == null) {
+            return new int[]{0, 0};
+        }
+        int left[] = maxValueFromHereWithWithout(node.left);
+        int right[] = maxValueFromHereWithWithout(node.right);
+        int rob = node.val + left[1] + right[1];
+        int notRob = Math.max(left[0], left[1]) + Math.max(right[0], right[1]);
+        return new int[]{rob, notRob};
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
