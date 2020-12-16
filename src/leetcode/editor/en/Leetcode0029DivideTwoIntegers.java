@@ -57,17 +57,44 @@
 
 package leetcode.editor.en;
 
+import java.util.Random;
+
 // 2020-12-15 16:47:21
 // Zeshi Yang
 public class Leetcode0029DivideTwoIntegers{
+    
     // Java: divide-two-integers
     public static void main(String[] args) {
-        Solution sol = new Leetcode0029DivideTwoIntegers().new Solution();
+        Solution1 sol1 = new Leetcode0029DivideTwoIntegers().new Solution1();
+        Solution2 sol2 = new Leetcode0029DivideTwoIntegers().new Solution2();
+        Solution3 sol3 = new Leetcode0029DivideTwoIntegers().new Solution3();
+        
         // TO TEST
-        int dividend = 20;
-        int divisor = 3;
-        int res = sol.divide(dividend, divisor);
-        System.out.println(res);
+        Random random = new Random();
+        int dividend;
+        int divisor;
+        int n = 100000000;
+        long duration1 = 0;
+        long duration2 = 0;
+        long duration3 = 0;
+        for (int i = 0; i < n; i++) {
+            dividend = random.nextInt(Integer.MAX_VALUE / 2) + Integer.MAX_VALUE / 2;
+            divisor = random.nextInt(dividend / 1000) + 1;
+            long time = System.currentTimeMillis();
+            int res1 = sol1.divide(dividend, divisor);
+            long time1 = System.currentTimeMillis();
+            int res2 = sol2.divide(dividend, divisor);
+            long time2 = System.currentTimeMillis();
+            int res3 = sol3.divide(dividend, divisor);
+            long time3 = System.currentTimeMillis();
+            
+            duration1 += (time1 - time);
+            duration2 += (time2 - time1);
+            duration3 += (time3 - time2);
+        }
+        System.out.println("sol1: " + duration1 + "ms");
+        System.out.println("sol2: " + duration2 + "ms");
+        System.out.println("sol3: " + duration3 + "ms");
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
