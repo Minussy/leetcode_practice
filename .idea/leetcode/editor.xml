@@ -1683,6 +1683,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0405ConvertANumberToHexadecimal.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0405ConvertANumberToHexadecimal.java" />
+              <option name="questionId" value="405" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0407TrappingRainWaterIi.java">
           <value>
             <LeetcodeEditor>
