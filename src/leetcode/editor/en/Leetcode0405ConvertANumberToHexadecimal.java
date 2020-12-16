@@ -54,56 +54,18 @@ public class Leetcode0405ConvertANumberToHexadecimal{
 class Solution {
     
     public String toHex(int num) {
-        // corner case
+        char[] hexs = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+        StringBuilder answer = new StringBuilder();
         if (num == 0) {
             return "0";
         }
-        StringBuilder sb = new StringBuilder();
-        int hex = 16;
-        boolean isNegative = false;
-        if (num < 0) {
-            isNegative = true;
-            num = -num - 1;
-        }
         while (num != 0) {
-            int remainder = num % hex;
-            char hexRemainder = getHexChar(remainder, hex);
-            num /= hex;
-            sb.append(hexRemainder);
+            answer.insert(0, hexs[(16 + num % 16) % 16]);
+            num = num >>> 4;
         }
-        if (isNegative) {
-            char[] chars = sb.toString().toCharArray();
-            sb.setLength(0);
-            for (int i = 0; i < 8; i++) {
-                int minuend = 15;
-                if (i < chars.length) {
-                    int subtrahend =
-                    ch -= (chars[i] - '0');
-                }
-                sb.append(ch);
-            }
-        }
-        sb.reverse();
-        return sb.toString();
-    }
-    
-    private char getHexChar(int num, int hex) {
-        switch (num) {
-            case 10:
-                return 'a';
-            case 11:
-                return 'b';
-            case 12:
-                return 'c';
-            case 13:
-                return 'd';
-            case 14:
-                return 'e';
-            case 15:
-                return 'f';
-            default:
-                return (char) (num + '0');
-        }
+        
+        return answer.toString();
+        
     }
     
 }
