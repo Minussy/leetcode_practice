@@ -60,10 +60,10 @@ class Solution {
             return "0";
         }
         while (num != 0) {
-            answer.insert(0, hexs[(16 + num % 16) % 16]);
+            answer.append(hexs[(16 + num % 16) % 16]);
             num = num >>> 4;
         }
-        return answer.toString();
+        return answer.reverse().toString();
     }
     
 }
