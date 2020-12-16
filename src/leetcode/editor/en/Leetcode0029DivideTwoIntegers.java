@@ -73,13 +73,13 @@ public class Leetcode0029DivideTwoIntegers{
         Random random = new Random();
         int dividend;
         int divisor;
-        int n = 100000000;
+        int n = 10000000;
         long duration1 = 0;
         long duration2 = 0;
         long duration3 = 0;
         for (int i = 0; i < n; i++) {
             dividend = random.nextInt(Integer.MAX_VALUE / 2) + Integer.MAX_VALUE / 2;
-            divisor = random.nextInt(dividend / 1000) + 1;
+            divisor = random.nextInt(dividend / 10) + 1;
             long time = System.currentTimeMillis();
             int res1 = sol1.divide(dividend, divisor);
             long time1 = System.currentTimeMillis();
