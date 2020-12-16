@@ -64,41 +64,36 @@ public class Leetcode0029DivideTwoIntegers{
     public static void main(String[] args) {
         Solution sol = new Leetcode0029DivideTwoIntegers().new Solution();
         // TO TEST
-        int dividend = 10;
+        int dividend = 2147483647;
         int divisor = 1;
         int res = sol.divide(dividend, divisor);
         System.out.println(res);
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
     public int divide(int dividend, int divisor) {
-        // corner case
-        if (dividend == Integer.MAX_VALUE && divisor == -1) {
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-        boolean isPositive = true;
-        if (dividend < 0) {
-            isPositive = !isPositive;
-            dividend = -dividend;
-        }
-        if (divisor < 0) {
-            isPositive = !isPositive;
-            divisor = -divisor;
-        }
-        int quotient = 0;
-        int divisorOrigin = divisor;
-        while (dividend >= divisor) {
-            int i = 1;
-            
-            while (dividend >= divisor + divisor) {
-                divisor += divisor;
-                i += i;
+        
+        long p = Math.abs((long) dividend);
+        long q = Math.abs((long) divisor);
+        
+        int result = 0;
+        while (p >= q) {
+            int shift = 0;
+            while (p >= (q << shift)) {
+                shift++;
             }
-            dividend -= divisor;
-            quotient += i;
-            divisor = divisorOrigin;
+            result += 1 << (shift - 1);
+            p -= q << (shift - 1);
         }
-        return isPositive ? quotient : -quotient;
+        if ((dividend > 0 && divisor > 0) || (dividend < 0 && divisor < 0)) {
+            return result;
+        } else {
+            return -result;
+        }
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
