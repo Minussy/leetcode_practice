@@ -63,9 +63,7 @@ class Solution {
             answer.insert(0, hexs[(16 + num % 16) % 16]);
             num = num >>> 4;
         }
-        
         return answer.toString();
-        
     }
     
 }
