@@ -1603,6 +1603,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0360SortTransformedArray.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0360SortTransformedArray.java" />
+              <option name="questionId" value="360" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0369PlusOneLinkedList.java">
           <value>
             <LeetcodeEditor>
