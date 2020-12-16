@@ -145,7 +145,7 @@ class Solution1 {
     }
 }
 
-// Solution 2: T(n) = O(log(n) * log(n)
+// Solution 2: T(n) = O(log(n) * log(n))
 //1 ms,击败了100.00% 的Java用户,36 MB,击败了82.63% 的Java用户
 /*
 bit操作，把divisor从低位开始一直往前移，移动到比被除数小的最大值，让被除数把这个数字减掉
