@@ -61,66 +61,23 @@ public class Leetcode0721AccountsMerge {
 
 		System.out.println();
 	}
-
 //leetcode submit region begin(Prohibit modification and deletion)
-class UnionFind {
-
-    int[] parent;
-    int[] size;
-
-    public UnionFind(int capacity) {
-        this.parent = new int[capacity];
-        this.size = new int[capacity];
-        for (int i = 0; i < capacity; i++) {
-            this.parent[i] = i;
-            this.size[i] = 1;
-        }
-    }
-
-    public void union(int user1, int user2) {
-        int root1 = getRoot(user1);
-        int root2 = getRoot(user2);
-
-        if (size[root1] < size[root2]) {
-            size[root2] += size[root1];
-            parent[root1] = root2;
-        } else {
-            size[root1] += size[root2];
-            parent[root2] = root1;
-        }
-    }
-
-    public boolean find(int user1, int user2) {
-        return getRoot(user1) == getRoot(user2);
-    }
-
-    public int getRoot(int user) {
-        int cur = user;
-        while (parent[cur] != cur) {
-            parent[cur] = parent[parent[cur]];
-            cur = parent[cur];
-        }
-        parent[user] = cur;
-        return cur;
-    }
-}
-
 class Solution {
-
+    
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
         if (accounts == null) {
             throw new RuntimeException("no accounts");
         }
-
+        
         int len = accounts.size();
         UnionFind uf = new UnionFind(len);
-
+        
         Map<String, Integer> emailToUserMap = new HashMap<>();
         unionAccounts(uf, accounts, emailToUserMap);
-
+        
         Map<Integer, HashSet<String>> userToEmailMap = new HashMap<>();
         buildAccounts(uf, accounts, userToEmailMap);
-
+        
         List<List<String>> res = new ArrayList<>();
         for (Map.Entry<Integer, HashSet<String>> entry : userToEmailMap.entrySet()) {
             LinkedList<String> list = new LinkedList<>();
@@ -131,8 +88,9 @@ class Solution {
         }
         return res;
     }
-
-    private void unionAccounts(UnionFind uf, List<List<String>> accounts, Map<String, Integer> map) {
+    
+    private void unionAccounts(UnionFind uf, List<List<String>> accounts,
+            Map<String, Integer> map) {
         int len = accounts.size();
         Iterator<List<String>> accountsIterator = accounts.iterator();
         for (int i = 0; i < len; i++) {
@@ -150,10 +108,11 @@ class Solution {
             }
         }
     }
-
-    private void buildAccounts(UnionFind uf, List<List<String>> accounts, Map<Integer, HashSet<String>> map) {
+    
+    private void buildAccounts(UnionFind uf, List<List<String>> accounts,
+            Map<Integer, HashSet<String>> map) {
         int len = accounts.size();
-
+        
         Iterator<List<String>> accountsIterator = accounts.iterator();
         for (int i = 0; i < len; i++) {
             int root = uf.getRoot(i);
@@ -166,6 +125,48 @@ class Solution {
             while (emails.hasNext()) {
                 map.get(root).add(emails.next());
             }
+        }
+    }
+    
+    class UnionFind {
+        
+        int[] parent;
+        int[] size;
+        
+        public UnionFind(int capacity) {
+            this.parent = new int[capacity];
+            this.size = new int[capacity];
+            for (int i = 0; i < capacity; i++) {
+                this.parent[i] = i;
+                this.size[i] = 1;
+            }
+        }
+        
+        public void union(int user1, int user2) {
+            int root1 = getRoot(user1);
+            int root2 = getRoot(user2);
+            
+            if (size[root1] < size[root2]) {
+                size[root2] += size[root1];
+                parent[root1] = root2;
+            } else {
+                size[root1] += size[root2];
+                parent[root2] = root1;
+            }
+        }
+        
+        public boolean find(int user1, int user2) {
+            return getRoot(user1) == getRoot(user2);
+        }
+        
+        public int getRoot(int user) {
+            int cur = user;
+            while (parent[cur] != cur) {
+                parent[cur] = parent[parent[cur]];
+                cur = parent[cur];
+            }
+            parent[user] = cur;
+            return cur;
         }
     }
 }
