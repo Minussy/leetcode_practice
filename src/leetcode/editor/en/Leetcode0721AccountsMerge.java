@@ -80,8 +80,7 @@ class Solution {
         
         List<List<String>> res = new ArrayList<>();
         for (Map.Entry<Integer, HashSet<String>> entry : userToEmailMap.entrySet()) {
-            LinkedList<String> list = new LinkedList<>();
-            list.addAll(entry.getValue());
+            LinkedList<String> list = new LinkedList<>(entry.getValue());
             Collections.sort(list);
             list.addFirst(accounts.get(entry.getKey()).get(0));
             res.add(list);
@@ -95,10 +94,10 @@ class Solution {
         Iterator<List<String>> accountsIterator = accounts.iterator();
         for (int i = 0; i < len; i++) {
             List<String> account = accountsIterator.next();
-            Iterator<String> emails = account.iterator();
-            emails.next();
-            while (emails.hasNext()) {
-                String email = emails.next();
+            Iterator<String> emailIterator = account.iterator();
+            emailIterator.next();
+            while (emailIterator.hasNext()) {
+                String email = emailIterator.next();
                 Integer user = map.get(email);
                 if (user == null) {
                     map.put(email, i);
