@@ -187,7 +187,7 @@ class Solution {
 相邻的email之间建立双向图。设置Set<String> visited存已经访问过的email
 每次遇到一个新的name的List的时候，
     如果这个list的第一个email没有访问过，就dfs把这个email的所有通路走一遍，走到底，放到这个名字里面
-    如果已经访问过了，说明这个名字已经访问过了
+    如果已经访问过了，这个account就可以跳过去了
  */
 class Solution1 {
     
