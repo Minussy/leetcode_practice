@@ -78,106 +78,63 @@ class Solution {
         if (accounts == null) {
             throw new RuntimeException("no accounts");
         }
-        
-        int len = accounts.size();
-        UnionFind uf = new UnionFind(len);
-        
-        Map<String, Integer> emailToUserMap = new HashMap<>();
-        unionAccounts(uf, accounts, emailToUserMap);
-        
-        Map<Integer, HashSet<String>> userToEmailMap = new HashMap<>();
-        buildAccounts(uf, accounts, userToEmailMap);
-        
+        // email-email bi-directional graph
+        Map<String, List<String>> graph = buildGraph(accounts);
+        Set<String> visited = new HashSet<>(); // store the visited emails.
         List<List<String>> res = new ArrayList<>();
-        for (Map.Entry<Integer, HashSet<String>> entry : userToEmailMap.entrySet()) {
-            LinkedList<String> list = new LinkedList<>(entry.getValue());
-            Collections.sort(list);
-            list.addFirst(accounts.get(entry.getKey()).get(0));
-            res.add(list);
+        for (List<String> account : accounts) {
+            ListIterator<String> emailIterator = account.listIterator();
+            String name = emailIterator.next();
+            String firstEmail = emailIterator.next();
+            LinkedList<String> emails = new LinkedList<>();
+            dfs(firstEmail, visited, graph, emails);
+            if (!emails.isEmpty()) {
+                Collections.sort(emails);
+                emails.addFirst(name);
+                res.add(emails);
+            }
         }
         return res;
     }
     
-    private void unionAccounts(UnionFind uf, List<List<String>> accounts,
-            Map<String, Integer> map) {
-        int len = accounts.size();
-        Iterator<List<String>> accountsIterator = accounts.iterator();
-        for (int i = 0; i < len; i++) {
-            List<String> account = accountsIterator.next();
-            Iterator<String> emailIterator = account.iterator();
-            emailIterator.next();
-            while (emailIterator.hasNext()) {
-                String email = emailIterator.next();
-                Integer user = map.get(email);
-                if (user == null) {
-                    map.put(email, i);
-                } else {
-                    uf.union(user, i);
+    private void dfs(String vertex, Set<String> visited, Map<String, List<String>> graph,
+            List<String> emails) {
+        // base case
+        if (visited.contains(vertex)) {
+            return;
+        }
+        // general case
+        emails.add(vertex);
+        visited.add(vertex);
+        
+        for (String neighbor : graph.get(vertex)) {
+            dfs(neighbor, visited, graph, emails);
+        }
+    }
+    
+    /*
+    双向存图
+    Time complexity = O(sum(a_i)), a_i is the length of the name i
+     */
+    private Map<String, List<String>> buildGraph(List<List<String>> accounts) {
+        Map<String, List<String>> graph = new HashMap<>();
+        for (List<String> list : accounts) {
+            ListIterator<String> listIterator = list.listIterator();
+            String prev = null;
+            listIterator.next();// 名字不需要存图
+            while (listIterator.hasNext()) {
+                String cur = listIterator.next();
+                List<String> neighbors = graph.computeIfAbsent(cur, k -> new ArrayList<>());
+                if (prev != null) {
+                    neighbors.add(prev);
+                    graph.get(prev).add(cur);
                 }
+                prev = cur;
             }
         }
+        return graph;
     }
     
-    private void buildAccounts(UnionFind uf, List<List<String>> accounts,
-            Map<Integer, HashSet<String>> map) {
-        int len = accounts.size();
-        
-        Iterator<List<String>> accountsIterator = accounts.iterator();
-        for (int i = 0; i < len; i++) {
-            int root = uf.getRoot(i);
-            if (!map.containsKey(root)) {
-                map.put(root, new HashSet<>());
-            }
-            List<String> account = accountsIterator.next();
-            Iterator<String> emails = account.iterator();
-            emails.next();
-            while (emails.hasNext()) {
-                map.get(root).add(emails.next());
-            }
-        }
-    }
-    
-    class UnionFind {
-        
-        int[] parent;
-        int[] size;
-        
-        public UnionFind(int capacity) {
-            this.parent = new int[capacity];
-            this.size = new int[capacity];
-            for (int i = 0; i < capacity; i++) {
-                this.parent[i] = i;
-                this.size[i] = 1;
-            }
-        }
-        
-        public void union(int user1, int user2) {
-            int root1 = getRoot(user1);
-            int root2 = getRoot(user2);
-            
-            if (size[root1] < size[root2]) {
-                size[root2] += size[root1];
-                parent[root1] = root2;
-            } else {
-                size[root1] += size[root2];
-                parent[root2] = root1;
-            }
-        }
-        
-        public boolean find(int user1, int user2) {
-            return getRoot(user1) == getRoot(user2);
-        }
-        
-        public int getRoot(int user) {
-            int cur = user;
-            while (parent[cur] != cur) {
-                parent[cur] = parent[parent[cur]];
-                cur = parent[cur];
-            }
-            parent[user] = cur;
-            return cur;
-        }
-    }
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
