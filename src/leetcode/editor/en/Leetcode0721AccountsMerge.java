@@ -138,8 +138,8 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
-// Solution 1: dfs,相邻的email之间建立双向图。
-// 30 ms,击败了85.23% 的Java用户, 44.7 MB,击败了48.50% 的Java用户
+// Solution 1: dfs,相邻的email之间建立双向图。T(m,n) = O(mn), m是accounts的个数，n是一个account里面的最大长度
+// 28 ms,击败了90.01% 的Java用户, 44.5 MB,击败了49.74% 的Java用户
 /*
 相邻的email之间建立双向图。设置Set<String> visited存已经访问过的email
 每次遇到一个新的name的List的时候，
@@ -234,14 +234,14 @@ class Solution2 {
         int len = accounts.size();
         UnionFind uf = new UnionFind(len);
         
-        Map<String, Integer> emailToUserMap = new HashMap<>();
+        Map<String, Integer> emailToUserMap = new HashMap<>(); // email to user#
         unionAccounts(uf, accounts, emailToUserMap);
         
-        Map<Integer, HashSet<String>> userToEmailMap = new HashMap<>();
-        buildAccounts(uf, accounts, userToEmailMap);
+        Map<Integer, HashSet<String>> userToEmail = new HashMap<>();
+        buildAccounts(uf, accounts, userToEmail);
         
         List<List<String>> res = new ArrayList<>();
-        for (Map.Entry<Integer, HashSet<String>> entry : userToEmailMap.entrySet()) {
+        for (Map.Entry<Integer, HashSet<String>> entry : userToEmail.entrySet()) {
             LinkedList<String> list = new LinkedList<>(entry.getValue());
             Collections.sort(list);
             list.addFirst(accounts.get(entry.getKey()).get(0));
