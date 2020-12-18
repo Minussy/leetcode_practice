@@ -181,16 +181,22 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
-// Solution 1: dfs
+// Solution 1: dfs,相邻的email之间建立双向图。
 // 30 ms,击败了85.23% 的Java用户, 44.7 MB,击败了48.50% 的Java用户
+/*
+相邻的email之间建立双向图。设置Set<String> visited存已经访问过的email
+每次遇到一个新的name的List的时候，
+    如果这个list的第一个email没有访问过，就dfs把这个email的所有通路走一遍，走到底，放到这个名字里面
+    如果已经访问过了，说明这个名字已经访问过了
+ */
 class Solution1 {
     
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
         if (accounts == null) {
             throw new RuntimeException("no accounts");
         }
-        Map<String, List<String>> graph = buildGraph(
-                accounts);// email-email bi-directional graph
+        // email-email bi-directional graph
+        Map<String, List<String>> graph = buildGraph(accounts);
         Set<String> visited = new HashSet<>(); // store the visited emails.
         List<List<String>> res = new ArrayList<>();
         for (List<String> account : accounts) {
@@ -225,6 +231,7 @@ class Solution1 {
     
     /*
     双向存图
+    Time complexity = O(sum(a_i)), a_i is the length of the name i
      */
     private Map<String, List<String>> buildGraph(List<List<String>> accounts) {
         Map<String, List<String>> graph = new HashMap<>();
@@ -249,6 +256,17 @@ class Solution1 {
 
 // Solution 2: Union-Find
 // 29 ms,击败了87.73% 的Java用户, 45 MB,击败了44.28% 的Java用户
+/*
+HashMap<String, String> emailToName
+HashMap<Integer, HashSet<String>> userToEmailMap
+建立union find:
+    union find,里面存的是user的编号
+    每次遇到一个email的时候，如果出现过的话，就合并user
+    如果是新的email的话，就不管。
+遍历accounts，
+    遇到每一个account，找到这个name的union的root，
+    把这个name的email都加到这个HashMap的root的value里面
+ */
 class Solution2 {
     
     public List<List<String>> accountsMerge(List<List<String>> accounts) {
