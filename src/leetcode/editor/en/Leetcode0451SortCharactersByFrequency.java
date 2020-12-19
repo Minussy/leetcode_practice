@@ -106,4 +106,83 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
+// Solution 1: 统计所有字母的频率，按照频率sort char array, T(n) = O(nlog(n)), S(n) = O(n), n是单词的长度
+// 13 ms,击败了53.66% 的Java用户, 40 MB,击败了62.37% 的Java用户
+class Solution1 {
+    
+    public String frequencySort(String s) {
+        if (s.length() <= 1) {
+            return s;
+        }
+        char[] charS = s.toCharArray();
+        Map<Character, Integer> charFreq = new HashMap<>();
+        for (char ch : charS) {
+            charFreq.put(ch, charFreq.getOrDefault(ch, 0) + 1);
+        }
+        List<Character> listS = new ArrayList<>();
+        // for (Map.Entry<Character, Integer> entry : charFreq.entrySet()) {
+        //     listS.add(entry.getKey());
+        // }
+        charFreq.forEach((k, v) ->listS.add(k)); // 上面的lambda表达式
+        listS.sort(new Comparator<Character>() {
+            @Override
+            public int compare(Character o1, Character o2) {
+                if (!charFreq.get(o1).equals(charFreq.get(o2))) {
+                    return charFreq.get(o2) - charFreq.get(o1);
+                } else {
+                    return Character.compare(o1, o2);
+                }
+            }
+        });
+        StringBuilder sb = new StringBuilder();
+        for (Character ch : listS) {
+            int count = 0;
+            int freq = charFreq.get(ch);
+            while (count++ < freq) {
+                sb.append(ch);
+            }
+        }
+        return sb.toString();
+    }
+    
+}
+
+// Solution 2: 统计所有字母的频率，设置一个数组，每个频率设置一个List，(n) = O(n+k*log(k)), S(n) = O(n),
+// n是单词的长度, 出现k次的字母的个数最多
+// 9 ms,击败了89.40% 的Java用户, 39.8 MB,击败了71.59% 的Java用户
+class Solution2 {
+    
+    public String frequencySort(String s) {
+        // corner case
+        if (s.length() <= 1) {
+            return s;
+        }
+        Map<Character, Integer> map = new HashMap<>();
+        for (char c : s.toCharArray()) {
+            map.put(c, map.getOrDefault(c, 0) + 1);
+        }
+        
+        List<Character>[] bucket = new List[s.length() + 1]; // buckets[freq]存出现了这个次数的char
+        for (char key : map.keySet()) {
+            int freq = map.get(key);
+            if (bucket[freq] == null) {
+                bucket[freq] = new ArrayList<>();
+            }
+            bucket[freq].add(key);
+        }
+        
+        StringBuilder sb = new StringBuilder();
+        for (int pos = bucket.length - 1; pos >= 0; pos--) {
+            if (bucket[pos] != null) {
+                for (char ch : bucket[pos]) {
+                    for (int i = 0; i < pos; i++) {
+                        sb.append(ch);
+                    }
+                }
+            }
+        }
+        return sb.toString();
+    }
+    
+}
 }
