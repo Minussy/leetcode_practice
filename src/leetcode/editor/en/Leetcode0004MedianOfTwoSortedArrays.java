@@ -51,8 +51,8 @@ class Solution {
         int len1 = nums1.length;
         int len2 = nums2.length;
         int len = len1 + len2;
-        int cut1 = 0;
-        int cut2 = 0;
+        int cut1;
+        int cut2;
         int cutL = 0;
         int cutR = nums1.length;
         while(cutL <= cutR) {
@@ -69,12 +69,12 @@ class Solution {
                 cutL = cut1 + 1;
             } else {
                 if(len % 2 == 0) {
-                    L1 = (L1 > L2 ? L1 : L2);
-                    R1 = (R1 < R2 ? R1 : R2);
+                    L1 = (Math.max(L1, L2));
+                    R1 = (Math.min(R1, R2));
                     return (L1 + R1) / 2;
                 }
                 else {
-                    R1 = (R1 < R2 ? R1 : R2);
+                    R1 = Math.min(R1, R2);
                     return R1;
                 }
             }
