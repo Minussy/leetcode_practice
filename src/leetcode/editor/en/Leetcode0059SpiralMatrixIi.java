@@ -29,44 +29,33 @@ public class Leetcode0059SpiralMatrixIi{
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
     public int[][] generateMatrix(int n) {
-        if (n <= 0) {
-            return null;
-        }
-
-        int[][] result = new int[n][n];
-
-        int row = 0;
-        int col = 0;
+        int[][] matrix = new int[n][n];
+        
+        int row = 0; // 正方形边框的左上角横坐标
+        int col = 0; // 正方形边框的左上角纵坐标
         int height = n;
         int width = n;
         int num = 1;
-
+        
         while (height > 1 && width > 1) {
             //traverse right
             for (int i = col; i < col + width - 1; i++) {
-                result[row][i] = num;
-                num++;
+                matrix[row][i] = num++;
             }
-
             //traverse down
             for (int i = row; i < row + height - 1; i++) {
-                result[i][col + width - 1] = num;
-                num++;
+                matrix[i][col + width - 1] = num++;
             }
-
             //traverse left
             for (int i = col + width - 1; i > col; i--) {
-                result[row + height - 1][i] = num;
-                num++;
+                matrix[row + height - 1][i] = num++;
             }
-
             //traverse up
             for (int i = row + height - 1; i > row; i--) {
-                result[i][col] = num;
-                num++;
+                matrix[i][col] = num++;
             }
-
             row++;
             col++;
             height -= 2;
@@ -75,19 +64,47 @@ class Solution {
         //edge case
         if (height == 1) {
             for (int i = col; i < col + width; i++) {
-                result[row][i] = num;
+                matrix[row][i] = num;
+                num++;
+            }
+        } else { // width == 1
+            for (int i = row; i < row + height; i++) {
+                matrix[i][col] = num;
                 num++;
             }
         }
-        else { // width == 1
-            for (int i = row; i < row + height; i++) {
-                result[i][col] = num;
-                num++;
+        return matrix;
+    }
+    
+}
+//leetcode submit region end(Prohibit modification and deletion)
+
+// Solution 2:
+class Solution2 {
+    
+    public int[][] generateMatrix(int n) {
+        int[][] result = new int[n][n];
+        int cnt = 1;
+        for (int layer = 0; layer < (n + 1) / 2; layer++) {
+            // direction 1 - traverse from left to right
+            for (int ptr = layer; ptr < n - layer; ptr++) {
+                result[layer][ptr] = cnt++;
+            }
+            // direction 2 - traverse from top to bottom
+            for (int ptr = layer + 1; ptr < n - layer; ptr++) {
+                result[ptr][n - layer - 1] = cnt++;
+            }
+            // direction 3 - traverse from right to left
+            for (int ptr = layer + 1; ptr < n - layer; ptr++) {
+                result[n - layer - 1][n - ptr - 1] = cnt++;
+            }
+            // direction 4 - traverse from bottom to top
+            for (int ptr = layer + 1; ptr < n - layer - 1; ptr++) {
+                result[n - ptr - 1][layer] = cnt++;
             }
         }
         return result;
     }
+    
 }
-//leetcode submit region end(Prohibit modification and deletion)
-
 }
