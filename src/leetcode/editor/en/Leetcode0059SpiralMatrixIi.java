@@ -78,8 +78,58 @@ class Solution {
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
+// Solution 1：从外面往里面走，设置好初始的height和width
+class Solution1 {
+    
+    public int[][] generateMatrix(int n) {
+        int[][] matrix = new int[n][n];
+        
+        int row = 0; // 正方形边框的左上角横坐标
+        int col = 0; // 正方形边框的左上角纵坐标
+        int height = n;
+        int width = n;
+        int num = 1;
+        
+        while (height > 1 && width > 1) {
+            //traverse right
+            for (int i = col; i < col + width - 1; i++) {
+                matrix[row][i] = num++;
+            }
+            //traverse down
+            for (int i = row; i < row + height - 1; i++) {
+                matrix[i][col + width - 1] = num++;
+            }
+            //traverse left
+            for (int i = col + width - 1; i > col; i--) {
+                matrix[row + height - 1][i] = num++;
+            }
+            //traverse up
+            for (int i = row + height - 1; i > row; i--) {
+                matrix[i][col] = num++;
+            }
+            row++;
+            col++;
+            height -= 2;
+            width -= 2;
+        }
+        //edge case
+        if (height == 1) {
+            for (int i = col; i < col + width; i++) {
+                matrix[row][i] = num;
+                num++;
+            }
+        } else { // width == 1
+            for (int i = row; i < row + height; i++) {
+                matrix[i][col] = num;
+                num++;
+            }
+        }
+        return matrix;
+    }
+    
+}
 
-// Solution 2:
+// Solution 2:从外面往里面走，设置好初始的layer就行了，两个思路一样
 class Solution2 {
     
     public int[][] generateMatrix(int n) {
