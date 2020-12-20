@@ -40,13 +40,13 @@ public class Leetcode0004MedianOfTwoSortedArrays {
 	}
 	
 //leetcode submit region begin(Prohibit modification and deletion)
+// index:  0   1   2   3   4   5
+//             L1  R1
+// num1:   3   5 | 8   9               4 cut1: 左边有4个元素
+// num2:   1   2   7 | 10  11  12      6 cut2: 左边有6个元素
+//                 L2  R2
 class Solution {
-    
-    // index:  0   1   2   3   4   5
-    //             L1  R1
-    // num1:   3   5 | 8   9               4 cut1: 左边有4个元素
-    // num2:   1   2   7 | 10  11  12      6 cut2: 左边有6个元素
-    //                 L2  R2
+	   
     public double findMedianSortedArrays(int[] nums1, int[] nums2) {
         if (nums1.length > nums2.length) {
             return findMedianSortedArrays(nums2, nums1);
