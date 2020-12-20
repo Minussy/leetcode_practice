@@ -40,7 +40,7 @@ public class Leetcode0015ThreeSum {
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
-
+    
     public List<List<Integer>> threeSum(int[] nums) {
         // corner case
         Arrays.sort(nums);
@@ -52,7 +52,7 @@ class Solution {
         }
         return result;
     }
-
+    
     private void twoSum(int[] nums, int i, List<List<Integer>> result) {
         int left = i + 1;
         int right = nums.length - 1;
@@ -67,6 +67,7 @@ class Solution {
             }
         }
     }
+    
 }
 //leetcode submit region end(Prohibit modification and deletion)
 

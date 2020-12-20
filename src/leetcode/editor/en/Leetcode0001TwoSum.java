@@ -40,7 +40,7 @@ class Solution {
         if (nums== null || nums.length < 2) {
             return null;
         }
-
+        
         // general case
         Map<Integer, Integer> map = new HashMap<>();
         for (int i = 0; i < nums.length; i++) {
