@@ -86,6 +86,7 @@ public class Leetcode0460LfuCache{
 
     }
 }*/
+// 16 ms,击败了88.20% 的Java用户, 50 MB,击败了44.02% 的Java用户
 class LFUCache {
     
     private final Map<Integer, Node> keyToNode; // key-node pair
@@ -243,8 +244,6 @@ class LFUCache {
         }
     }
 }
-
-
 /**
  * Your LFUCache object will be instantiated and called as such:
  * LFUCache obj = new LFUCache(capacity);
