@@ -34,7 +34,6 @@ public class Leetcode0015ThreeSum {
 	public static void main(String[] args) {
 		Solution sol = new Leetcode0015ThreeSum().new Solution();
 		// TO TEST
-
 		System.out.println();
 	}
 
