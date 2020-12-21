@@ -101,11 +101,11 @@ class Solution {
         if (node == null) {
             return null;
         }
-        HashMap<Node, Node> map = new HashMap<>();
+        HashMap<Node, Node> oldToNew = new HashMap<>(); // old Node to corresponding new node
         Node cur = node;
         Node curCopy = new Node(node.val);
-        map.put(cur, curCopy);
-        bfs(cur, map);
+        oldToNew.put(cur, curCopy);
+        bfs(cur, oldToNew);
         return curCopy;
     }
 
