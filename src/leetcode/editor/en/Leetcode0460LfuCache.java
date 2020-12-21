@@ -91,7 +91,7 @@ class LFUCache {
     private final Map<Integer, Node> keyToNode; // key-node pair
     private final Map<Integer, NodeList> freqMap; //freq To doubleLinkedList Of Node map
     private final int capacity;
-    private int minFreq; // 追踪频率最小的那个Node List，空间不够烦的时候，从这个List里面删除Node
+    private int minFreq; // 追踪频率最小的那个Node List，空间不够放的时候，从这个List里面删除Node
     private int size;
     
     public LFUCache(int capacity) {
