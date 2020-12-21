@@ -76,7 +76,7 @@ public class Leetcode0126WordLadderIi {
 		List<String> wordList = new ArrayList<>(Arrays.asList(words));
 		List<List<String>> result = sol.findLadders(beginWord, endWord, wordList);
 		Set<String> set = new HashSet<>();
-		for (List list: result) {
+		for (List<String> list: result) {
 			set.add(list.toString());
 		}
 		System.out.println(Arrays.deepToString(set.toArray()));
@@ -89,8 +89,6 @@ class Solution {
 	private String beginWord;
 	private String endWord;
 	private Set<String> wordSet;
-	private Set<String> beginSet;
-	private Set<String> endSet;
 	private Set<String> set1;
 	private Set<String> set2;
 	private Map<String, List<String>> beginGraph;
@@ -118,8 +116,8 @@ class Solution {
 		this.beginWord = beginWord;
 		this.endWord = endWord;
 		
-		beginSet = new HashSet<>();
-		endSet = new HashSet<>();
+		Set<String> beginSet = new HashSet<>();
+		Set<String> endSet = new HashSet<>();
 		endSet.add(endWord);
 		beginSet.add(beginWord);
 		beginGraph = new HashMap<>();
@@ -345,8 +343,6 @@ class Solution2 {
 	private String beginWord;
 	private String endWord;
 	private Set<String> wordSet;
-	private Set<String> beginSet;
-	private Set<String> endSet;
 	private Set<String> set1;
 	private Set<String> set2;
 	private Map<String, List<String>> beginGraph;
@@ -374,8 +370,8 @@ class Solution2 {
 		this.beginWord = beginWord;
 		this.endWord = endWord;
 		
-		beginSet = new HashSet<>();
-		endSet = new HashSet<>();
+		Set<String> beginSet = new HashSet<>();
+		Set<String> endSet = new HashSet<>();
 		endSet.add(endWord);
 		beginSet.add(beginWord);
 		beginGraph = new HashMap<>();
