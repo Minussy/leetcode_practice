@@ -78,15 +78,17 @@ public class Leetcode0156BinaryTreeUpsideDown{
  * }
  */
 class Solution {
+    
     public TreeNode upsideDownBinaryTree(TreeNode root) {
-        // corner case
+        // corner case, base case
         if (root == null) {
             return null;
         }
+        // base case
         if (root.left == null) {
             return root;
         }
-
+        
         // general case
         TreeNode newRoot = upsideDownBinaryTree(root.left);
         root.left.left = root.right;
@@ -95,6 +97,7 @@ class Solution {
         root.right = null;
         return newRoot;
     }
+    
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
