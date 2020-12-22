@@ -8,57 +8,28 @@ package leetcode.editor.en;
  Date: 2020-08-06 15:25
  */
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
 
 public class Foo {
 	
-	// time = O(nlogn), space = O(n)
-	public int minMeetingRooms(int[][] intervals) {
-		// corner case
-		if (intervals == null || intervals.length == 0 || intervals[0] == null
-				|| intervals[0].length == 0) {
-			return 0;
+	public static void main(String[] args) {
+		LinkedHashMap<Integer, Integer> map = new LinkedHashMap<>();
+		map.put(1, 1);
+		map.put(2, 2);
+		map.put(3, 3);
+		map.put(2, 1);
+		map.forEach((k, v) -> System.out.println("key: " + k + " value:" + v));
+		for(Map.Entry<Integer, Integer> entry: map.entrySet()) {
+			System.out.println(entry);
 		}
-		
-		List<EndPoint> endpoints = new ArrayList<>();
-		for (int[] interval : intervals) { // --> O(n)
-			endpoints.add(new EndPoint(interval[0], true));
-			endpoints.add(new EndPoint(interval[1], false));
-		}
-		Collections.sort(endpoints); // --> O(nlogn)
-		
-		int curRooms = 0;
-		int maxRooms = 0;
-		for (EndPoint p : endpoints) { // --> O(n)
-            if (p.isStart) {
-                curRooms++;
-            } else {
-                curRooms--;
-            }
-			maxRooms = Math.max(maxRooms, curRooms);
-		}
-		return maxRooms;
-	}
-	
-	class EndPoint implements Comparable<EndPoint> {
-		
-		public int val;
-		public boolean isStart;
-		
-		public EndPoint(int val, boolean isStart) {
-			this.val = val;
-			this.isStart = isStart;
-		}
-		
-		@Override
-		public int compareTo(EndPoint that) {
-			if (this.val != that.val) {
-				return this.val - that.val;
-			} else {
-				return this.isStart ? 1 : -1;// 右端点在前，左端点在后
-			}
-		}
+		LinkedHashSet<Integer> set = new LinkedHashSet<>();
+		set.add(1);
+		set.add(2);
+		set.add(3);
+		set.remove(2);
+		set.add(2);
+		set.forEach(k-> System.out.println("key: " + k));
 	}
 }

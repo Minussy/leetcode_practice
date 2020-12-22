@@ -44,7 +44,7 @@
 package leetcode.editor.en;
 
 import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashSet;
 
 // 2020-07-24 13:46:17
 // Zeshi Yang
@@ -87,162 +87,223 @@ public class Leetcode0460LfuCache{
     }
 }*/
 // 16 ms,击败了88.20% 的Java用户, 50 MB,击败了44.02% 的Java用户
+// class LFUCache {
+//
+//     private final Map<Integer, Node> keyToNode; // key-node pair
+//     private final Map<Integer, NodeList> freqMap; //freq To doubleLinkedList Of Node map
+//     private final int capacity;
+//     private int minFreq; // 追踪频率最小的那个Node List，空间不够放的时候，从这个List里面删除Node
+//     private int size;
+//
+//     public LFUCache(int capacity) {
+//         keyToNode = new HashMap<>();
+//         freqMap = new HashMap<>();
+//         this.capacity = capacity;
+//         minFreq = 0;
+//         this.size = 0;
+//     }
+//
+//     public int get(int key) {
+//         if (!keyToNode.containsKey(key)) {
+//             return -1;
+//         }
+//
+//         Node node = keyToNode.get(key);
+//
+//         int prevFreq = node.freq;
+//         deleteNode(node, prevFreq);
+//
+//         node.freq++;
+//         int curFreq = node.freq;
+//
+//         // add current Node to current node list and may update the freqMap
+//         addNode(node, curFreq);
+//         return node.val;
+//     }
+//
+//     public void put(int key, int value) {
+//         if (capacity == 0) {
+//             return;
+//         }
+//         // 如果这个Node已经有了，更新频率和freMap就行了
+//         if (keyToNode.get(key) != null) {
+//             keyToNode.get(key).val = value;
+//             get(key);
+//             return;
+//         }
+//         // 如果这个key还不存在的话，删掉频率最小最早用的那一个，然后把点加进去
+//         if (size == capacity) {
+//             deleteTail();
+//             size--;
+//         }
+//         minFreq = 1;
+//         Node newNode = new Node(key, value);
+//         keyToNode.put(key, newNode);
+//
+//         NodeList curList = freqMap.computeIfAbsent(1, k -> new NodeList());
+//         curList.addHead(newNode);
+//         this.size++;
+//     }
+//
+//     /**
+//      * delete node from the preFreq node List
+//      */
+//     private void deleteNode(Node node, int prevFreq) {
+//         NodeList prevList = freqMap.get(prevFreq);
+//         prevList.remove(node);
+//         if (prevList.isEmpty()) {
+//             freqMap.remove(prevFreq);
+//             if (prevFreq == minFreq) {
+//                 minFreq++;
+//             }
+//         }
+//     }
+//
+//     /**
+//      * add Node to the curFreq node list
+//      */
+//     private void addNode(Node node, int curFreq) {
+//         if (!freqMap.containsKey(curFreq)) {
+//             freqMap.put(curFreq, new NodeList());
+//         }
+//         NodeList curList = freqMap.get(curFreq);
+//         curList.addHead(node);
+//     }
+//
+//     /**
+//      * delete last node in the least used node list
+//      */
+//     private void deleteTail() {
+//         NodeList prevList = freqMap.get(minFreq);
+//         Node deleted = prevList.removeTail();
+//         keyToNode.remove(deleted.key);
+//         if (prevList.isEmpty()) {
+//             freqMap.remove(minFreq);
+//         }
+//     }
+//
+//     class Node {
+//
+//         private final int key;
+//         private int val;
+//         private int freq;
+//         Node prev;
+//         Node next;
+//
+//         public Node(int key, int val) {
+//             this.key = key;
+//             this.val = val;
+//             this.freq = 1;
+//             this.prev = null;
+//             this.next = null;
+//         }
+//     }
+//
+//     class NodeList {
+//
+//         private final Node head;
+//         private final Node tail;
+//         private int size;
+//
+//         public NodeList() {
+//             head = new Node(0, 0);
+//             tail = new Node(0, 0);
+//             head.next = tail;
+//             tail.prev = head;
+//             this.size = 0;
+//         }
+//
+//         public void addHead(Node node) {
+//             Node following = head.next;
+//             head.next = node;
+//             node.next = following;
+//             node.prev = head;
+//             following.prev = node;
+//             size++;
+//         }
+//
+//         public void remove(Node node) {
+//             node.next.prev = node.prev;
+//             node.prev.next = node.next;
+//             node.prev = null;
+//             node.next = null;
+//             size--;
+//         }
+//
+//         public Node removeTail() {
+//             if (size == 0) {
+//                 throw new IllegalArgumentException("size is 0, can not be deleted");
+//             }
+//             Node cur = tail.prev;
+//             remove(tail.prev);
+//             return cur;
+//         }
+//
+//         public boolean isEmpty() {
+//             return size == 0;
+//         }
+//     }
+// }
 class LFUCache {
     
-    private final Map<Integer, Node> keyToNode; // key-node pair
-    private final Map<Integer, NodeList> freqMap; //freq To doubleLinkedList Of Node map
-    private final int capacity;
-    private int minFreq; // 追踪频率最小的那个Node List，空间不够放的时候，从这个List里面删除Node
-    private int size;
+    HashMap<Integer, Integer> keyToVal;
+    HashMap<Integer, Integer> countMap;
+    HashMap<Integer, LinkedHashSet<Integer>> list;
+    private int capacity;
+    private int min;
     
     public LFUCache(int capacity) {
-        keyToNode = new HashMap<>();
-        freqMap = new HashMap<>();
+        keyToVal = new HashMap<>();
+        countMap = new HashMap<>();
+        list = new HashMap<>();
+        list.put(1, new LinkedHashSet<>());
         this.capacity = capacity;
-        minFreq = 0;
-        this.size = 0;
+        min = 0;
     }
-
+    
     public int get(int key) {
-        if (!keyToNode.containsKey(key)) {
+        if (!keyToVal.containsKey(key)) {
             return -1;
         }
+        int count = countMap.get(key);
+        countMap.put(key, count + 1);//increase freq
+        //delete old freq
+        list.get(count).remove(key);
+        if (count == min && list.get(count).size() == 0) {
+            min++;
+        }
+        //add new
+        if (!list.containsKey(count + 1)) {
+            list.put(count + 1, new LinkedHashSet<>());
+        }
         
-        Node node = keyToNode.get(key);
+        list.get(count + 1).add(key);
+        return keyToVal.get(key);
         
-        int prevFreq = node.freq;
-        deleteNode(node, prevFreq);
-    
-        node.freq++;
-        int curFreq = node.freq;
-        
-        // add current Node to current node list and may update the freqMap
-        addNode(node, curFreq);
-        return node.val;
     }
     
     public void put(int key, int value) {
-        if (capacity == 0) {
+        if (capacity <= 0) {
             return;
         }
-        // 如果这个Node已经有了，更新频率和freMap就行了
-        if (keyToNode.get(key) != null) {
-            keyToNode.get(key).val = value;
+        
+        if (keyToVal.containsKey(key)) {
+            keyToVal.put(key, value);//modify value
             get(key);
             return;
         }
-        // 如果这个key还不存在的话，删掉频率最小最早用的那一个，然后把点加进去
-        if (size == capacity) {
-            deleteTail();
-            size--;
-        }
-        minFreq = 1;
-        Node newNode = new Node(key, value);
-        keyToNode.put(key, newNode);
         
-        NodeList curList = freqMap.computeIfAbsent(1, k -> new NodeList());
-        curList.addHead(newNode);
-        this.size++;
+        if (keyToVal.size() >= capacity) {
+            int evit = list.get(min).iterator().next();
+            list.get(min).remove(evit);
+            keyToVal.remove(evit);
+        }
+        keyToVal.put(key, value);
+        countMap.put(key, 1);
+        min = 1;
+        list.get(1).add(key);
     }
     
-    /**
-     * delete node from the preFreq node List
-     */
-    private void deleteNode(Node node, int prevFreq) {
-        NodeList prevList = freqMap.get(prevFreq);
-        prevList.remove(node);
-        if (prevList.isEmpty()) {
-            freqMap.remove(prevFreq);
-            if (prevFreq == minFreq) {
-                minFreq++;
-            }
-        }
-    }
-    
-    /**
-     * add Node to the curFreq node list
-     */
-    private void addNode(Node node, int curFreq) {
-        if (!freqMap.containsKey(curFreq)) {
-            freqMap.put(curFreq, new NodeList());
-        }
-        NodeList curList = freqMap.get(curFreq);
-        curList.addHead(node);
-    }
-    
-    /**
-     * delete last node in the least used node list
-     */
-    private void deleteTail() {
-        NodeList prevList = freqMap.get(minFreq);
-        Node deleted = prevList.removeTail();
-        keyToNode.remove(deleted.key);
-        if (prevList.isEmpty()) {
-            freqMap.remove(minFreq);
-        }
-    }
-    
-    class Node {
-        
-        private final int key;
-        private int val;
-        private int freq;
-        Node prev;
-        Node next;
-        
-        public Node(int key, int val) {
-            this.key = key;
-            this.val = val;
-            this.freq = 1;
-            this.prev = null;
-            this.next = null;
-        }
-    }
-    
-    class NodeList {
-    
-        private final Node head;
-        private final Node tail;
-        private int size;
-        
-        public NodeList() {
-            head = new Node(0, 0);
-            tail = new Node(0, 0);
-            head.next = tail;
-            tail.prev = head;
-            this.size = 0;
-        }
-    
-        public void addHead(Node node) {
-            Node following = head.next;
-            head.next = node;
-            node.next = following;
-            node.prev = head;
-            following.prev = node;
-            size++;
-        }
-        
-        public void remove(Node node) {
-            node.next.prev = node.prev;
-            node.prev.next = node.next;
-            node.prev = null;
-            node.next = null;
-            size--;
-        }
-        
-        public Node removeTail() {
-            if (size == 0) {
-                throw new IllegalArgumentException("size is 0, can not be deleted");
-            }
-            Node cur = tail.prev;
-            remove(tail.prev);
-            return cur;
-        }
-        
-        public boolean isEmpty() {
-            return size == 0;
-        }
-    }
 }
 /**
  * Your LFUCache object will be instantiated and called as such:
