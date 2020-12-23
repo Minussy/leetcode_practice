@@ -38,10 +38,10 @@ public class Leetcode0253MeetingRoomsIi {
 
 	// Java: meeting-rooms-ii
 	public static void main(String[] args) {
-        FollowupSolution1 sol = new Leetcode0253MeetingRoomsIi().new FollowupSolution1();
+        Solution sol = new Leetcode0253MeetingRoomsIi().new Solution();
 		// TO TEST
         int[][] intervals = {{0, 30},{5, 10},{15, 20}};
-        List<String> res = sol.minMeetingRoomsAndItsIntervals(intervals);
+        int res = sol.minMeetingRooms(intervals);
         System.out.println(res);
 	}
 
@@ -64,11 +64,7 @@ class Solution {
         int count = 0;
         int max = 0;
         for (Point point : list) {
-            if (point.isStart) {
-                count++;
-            } else {
-                count--;
-            }
+            count = point.isStart ? count + 1: count - 1;
             max = Math.max(max, count);
         }
         return max;
