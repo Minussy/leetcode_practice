@@ -119,11 +119,7 @@ class Solution1 {
         int count = 0;
         int max = 0;
         for (Point point : list) {
-            if (point.isStart) {
-                count++;
-            } else {
-                count--;
-            }
+            count = point.isStart ? count + 1: count - 1;
             max = Math.max(max, count);
         }
         return max;
@@ -163,30 +159,20 @@ class Solution1 {
 class Solution2_1 {
     
     public int minMeetingRooms(int[][] intervals) {
-        
-        // Check for the base case. If there are no intervals, return 0
+        // corner case
         if (intervals.length == 0) {
             return 0;
         }
         
-        // Min heap
         PriorityQueue<Integer> allocator = new PriorityQueue<>(intervals.length); // min heap
         
-        // Sort the intervals by start time
         Arrays.sort(intervals, Comparator.comparingInt(a -> a[0])); // (a, b) -> a[0] - b[0]
-        // Iterate over remaining intervals
         for (int[] interval : intervals) {
-            // If the room due to free up the earliest is free, assign that room to this meeting.
             if (!allocator.isEmpty() && interval[0] >= allocator.peek()) {
                 allocator.poll();
             }
-            // If a new room is to be assigned, then also we add to the heap,
-            // If an old room is allocated, then also we have to add to the heap with updated end
-            // time.
             allocator.add(interval[1]);
         }
-        
-        // The size of the heap tells us the minimum rooms required for all the meetings.
         return allocator.size();
     }
 }
@@ -203,33 +189,24 @@ class Solution2_1 {
 class Solution2_2 {
     
     public int minMeetingRooms(int[][] intervals) {
-        
-        // Check for the base case. If there are no intervals, return 0
+        // corner case
         if (intervals.length == 0) {
             return 0;
         }
         
-        // Min heap
         PriorityQueue<Integer> allocator = new PriorityQueue<>(intervals.length); // min heap
-        
         // Sort the intervals by start time
         Arrays.sort(intervals, Comparator.comparingInt(a -> a[0])); // (a, b) -> a[0] - b[0]
         // Iterate over remaining intervals
         int max = 0;
         for (int[] interval : intervals) {
             
-            // If the room due to free up the earliest is free, assign that room to this meeting.
             while (!allocator.isEmpty() && interval[0] >= allocator.peek()) {
                 allocator.poll();
             }
-            // If a new room is to be assigned, then also we add to the heap,
-            // If an old room is allocated, then also we have to add to the heap with updated end
-            // time.
             allocator.add(interval[1]);
             max = Math.max(max, allocator.size());
         }
-        
-        // The size of the heap tells us the minimum rooms required for all the meetings.
         return max;
     }
 }
