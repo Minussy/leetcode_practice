@@ -200,7 +200,6 @@ class Solution2_2 {
         // Iterate over remaining intervals
         int max = 0;
         for (int[] interval : intervals) {
-            
             while (!allocator.isEmpty() && interval[0] >= allocator.peek()) {
                 allocator.poll();
             }
@@ -358,7 +357,6 @@ class FollowupSolution2 {
     class Room implements Comparable<Room> {
         
         final int id;
-        
         private final List<int[]> holdIntervals;
         
         public Room(int id) {
