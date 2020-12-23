@@ -354,12 +354,8 @@ class FollowupSolution2 {
             return res;
         }
         Arrays.sort(intervals, Comparator.comparingInt(a -> a[0])); // (a, b) -> a[0] - b[0]
-        Comparator<Room> comparator = new Comparator<Room>() {
-            @Override
-            public int compare(Room o1, Room o2) {
-                return Integer.compare(o1.getLastIntervalEndTime(), o2.getLastIntervalEndTime());
-            }
-        };
+        Comparator<Room> comparator =
+                (o1, o2) -> o1.getLastIntervalEndTime() - o2.getLastIntervalEndTime();
         PriorityQueue<Room> minHeap = new PriorityQueue<>(comparator);
         
         int roomId = 1;
