@@ -331,7 +331,7 @@ class FollowupSolution2 {
         int roomId = 1;
         for (int[] interval : intervals) {
             Room room;
-            if (!allocator.isEmpty() && interval[0] >= allocator.peek().getLastIntervalEndTime()) {
+            if (!allocator.isEmpty() && interval[0] >= allocator.peek().endTime()) {
                 room = allocator.poll();
             } else {
                 room = new Room(roomId++);
@@ -378,10 +378,10 @@ class FollowupSolution2 {
         
         @Override
         public int compareTo(Room that) {
-            return this.getLastIntervalEndTime() - that.getLastIntervalEndTime();
+            return this.endTime() - that.endTime();
         }
         
-        public int getLastIntervalEndTime() {
+        public int endTime() { // the end time of last interval in this room
             return holdIntervals.get(holdIntervals.size() - 1)[1];
         }
     }
