@@ -267,12 +267,7 @@ class FollowupSolution1 {
         Map<Integer, List<int[]>> roomInterval = new HashMap<>(); // room # to interval
         for (Point point : points) { // --> O(n)
             if (point.isStart) { // 要开始一个interval
-                int room;
-                if (!availableRooms.isEmpty()) { // 消耗一个空的Room
-                    room = availableRooms.poll();
-                } else { // 增加一个room
-                    room = roomId++;
-                }
+                int room = availableRooms.isEmpty() ? roomId++ : availableRooms.poll();
                 intervalRoom.put(point.id, room);
                 int[] interval = intervalIdMap.get(point.id); // 以这个点为起点的第一个interval
                 roomInterval.computeIfAbsent(room, k -> new ArrayList<>()).add(interval);
