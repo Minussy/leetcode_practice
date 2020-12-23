@@ -30,6 +30,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
+import java.util.Queue;
 
 // 2020-07-27 17:43:01
 // Zeshi Yang
@@ -37,11 +38,11 @@ public class Leetcode0253MeetingRoomsIi {
 
 	// Java: meeting-rooms-ii
 	public static void main(String[] args) {
-		Solution sol = new Leetcode0253MeetingRoomsIi().new Solution();
+        FollowupSolution1 sol = new Leetcode0253MeetingRoomsIi().new FollowupSolution1();
 		// TO TEST
-        int[][] intervals = {{13, 15}, {1, 13}};
-        int res = sol.minMeetingRooms(intervals);
-		System.out.println(res);
+        int[][] intervals = {{0, 30},{5, 10},{15, 20}};
+        List<String> res = sol.minMeetingRoomsAndItsIntervals(intervals);
+        System.out.println(res);
 	}
 
 //leetcode submit region begin(Prohibit modification and deletion)
@@ -251,51 +252,68 @@ class Solution2_2 {
 class FollowupSolution1 {
     
     public List<String> minMeetingRoomsAndItsIntervals(int[][] intervals) {
-        List<String> res = new ArrayList<>();
+        // corner case
         if (intervals == null || intervals.length == 0 || intervals[0] == null
                 || intervals[0].length == 0) {
-            return res;
+            return null;
         }
-        
-        List<Point> endpoints = new ArrayList<>();
+    
+        List<Point> points = sortPointes(intervals);
+        Map<Integer, int[]> intervalIdMap = getIdToInterval(intervals);
+    
+        int roomId = 0;
+        Queue<Integer> availableRooms = new LinkedList<>();
+        Map<Integer, Integer> intervalRoom = new HashMap<>(); // interval # to Room #
+        Map<Integer, List<int[]>> roomInterval = new HashMap<>(); // room # to interval
+        for (Point point : points) { // --> O(n)
+            if (point.isStart) { // 要开始一个interval
+                int room;
+                if (!availableRooms.isEmpty()) { // 消耗一个空的Room
+                    room = availableRooms.poll();
+                } else { // 增加一个room
+                    room = roomId++;
+                }
+                intervalRoom.put(point.id, room);
+                int[] interval = intervalIdMap.get(point.id); // 以这个点为起点的第一个interval
+                roomInterval.computeIfAbsent(room, k -> new ArrayList<>()).add(interval);
+            } else {
+                int room = intervalRoom.get(point.id);
+                availableRooms.offer(room);
+            }
+        }
+        return roomAndIntervals(roomId, roomInterval);
+    }
+    
+    private List<Point> sortPointes(int[][] intervals) {
+        List<Point> points = new ArrayList<>();
         for (int i = 0; i < intervals.length; i++) {
             int[] interval = intervals[i]; // --> O(n)
-            endpoints.add(new Point(i + 1, interval[0], true, interval));
-            endpoints.add(new Point(i + 1, interval[1], false, interval));
+            points.add(new Point(i, interval[0], true));
+            points.add(new Point(i, interval[1], false));
         }
-        Collections.sort(endpoints); // --> O(nlogn)
-        
-        int curRooms = 0;
-        int maxRooms = 0;
-        
-        int roomId = 1;
-        LinkedList<Room> availableRooms = new LinkedList<>();
-        Map<Integer, Room> intervalToRoom = new HashMap<>();
-        for (Point p : endpoints) { // --> O(n)
-            if (p.isStart) { // 要开始一个interval
-                curRooms++;
-                Room chosenRoom;
-                if (availableRooms.size() != 0) { // 消耗一个空的Room
-                    chosenRoom = availableRooms.poll();
-                } else { // 增加一个room
-                    chosenRoom = new Room(roomId++);
-                }
-                int[] interval = p.interval;// 以这个点为起点的第一个interval
-                chosenRoom.addInterval(interval);
-                intervalToRoom.put(p.id, chosenRoom);
-            } else {
-                curRooms--;
-                Room chosenRoom = intervalToRoom.get(p.id);
-                availableRooms.offer(chosenRoom);
-            }
-            maxRooms = Math.max(maxRooms, curRooms);
+        Collections.sort(points); // --> O(nlogn)
+        return points;
+    }
+    
+    private Map<Integer, int[]> getIdToInterval(int[][] intervals) {
+        Map<Integer, int[]> map = new HashMap<>(); // interval # to interval
+        for (int i = 0; i < intervals.length; i++) {
+            int[] interval = intervals[i]; // --> O(n)
+            map.put(i, interval);
         }
-        Collections.sort(availableRooms);
-        for (Room room : availableRooms) {
-            String roomAndIntervals = room.toString();
-            res.add(roomAndIntervals);
+        return map;
+    }
+    
+    private List<String> roomAndIntervals(int roomId, Map<Integer, List<int[]>> map) {
+        List<String> list = new ArrayList<>();
+        for (int i = 0; i < roomId; i++) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(i).append(": ");
+            List<int[]> holdIntervals = map.get(i);
+            sb.append(Arrays.deepToString(holdIntervals.toArray()));
+            list.add(sb.toString());
         }
-        return res;
+        return list;
     }
     
     class Point implements Comparable<Point> {
@@ -303,13 +321,11 @@ class FollowupSolution1 {
         final int id;
         final int val;
         final boolean isStart;
-        final int[] interval;
         
-        public Point(int id, int val, boolean isStart, int[] interval) {
+        public Point(int id, int val, boolean isStart) {
             this.id = id;
             this.val = val;
             this.isStart = isStart;
-            this.interval = interval;
         }
         
         @Override
@@ -320,42 +336,9 @@ class FollowupSolution1 {
                 return this.isStart ? 1 : -1;// 右端点在前，左端点在后
             }
         }
+        
     }
     
-    class Room implements Comparable<Room> {
-        
-        final int id;
-        
-        private final List<int[]> holdIntervals;
-        
-        public Room(int id) {
-            this.id = id;
-            holdIntervals = new ArrayList<>();
-        }
-        
-        public void addInterval(int[] interval) {
-            holdIntervals.add(interval);
-        }
-        
-        @Override
-        /**
-         * return id of room and its all hold intervals
-         */
-        public String toString() {
-            StringBuilder sb = new StringBuilder();
-            sb.append(id).append(": ");
-            for (int[] interval : holdIntervals) {
-                sb.append(Arrays.toString(interval)).append(", ");
-            }
-            sb.setLength(sb.length() - 2);
-            return sb.toString();
-        }
-        
-        @Override
-        public int compareTo(Room that) {
-            return Integer.compare(this.id, that.id);
-        }
-    }
 }
 
 // Solution 2 :把interval按照start time的升序排序, T(n) = O(nlog(n)), S(n) = O(n)
@@ -443,4 +426,5 @@ class FollowupSolution2 {
         }
     }
 }
+
 }
