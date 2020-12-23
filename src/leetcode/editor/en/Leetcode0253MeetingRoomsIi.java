@@ -38,10 +38,10 @@ public class Leetcode0253MeetingRoomsIi {
 
 	// Java: meeting-rooms-ii
 	public static void main(String[] args) {
-        Solution sol = new Leetcode0253MeetingRoomsIi().new Solution();
+        FollowupSolution2 sol = new Leetcode0253MeetingRoomsIi().new FollowupSolution2();
 		// TO TEST
         int[][] intervals = {{0, 30},{5, 10},{15, 20}};
-        int res = sol.minMeetingRooms(intervals);
+        List<String> res = sol.minMeetingRoomsAndItsIntervals(intervals);
         System.out.println(res);
 	}
 
@@ -230,7 +230,7 @@ class FollowupSolution1 {
             return null;
         }
     
-        List<Point> points = sortPointes(intervals);
+        List<Point> points = getAndSortPointes(intervals);
         Map<Integer, int[]> intervalIdMap = getIdToInterval(intervals);
     
         int roomId = 0;
@@ -251,7 +251,7 @@ class FollowupSolution1 {
         return roomAndIntervals(roomId, roomToInterval);
     }
     
-    private List<Point> sortPointes(int[][] intervals) {
+    private List<Point> getAndSortPointes(int[][] intervals) {
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < intervals.length; i++) {
             int[] interval = intervals[i]; // --> O(n)
