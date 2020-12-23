@@ -234,21 +234,21 @@ class FollowupSolution1 {
         Map<Integer, int[]> intervalIdMap = getIdToInterval(intervals);
     
         int roomId = 0;
-        Queue<Integer> availableRooms = new LinkedList<>();
-        Map<Integer, Integer> intervalRoom = new HashMap<>(); // interval # to Room #
-        Map<Integer, List<int[]>> roomInterval = new HashMap<>(); // room # to interval
+        Queue<Integer> rooms = new LinkedList<>(); // available rooms
+        Map<Integer, Integer> intervalToRoom = new HashMap<>(); // interval # to Room #
+        Map<Integer, List<int[]>> roomToInterval = new HashMap<>(); // room # to interval
         for (Point point : points) { // --> O(n)
             if (point.isStart) { // 要开始一个interval
-                int room = availableRooms.isEmpty() ? roomId++ : availableRooms.poll();
-                intervalRoom.put(point.id, room);
+                int room = rooms.isEmpty() ? roomId++ : rooms.poll();
+                intervalToRoom.put(point.id, room);
                 int[] interval = intervalIdMap.get(point.id); // 以这个点为起点的第一个interval
-                roomInterval.computeIfAbsent(room, k -> new ArrayList<>()).add(interval);
+                roomToInterval.computeIfAbsent(room, k -> new ArrayList<>()).add(interval);
             } else {
-                int room = intervalRoom.get(point.id);
-                availableRooms.offer(room);
+                int room = intervalToRoom.get(point.id);
+                rooms.offer(room);
             }
         }
-        return roomAndIntervals(roomId, roomInterval);
+        return roomAndIntervals(roomId, roomToInterval);
     }
     
     private List<Point> sortPointes(int[][] intervals) {
@@ -326,23 +326,21 @@ class FollowupSolution2 {
             return res;
         }
         Arrays.sort(intervals, Comparator.comparingInt(a -> a[0])); // (a, b) -> a[0] - b[0]
-        Comparator<Room> comparator =
-                (o1, o2) -> o1.getLastIntervalEndTime() - o2.getLastIntervalEndTime();
-        PriorityQueue<Room> minHeap = new PriorityQueue<>(comparator);
+        PriorityQueue<Room> allocator = new PriorityQueue<>(); // min heap
         
         int roomId = 1;
         for (int[] interval : intervals) {
             Room room;
-            if (!minHeap.isEmpty() && interval[0] >= minHeap.peek().getLastIntervalEndTime()) {
-                room = minHeap.poll();
+            if (!allocator.isEmpty() && interval[0] >= allocator.peek().getLastIntervalEndTime()) {
+                room = allocator.poll();
             } else {
                 room = new Room(roomId++);
             }
             room.addInterval(interval);
-            minHeap.offer(room);
+            allocator.offer(room);
         }
-        List<Room> rooms = new ArrayList<>(minHeap);
-        Collections.sort(rooms);
+        List<Room> rooms = new ArrayList<>(allocator);
+        rooms.sort((o1, o2) -> (o1.id - o2.id));
         for (Room room : rooms) {
             String roomAndIntervals = room.toString();
             res.add(roomAndIntervals);
@@ -380,7 +378,7 @@ class FollowupSolution2 {
         
         @Override
         public int compareTo(Room that) {
-            return Integer.compare(this.id, that.id);
+            return this.getLastIntervalEndTime() - that.getLastIntervalEndTime();
         }
         
         public int getLastIntervalEndTime() {
