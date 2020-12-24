@@ -106,7 +106,7 @@ class Solution {
         // 可以用HashSet来去重，但是实际上也可以用bit操作来去重，因为只包含有小写英文单词
         int mask = 0;
         for (int i = 0; i < sb.length(); i++) {
-            if ((mask & (1 << (sb.charAt(i) - 'a'))) != 0) {
+            if ((mask & 1 << (sb.charAt(i) - 'a')) != 0) {
                 return false;
             }
             mask |= (1 << sb.charAt(i) - 'a');
