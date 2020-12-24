@@ -64,6 +64,55 @@ class Solution {
         
         int[] max = {0};
         StringBuilder sb = new StringBuilder();
+        dfs(0, arr, sb, max);
+        return max[0];
+    }
+    
+    // the
+    private void dfs(int index, List<String> list, StringBuilder sb, int[] max) {
+        // base case
+        if (index >= list.size()) {
+            return;
+        }
+        int len = sb.length();
+        for (int i = index; i < list.size(); i++) {
+            String str = list.get(i);
+            sb.append(str);
+            if (uniqueChar(sb)) {
+                max[0] = Math.max(max[0], sb.length());
+                dfs(i + 1, list, sb, max);
+            }
+            sb.setLength(len);
+        }
+    }
+    
+    private boolean uniqueChar(StringBuilder sb) {
+        // corner case
+        if (sb == null || sb.length() == 0) {
+            return true;
+        }
+        Set<Character> set = new HashSet<>();
+        char[] chars = sb.toString().toCharArray();
+        for (char ch: chars) {
+            if (set.contains(ch)) {
+                return false;
+            }
+            set.add(ch);
+        }
+        return true;
+    }
+    
+}
+//leetcode submit region end(Prohibit modification and deletion)
+class Solution1 {
+    public int maxLength(List<String> arr) {
+        // corner case
+        if (arr == null || arr.size() == 0) {
+            return 0;
+        }
+        
+        int[] max = {0};
+        StringBuilder sb = new StringBuilder();
         for (int i = 0; i < arr.size(); i++) {
             dfs(i, arr, sb, max);
             sb.setLength(0);
@@ -106,6 +155,4 @@ class Solution {
     }
     
 }
-//leetcode submit region end(Prohibit modification and deletion)
-
 }
