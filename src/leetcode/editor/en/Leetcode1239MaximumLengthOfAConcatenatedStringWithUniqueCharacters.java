@@ -68,7 +68,7 @@ class Solution {
         return max[0];
     }
     
-    // the
+    // top down dfs, the largest length of string sb + string combination from start index
     private void dfs(int index, List<String> list, StringBuilder sb, int[] max) {
         // base case
         if (index >= list.size()) {
@@ -91,13 +91,22 @@ class Solution {
         if (sb == null || sb.length() == 0) {
             return true;
         }
-        Set<Character> set = new HashSet<>();
-        char[] chars = sb.toString().toCharArray();
-        for (char ch: chars) {
+        
+        /*Set<Character> set = new HashSet<>();
+        for (int i = 0; i < sb.length(); i++) {
+            char ch = sb.charAt(i);
             if (set.contains(ch)) {
                 return false;
             }
             set.add(ch);
+        }*/
+        // 可以用HashSet来去重，但是实际上也可以用bit操作来去重，因为只包含有小写英文单词
+        int mask = 0;
+        for (int i = 0; i < sb.length(); i++) {
+            if ((mask & (1 << (sb.charAt(i) - 'a'))) != 0) {
+                return false;
+            }
+            mask |= (1 << sb.charAt(i) - 'a');
         }
         return true;
     }
