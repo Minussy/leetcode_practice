@@ -102,26 +102,6 @@ class Solution {
 		        stack.push(asteroid);
 	        }
         }
-        /*for (int asteroid : asteroids) {
-            // delete the abs value which is opposite direction and smaller than current value
-            while (!stack.isEmpty() && asteroid * stack.peek() < 0 && Math.abs(stack.peek()) < Math.abs(asteroid)) {
-                stack.pop();
-            }
-            // delete the abs value which is opposite direction and equal to current value
-            if (!stack.isEmpty() && asteroid * stack.peek() < 0 && stack.peek() == -asteroid) {
-                stack.pop();
-                continue;
-            }
-            // delete the abs value which is opposite
-            if (stack.isEmpty()) {
-                stack.push(asteroid);
-            } // opposite direction and larger than current asteroid
-            else if (asteroid * stack.peek() < 0) {
-                continue;
-            } else {
-                stack.push(asteroid);
-            }
-        }*/
         int[] res = new int[stack.size()];
         for (int i = stack.size() - 1; i >= 0; i--) {
             res[i] = stack.pop();
