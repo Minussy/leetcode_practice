@@ -58,33 +58,77 @@
 
 package leetcode.editor.en;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Stack;
+
 // 2020-12-21 14:32:59
 // Zeshi Yang
-public class Leetcode0735AsteroidCollision{
-    // Java: asteroid-collision
-    public static void main(String[] args) {
-        Solution sol = new Leetcode0735AsteroidCollision().new Solution();
-        // TO TEST
-        
-        System.out.println();
-    }
+public class Leetcode0735AsteroidCollision {
+	
+	// Java: asteroid-collision
+	public static void main(String[] args) {
+		Solution sol = new Leetcode0735AsteroidCollision().new Solution();
+		// TO TEST
+		int[] asteroids = {-2, 1, 1, -1};
+		int[] res = sol.asteroidCollision(asteroids);
+		System.out.println(Arrays.toString(res));
+	}
+	
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
     public int[] asteroidCollision(int[] asteroids) {
         // corner case
         if (asteroids == null || asteroids.length == 0) {
             return new int[0];
         }
-    
+        
         Stack<Integer> stack = new Stack<>();
-        for (int n: asteroids) {
-            while (!stack.isEmpty()) {
-            
-            }
+        
+        for (int asteroid : asteroids) {
+        	boolean explodeCur = false;
+	        while (!stack.isEmpty() && asteroid < 0 && stack.peek() > 0) {
+		        if (stack.peek() >= -asteroid) {
+			        explodeCur = true;
+		        }
+	        	if (stack.peek() <= -asteroid) {
+			        stack.pop();
+		        }
+	        	if (explodeCur) {
+	        		break;
+		        }
+	        }
+	        if (!explodeCur) {
+		        stack.push(asteroid);
+	        }
         }
-        return null;
+        /*for (int asteroid : asteroids) {
+            // delete the abs value which is opposite direction and smaller than current value
+            while (!stack.isEmpty() && asteroid * stack.peek() < 0 && Math.abs(stack.peek()) < Math.abs(asteroid)) {
+                stack.pop();
+            }
+            // delete the abs value which is opposite direction and equal to current value
+            if (!stack.isEmpty() && asteroid * stack.peek() < 0 && stack.peek() == -asteroid) {
+                stack.pop();
+                continue;
+            }
+            // delete the abs value which is opposite
+            if (stack.isEmpty()) {
+                stack.push(asteroid);
+            } // opposite direction and larger than current asteroid
+            else if (asteroid * stack.peek() < 0) {
+                continue;
+            } else {
+                stack.push(asteroid);
+            }
+        }*/
+        int[] res = new int[stack.size()];
+        for (int i = stack.size() - 1; i >= 0; i--) {
+            res[i] = stack.pop();
+        }
+        return res;
     }
+    
 }
 //leetcode submit region end(Prohibit modification and deletion)
 

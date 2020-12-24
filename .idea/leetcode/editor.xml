@@ -1835,6 +1835,22 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0435NonOverlappingIntervals.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0435NonOverlappingIntervals.java" />
+              <option name="questionId" value="435" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0436FindRightInterval.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0436FindRightInterval.java" />
+              <option name="questionId" value="436" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0437PathSumIii.java">
           <value>
             <LeetcodeEditor>
@@ -2304,6 +2320,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1152AnalyzeUserWebsiteVisitPattern.java" />
               <option name="questionId" value="1108" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1190ReverseSubstringsBetweenEachPairOfParentheses.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1190ReverseSubstringsBetweenEachPairOfParentheses.java" />
+              <option name="questionId" value="1298" />
             </LeetcodeEditor>
           </value>
         </entry>
