@@ -42,7 +42,8 @@
 
 package leetcode.editor.en;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
 // 2020-12-23 20:13:58
 // Zeshi Yang
 public class Leetcode1239MaximumLengthOfAConcatenatedStringWithUniqueCharacters{
@@ -56,6 +57,7 @@ public class Leetcode1239MaximumLengthOfAConcatenatedStringWithUniqueCharacters{
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
     public int maxLength(List<String> arr) {
         // corner case
         if (arr == null || arr.size() == 0) {
@@ -68,7 +70,8 @@ class Solution {
         return max[0];
     }
     
-    // top down dfs, the largest length of string sb + string combination from start index
+    // top down dfs, having StringBuilder sb,
+    // search the longest length from (sb + string combination from start index to the end)
     private void dfs(int index, List<String> list, StringBuilder sb, int[] max) {
         // base case
         if (index >= list.size()) {
@@ -113,55 +116,5 @@ class Solution {
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
-class Solution1 {
-    public int maxLength(List<String> arr) {
-        // corner case
-        if (arr == null || arr.size() == 0) {
-            return 0;
-        }
-        
-        int[] max = {0};
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < arr.size(); i++) {
-            dfs(i, arr, sb, max);
-            sb.setLength(0);
-        }
-        return max[0];
-    }
-    
-    private void dfs(int index, List<String> list, StringBuilder sb, int[] max) {
-        // base case
-        if (index >= list.size()) {
-            return;
-        }
-        String str = list.get(index);
-        sb.append(str);
-        int len = sb.length();
-        if (!uniqueChar(sb)) {
-            return;
-        }
-        max[0] = Math.max(max[0], len);
-        for (int i = index + 1; i < list.size(); i++) {
-            dfs(i, list, sb, max);
-            sb.setLength(len);
-        }
-    }
-    
-    private boolean uniqueChar(StringBuilder sb) {
-        // corner case
-        if (sb == null || sb.length() == 0) {
-            return true;
-        }
-        Set<Character> set = new HashSet<>();
-        char[] chars = sb.toString().toCharArray();
-        for (char ch: chars) {
-            if (set.contains(ch)) {
-                return false;
-            }
-            set.add(ch);
-        }
-        return true;
-    }
-    
-}
+
 }
