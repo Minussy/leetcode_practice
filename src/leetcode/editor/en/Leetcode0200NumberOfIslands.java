@@ -45,7 +45,7 @@ public class Leetcode0200NumberOfIslands{
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     // solution : DFS
-    int[][] directions = new int[][]{{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
+    private final int[][] DIRECTIONS = new int[][]{{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
 
     public int numIslands(char[][] grid) {
         // corner case
@@ -78,12 +78,11 @@ class Solution {
         grid[row][col] = '2';
 
         //general case
-        for (int[] direction: directions) {
+        for (int[] direction: DIRECTIONS) {
             int r = row + direction[0];
             int c = col + direction[1];
             doDFSsearch(grid, r, c);
         }
-        return;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)

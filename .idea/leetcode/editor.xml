@@ -2347,6 +2347,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1254NumberOfClosedIslands.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1254NumberOfClosedIslands.java" />
+              <option name="questionId" value="1380" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode1466ReorderRoutesToMakeAllPathsLeadToTheCityZero.java">
           <value>
             <LeetcodeEditor>
