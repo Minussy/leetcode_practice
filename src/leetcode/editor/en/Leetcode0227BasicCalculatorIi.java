@@ -252,7 +252,7 @@ class Solution1_2 {
 // Solution 2:
     
 /**
- * 设置1个stack来存数字就行了
+ * 设置1个stack<Integer>来存数字就行了
  * 如果当前遇到的是+, -:
  *      +:把前面遇到的数字num push进去
  *      -:把前面遇到的数字取相反数变成-num push到stack进去
