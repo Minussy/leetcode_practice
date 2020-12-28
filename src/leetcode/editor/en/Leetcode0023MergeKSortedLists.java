@@ -53,9 +53,9 @@ class Solution {
         ListNode head = null;
         ListNode cur = null;
         PriorityQueue<ListNode> minHeap = new PriorityQueue<>(lists.length, (o1, o2) -> o1.val - o2.val);
-        for (int i = 0; i < lists.length; i++) {
-            if(lists[i] != null) {
-                minHeap.offer(lists[i]);
+        for (ListNode list : lists) {
+            if (list != null) {
+                minHeap.offer(list);
             }
         }
         while (!minHeap.isEmpty()) {
