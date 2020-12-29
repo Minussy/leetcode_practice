@@ -60,6 +60,8 @@ public class Leetcode0435NonOverlappingIntervals{
         System.out.println();
     }
 //leetcode submit region begin(Prohibit modification and deletion)
+// Solution 2:直接按照右端点排序，T(n) = O(nlog(n)), S(n) = O(n)
+// 3 ms,击败了58.96% 的Java用户, 39.5 MB,击败了12.78% 的Java用户
 class Solution {
     
     public int eraseOverlapIntervals(int[][] intervals) {
