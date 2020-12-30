@@ -66,7 +66,6 @@
 
 package leetcode.editor.en;
 
-import java.util.*;
 // 2020-12-28 16:27:34
 // Zeshi Yang
 public class Leetcode1416RestoreTheArray{
@@ -80,7 +79,7 @@ public class Leetcode1416RestoreTheArray{
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int numberOfArrays(String s, int k) {
-        
+        return 0;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)

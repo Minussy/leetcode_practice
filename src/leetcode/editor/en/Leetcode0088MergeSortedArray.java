@@ -44,6 +44,9 @@ public class Leetcode0088MergeSortedArray{
         System.out.println();
     }
 //leetcode submit region begin(Prohibit modification and deletion)
+/*
+两个指针，从后往前移动
+ */
 class Solution {
     public void merge(int[] nums1, int m, int[] nums2, int n) {
         int pos = m + n - 1;

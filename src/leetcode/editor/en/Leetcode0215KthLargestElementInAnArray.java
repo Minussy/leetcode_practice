@@ -127,8 +127,8 @@ class Solution1 {
     }
 }
 
-//Solution 2: MinHeap → size n, T(n) = O(n*log(k))
-class Solution2 {
+//Solution 2_1: MinHeap → size n, T(n) = O(n*log(k))
+class Solution2_1 {
 
     public int findKthLargest(int[] nums, int k) {
         // use minHeap
@@ -154,8 +154,8 @@ class Solution2 {
     }
 }
 
-// Solution 3: Max Heap
-class Solution3 {
+// Solution 2_2: Max Heap
+class Solution2_2 {
 
     public int findKthLargest(int[] nums, int k) {
         PriorityQueue<Integer> heap = new PriorityQueue<>((n1, n2) -> n2 - n1); // max heap
@@ -173,8 +173,8 @@ class Solution3 {
     }
 }
 
-//Solution 4: Quick Selection / QuickSort Partition + Binary Search, average T(n) = O(n)
-class Solution4 {
+//Solution 3: Quick Selection / QuickSort Partition + Binary Search, average T(n) = O(n)
+class Solution3_1 {
     
     public int findKthLargest(int[] nums, int k) {
         int length = nums.length;
