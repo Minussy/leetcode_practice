@@ -39,7 +39,6 @@ public class Leetcode0215KthLargestElementInAnArray {
 	}
 
 //leetcode submit region begin(Prohibit modification and deletion)
-//Solution 4: Quick Selection / QuickSort Partition + Binary Search, average T(n) = O(n)
 class Solution {
     
     public int findKthLargest(int[] nums, int k) {
@@ -51,60 +50,43 @@ class Solution {
     
     private int findPosPartition(int k, int left, int right, int[] nums) {
         int len = nums.length;
-        /**
+        /*
          《代码存档》文件里面下面这个语句是错误的，它里面写的是
          int pivotRandIndex = left + (int) Math.random() * (right - left + 1);
          这样写 Math.random() 返回[0,1)之间的随机数，强制转换之后变成0
          所以应该改成下面这句代码，先算完在强制取整
          */
-        int pivotRandIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivotValue = nums[pivotRandIndex];
-        swap(nums, pivotRandIndex, right);
+        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
+        int pivot = nums[pivotIndex];
+        swap(nums, pivotIndex, right);
         
-        //**************************different part 1 start ***********************//
         /*
-        int leftI = left;
-        int rightI = right - 1;
-    
-        while (leftI <= rightI) {
-            if (array[leftI] < pivotValue) {
-                leftI++;
-            } else if (array[rightI] >= pivotValue) {
-                //maybe duplicate
-                rightI--;
-            } else {
-                // array[leftI] > pivotValue
-                swap(array, leftI++, rightI--);
-            }
-        }
-        swap(array, leftI, right);
-        return leftI;
-        */
-        // ***********************different part 1 end *************************//
-    
-        // S2: use slow and fast pointers, two pointers forward, stable
-        /*
-         * [0, slow) < pivot
-         * [slow, fast) >= pivot
-         * [fast, length - 2) to check
+        每个while循环开始之前
+        [left, l) < pivotValue
+        (r, right - 1] > = pivotValue
          */
-        int slow = left;
-        int fast;
-        for (fast = left; fast < right; fast++) {
-            if (nums[fast] < pivotValue) {
-                swap(nums, slow, fast);
-                slow++;
+        int l = left; // left pointer
+        int r = right - 1; // right pointer
+        
+        while (l <= r) {
+            if (nums[l] < pivot) {
+                l++;
+            } else if (nums[r] >= pivot) {
+                //maybe duplicate
+                r--;
+            } else {
+                // array[leftI] > pivotValue && nums[r] < pivotValue
+                swap(nums, l++, r--);
             }
         }
-        swap(nums, slow, right); // move the pivot from right to the real place
+        swap(nums, l, right);
         
-        // After operation, the target(pivotRandIndex) 's index is slow;
-        if (slow == len - k) {
-            return nums[slow];
-        } else if (slow < len - k) {
-            return findPosPartition(k, slow + 1, right, nums);
+        if (l == len - k) {
+            return nums[l];
+        } else if (l < len - k) {
+            return findPosPartition(k, l + 1, right, nums);
         } else {
-            return findPosPartition(k, left, slow - 1, nums);
+            return findPosPartition(k, left, l - 1, nums);
         }
     }
     
@@ -114,11 +96,11 @@ class Solution {
         array[j] = temp;
     }
     
-    
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 // Solution 1: Sort and return Kth element, Time O(nlogn) O(1) → count/bucket sort
+// 1 ms, faster than 97.59%, 39.1 MB, less than 90.08%
 class Solution1 {
 
     public int findKthLargest(int[] nums, int k) {
@@ -128,6 +110,7 @@ class Solution1 {
 }
 
 //Solution 2_1: MinHeap → size n, T(n) = O(n*log(k))
+// 4 ms, faster than 62.64%, 39.1 MB, less than 80.25%
 class Solution2_1 {
 
     public int findKthLargest(int[] nums, int k) {
@@ -155,6 +138,7 @@ class Solution2_1 {
 }
 
 // Solution 2_2: Max Heap
+// 4 ms, faster than 62.64%, 39.1 MB, less than 90.08%
 class Solution2_2 {
 
     public int findKthLargest(int[] nums, int k) {
@@ -173,7 +157,9 @@ class Solution2_2 {
     }
 }
 
-//Solution 3: Quick Selection / QuickSort Partition + Binary Search, average T(n) = O(n)
+//Solution 3_1: Quick Selection / QuickSort Partition + Binary Search, average T(n) = O(n)
+// left, right pointer, relative position not stable
+// 1 ms, faster than 97.59%, 39.1 MB, less than 80.25%
 class Solution3_1 {
     
     public int findKthLargest(int[] nums, int k) {
@@ -185,36 +171,77 @@ class Solution3_1 {
     
     private int findPosPartition(int k, int left, int right, int[] nums) {
         int len = nums.length;
-        /**
+        /*
          《代码存档》文件里面下面这个语句是错误的，它里面写的是
          int pivotRandIndex = left + (int) Math.random() * (right - left + 1);
          这样写 Math.random() 返回[0,1)之间的随机数，强制转换之后变成0
          所以应该改成下面这句代码，先算完在强制取整
          */
-        int pivotRandIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivotValue = nums[pivotRandIndex];
-        swap(nums, pivotRandIndex, right);
+        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
+        int pivot = nums[pivotIndex];
+        swap(nums, pivotIndex, right);
         
-        //**************************different part 1 start ***********************//
         /*
-        int leftI = left;
-        int rightI = right - 1;
-    
-        while (leftI <= rightI) {
-            if (array[leftI] < pivotValue) {
-                leftI++;
-            } else if (array[rightI] >= pivotValue) {
+        每个while循环开始之前
+        [left, l) < pivotValue
+        (r, right - 1] > = pivotValue
+         */
+        int l = left; // left pointer
+        int r = right - 1; // right pointer
+        
+        while (l <= r) {
+            if (nums[l] < pivot) {
+                l++;
+            } else if (nums[r] >= pivot) {
                 //maybe duplicate
-                rightI--;
+                r--;
             } else {
-                // array[leftI] > pivotValue
-                swap(array, leftI++, rightI--);
+                // array[leftI] > pivotValue && nums[r] < pivotValue
+                swap(nums, l++, r--);
             }
         }
-        swap(array, leftI, right);
-        return leftI;
-        */
-        // ***********************different part 1 end *************************//
+        swap(nums, l, right);
+        
+        if (l == len - k) {
+            return nums[l];
+        } else if (l < len - k) {
+            return findPosPartition(k, l + 1, right, nums);
+        } else {
+            return findPosPartition(k, left, l - 1, nums);
+        }
+    }
+    
+    private void swap(int[] array, int i, int j) {
+        int temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+    }
+    
+}
+
+// Solution 3_2: quick selection + binary search, average average T(n) = O(n)
+// slow and fast pointer, relative position stable
+// 1 ms, faster than 97.59%, 39 MB, less than 95.77%
+class Solution3_2 {
+    
+    public int findKthLargest(int[] nums, int k) {
+        int length = nums.length;
+        int left = 0;
+        int right = length - 1;
+        return findPosPartition(k, left, right, nums);
+    }
+    
+    private int findPosPartition(int k, int left, int right, int[] nums) {
+        int len = nums.length;
+        /*
+         《代码存档》文件里面下面这个语句是错误的，它里面写的是
+         int pivotRandIndex = left + (int) Math.random() * (right - left + 1);
+         这样写 Math.random() 返回[0,1)之间的随机数，强制转换之后变成0
+         所以应该改成下面这句代码，先算完在强制取整
+         */
+        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
+        int pivot = nums[pivotIndex];
+        swap(nums, pivotIndex, right);
         
         // S2: use slow and fast pointers, two pointers forward, stable
         /*
@@ -225,7 +252,7 @@ class Solution3_1 {
         int slow = left;
         int fast;
         for (fast = left; fast < right; fast++) {
-            if (nums[fast] < pivotValue) {
+            if (nums[fast] < pivot) {
                 swap(nums, slow, fast);
                 slow++;
             }
@@ -248,8 +275,5 @@ class Solution3_1 {
         array[j] = temp;
     }
     
-    
 }
-
-
 }
