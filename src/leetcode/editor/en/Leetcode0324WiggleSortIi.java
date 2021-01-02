@@ -79,121 +79,15 @@ class Solution {
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
+// 面试的时候，先写Solution 1, 要follow up，要T(n) = O(n)解的时候，再写Solution 2
 
-// Solution 1: Average T(n) = O(n), worst case T(n) = O(n^2), S(n) = O(lg(n)), worst S(n) = O(n)
-// 34 ms,击败了22.34% 的Java用户, 43.6 MB,击败了11.28% 的Java用户
+
+// Solution 1:T(n) = O(nlg(n)), S(n) = O(n)
+// 3 ms,击败了86.77% 的Java用户, 42.1 MB,击败了41.11% 的Java用户
 /*
-使用quick selection，中位数对应的两个数字middleLeft和middleRight,
-把所有比中位数小的数字从前往后放到奇数位置上
-把所有比中位数大的数字，从后往前放到偶数位置上
+用arrays.sort，建立一个新数组，然后从小到大，先赋值temp偶数位，再赋值temp奇数位，再把temp复制给nums
  */
 class Solution1 {
-    
-    public void wiggleSort(int[] nums) {
-        // corner case
-        if (nums == null || nums.length <= 1) {
-            return;
-        }
-        int len = nums.length;
-        int k = (len + 1) / 2;
-        int middleLeft = findPosPartition(k, 0, len - 1, nums); // kth smallest value
-        int middleRight = findMiddleRight(k, nums);
-        /*
-        将偶数index数字都设置成 <= middleLeft
-            == middleLeft的部分都尽可能放在左边
-        将奇数index数字都设置成 >= middleRight
-            == middleRight的尽可能放在右边
-         */
-        int left = 0; // [0, left] is middleLeft, even pointer
-        int right = (len % 2 == 0 ? len - 1 : len - 2); //[right, end] is middleRight, pdd pointer
-        
-        swap(nums, k - 1, left);
-        swap(nums, k, right);
-        
-        int evenP = (len % 2 == 0 ? len - 2 : len - 1); // even pointer, <-
-        int oddP = 1; // odd pointer, ->
-        
-        for (int i = 0; i < len; i++) {
-            if (i > evenP && (i - evenP) % 2 == 0) {
-                continue;
-            }
-            if (nums[i] < middleLeft) { // 比middleLeft小的数字，从右边往左边放
-                swap(nums, i, evenP);
-                evenP -= 2;
-                i--;
-            }
-        }
-        for (int i = 0; i < len; i++) {
-            if (oddP > i && (oddP - i) % 2 == 0) {
-                continue;
-            }
-            if (nums[i] > middleRight) { // 比middleRight大的数字，从左往右边放
-                swap(nums, i, oddP);
-                oddP += 2;
-                i--;
-            }
-        }
-        
-        for (int i = oddP; i <= right; i += 2) {
-            nums[i] = middleRight;
-        }
-        for (int i = left; i <= evenP; i += 2) {
-            nums[i] = middleLeft;
-        }
-    }
-    
-    // using quick selection to find kth smallest value in nums and put it the right place
-    // average T(n) = O(n), worst T(n) = O(n^2), average S(n) = O(lg(n)), worst S(n) = O(n)
-    private int findPosPartition(int k, int left, int right, int[] nums) {
-        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivot = nums[pivotIndex];
-        swap(nums, pivotIndex, right);
-        
-        // S2: use slow and fast pointers, two pointers forward, stable
-        /*
-         * [0, slow) < pivot
-         * [slow, fast) >= pivot
-         * [fast, length - 2) to check
-         */
-        int slow = left;
-        int fast;
-        for (fast = left; fast < right; fast++) {
-            if (nums[fast] < pivot) {
-                swap(nums, slow, fast);
-                slow++;
-            }
-        }
-        swap(nums, slow, right); // move the pivot from right to the real place
-        
-        // After operation, the target(pivot) 's index is slow;
-        if (k == slow + 1) {
-            return nums[slow];
-        } else if (k > slow + 1) {
-            return findPosPartition(k, slow + 1, right, nums);
-        } else {
-            return findPosPartition(k, left, slow - 1, nums);
-        }
-    }
-    
-    // find the smallest number that >= target
-    private int findMiddleRight(int k, int[] nums) {
-        int res = Integer.MAX_VALUE;
-        for (int i = k; i < nums.length; i++) {
-            res = Math.min(res, nums[i]);
-        }
-        return res;
-    }
-    
-    private void swap(int[] array, int i, int j) {
-        int temp = array[i];
-        array[i] = array[j];
-        array[j] = temp;
-    }
-}
-
-// Solution 2:T(n) = O(nlg(n)), S(n) = O(n)
-// 3 ms,击败了86.77% 的Java用户, 42.1 MB,击败了41.11% 的Java用户
-class Solution2 {
     
     public void wiggleSort(int[] nums) {
         // corner case
@@ -217,4 +111,115 @@ class Solution2 {
     }
     
 }
+
+// Solution 2: Average T(n) = O(n), worst case T(n) = O(n^2), S(n) = O(lg(n)), worst S(n) = O(n)
+// 34 ms,击败了22.34% 的Java用户, 43.6 MB,击败了11.28% 的Java用户
+/*
+使用quick selection，中位数对应的两个数字middleLeft和middleRight,
+把所有比中位数小的数字从前往后放到奇数位置上
+把所有比中位数大的数字，从后往前放到偶数位置上
+ */
+    class Solution2 {
+        
+        public void wiggleSort(int[] nums) {
+            // corner case
+            if (nums == null || nums.length <= 1) {
+                return;
+            }
+            int len = nums.length;
+            int k = (len + 1) / 2;
+            int middleLeft = findPosPartition(k, 0, len - 1, nums); // kth smallest value
+            int middleRight = findMiddleRight(k, nums);
+        /*
+        将偶数index数字都设置成 <= middleLeft
+            == middleLeft的部分都尽可能放在左边
+        将奇数index数字都设置成 >= middleRight
+            == middleRight的尽可能放在右边
+         */
+            int left = 0; // [0, left] is middleLeft, even pointer
+            int right = (len % 2 == 0 ? len - 1 : len - 2); //[right, end] is middleRight, pdd pointer
+            
+            swap(nums, k - 1, left);
+            swap(nums, k, right);
+            
+            int evenP = (len % 2 == 0 ? len - 2 : len - 1); // even pointer, <-
+            int oddP = 1; // odd pointer, ->
+            
+            for (int i = 0; i < len; i++) {
+                if (i > evenP && (i - evenP) % 2 == 0) {
+                    continue;
+                }
+                if (nums[i] < middleLeft) { // 比middleLeft小的数字，从右边往左边放
+                    swap(nums, i, evenP);
+                    evenP -= 2;
+                    i--;
+                }
+            }
+            for (int i = 0; i < len; i++) {
+                if (oddP > i && (oddP - i) % 2 == 0) {
+                    continue;
+                }
+                if (nums[i] > middleRight) { // 比middleRight大的数字，从左往右边放
+                    swap(nums, i, oddP);
+                    oddP += 2;
+                    i--;
+                }
+            }
+            
+            for (int i = oddP; i <= right; i += 2) {
+                nums[i] = middleRight;
+            }
+            for (int i = left; i <= evenP; i += 2) {
+                nums[i] = middleLeft;
+            }
+        }
+        
+        // using quick selection to find kth smallest value in nums and put it the right place
+        // average T(n) = O(n), worst T(n) = O(n^2), average S(n) = O(lg(n)), worst S(n) = O(n)
+        private int findPosPartition(int k, int left, int right, int[] nums) {
+            int pivotIndex = left + (int) (Math.random() * (right - left + 1));
+            int pivot = nums[pivotIndex];
+            swap(nums, pivotIndex, right);
+            
+            // S2: use slow and fast pointers, two pointers forward, stable
+            /*
+             * [0, slow) < pivot
+             * [slow, fast) >= pivot
+             * [fast, length - 2) to check
+             */
+            int slow = left;
+            int fast;
+            for (fast = left; fast < right; fast++) {
+                if (nums[fast] < pivot) {
+                    swap(nums, slow, fast);
+                    slow++;
+                }
+            }
+            swap(nums, slow, right); // move the pivot from right to the real place
+            
+            // After operation, the target(pivot) 's index is slow;
+            if (k == slow + 1) {
+                return nums[slow];
+            } else if (k > slow + 1) {
+                return findPosPartition(k, slow + 1, right, nums);
+            } else {
+                return findPosPartition(k, left, slow - 1, nums);
+            }
+        }
+        
+        // find the smallest number that >= target
+        private int findMiddleRight(int k, int[] nums) {
+            int res = Integer.MAX_VALUE;
+            for (int i = k; i < nums.length; i++) {
+                res = Math.min(res, nums[i]);
+            }
+            return res;
+        }
+        
+        private void swap(int[] array, int i, int j) {
+            int temp = array[i];
+            array[i] = array[j];
+            array[j] = temp;
+        }
+    }
 }
