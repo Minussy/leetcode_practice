@@ -120,7 +120,6 @@ class Solution {
 		
 		while (!queue.isEmpty()) {
 			int cur = queue.poll();
-			// while(size -->0) { int size = queue.size();}???
 			int row = cur / cols;
 			int col = cur % cols;
 			if (other[row][col]) {
