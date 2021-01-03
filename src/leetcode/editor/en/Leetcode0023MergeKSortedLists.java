@@ -68,7 +68,6 @@ class Solution {
                 cur.next = temp;
                 cur = cur.next;
             }
-
             if (temp.next != null) {
                 minHeap.offer(temp.next);
             }

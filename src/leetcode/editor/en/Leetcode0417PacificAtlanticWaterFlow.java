@@ -65,80 +65,80 @@ public class Leetcode0417PacificAtlanticWaterFlow {
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
 	
-	private final int[][] DIRECTIONS = new int[][]{{1, 0}, {0, -1}, {-1, 0}, {0, 1}};
+	private final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 	
 	public List<List<Integer>> pacificAtlantic(int[][] matrix) {
-		List<List<Integer>> result = new ArrayList<>();
+		List<List<Integer>> res = new ArrayList<>();
 		// corner case
-		if (matrix == null || matrix.length == 0 || matrix[0] == null
-				|| matrix[0].length == 0) {
-			return result;
+		if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
+			return res;
 		}
+		
 		int rows = matrix.length;
 		int cols = matrix[0].length;
 		
-		Queue<Integer> pacific = getOcean(matrix, true);
-		Queue<Integer> atlantic = getOcean(matrix, false);
+		boolean[][] pacific = new boolean[rows][cols];
+		boolean[][] atlantic = new boolean[rows][cols];
 		
-		boolean[][] reachPacific = bfs(matrix, pacific);
-		boolean[][] reachAtlantic = bfs(matrix, atlantic);
-		for (int i = 0; i < rows; i++) {
-			for (int j = 0; j < cols; j++) {
-				if (reachPacific[i][j] && reachAtlantic[i][j]) {
-					result.add(new ArrayList<>(Arrays.asList(i, j)));
-				}
-			}
+		Queue<Integer> queue = new LinkedList<>();
+		int i = 0;
+		int j = 0;
+		for (i = 0; i < rows; i++) {// left
+			queue.offer(i * cols + j);
+			pacific[i][j] = true;
 		}
-		return result;
+		i = 0;
+		for (j = 0; j < cols; j++) {// top
+			queue.offer(i * cols + j);
+			pacific[i][j] = true;
+		}
+		bfs(res, queue, pacific, atlantic, matrix);
+		
+		j = cols - 1;
+		for (i = 0; i < rows; i++) {//right
+			queue.offer(i * cols + j);
+			atlantic[i][j] = true;
+		}
+		i = rows - 1;
+		for (j = 0; j < cols - 1; j++) {// bottom
+			queue.offer(i * cols + j);
+			atlantic[i][j] = true;
+		}
+		bfs(res, queue, atlantic, pacific, matrix);
+		
+		return res;
 	}
 	
-	private boolean[][] bfs(int[][] matrix, Queue<Integer> queue) {
+	private void bfs(List<List<Integer>> res, Queue<Integer> queue, boolean[][] self,
+			boolean[][] other, int[][] matrix) {
 		int rows = matrix.length;
 		int cols = matrix[0].length;
-		boolean[][] result = new boolean[rows][cols];
-		for (int index : queue) {
-			int row = index / cols;
-			int col = index % cols;
-			result[row][col] = true;
-		}
+		
 		while (!queue.isEmpty()) {
 			int cur = queue.poll();
+			// while(size -->0) { int size = queue.size();}???
 			int row = cur / cols;
 			int col = cur % cols;
+			if (other[row][col]) {
+				res.add(Arrays.asList(row, col));
+			}
 			
 			for (int[] dir : DIRECTIONS) {
 				int i = row + dir[0];
 				int j = col + dir[1];
-				if (i >= 0 && i < rows && j >= 0 && j < cols && !result[i][j]
-						&& matrix[i][j] >= matrix[row][col]) {
+				if (i < 0 || i >= rows || j < 0 || j >= cols || matrix[row][col] > matrix[i][j]) {
+					
+					continue;
+				}
+				
+				if (!self[i][j]) {
 					queue.offer(i * cols + j);
-					result[i][j] = true;
+					self[i][j] = true;
 				}
 			}
 		}
-		return result;
 	}
 	
-	private Queue<Integer> getOcean(int[][] matrix, boolean isPacific) {
-		Queue<Integer> ocean = new LinkedList<>();
-		int rows = matrix.length;
-		int cols = matrix[0].length;
-		for (int j = 0; j < cols; j++) {
-			if (isPacific) {
-				ocean.offer(j);
-			} else {
-				ocean.offer(rows * cols - 1 - j);
-			}
-		}
-		for (int i = 1; i < rows; i++) {
-			if (isPacific) {
-				ocean.offer(i * cols);
-			} else {
-				ocean.offer(rows * cols - 1 - i * cols);
-			}
-		}
-		return ocean;
-	}
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
