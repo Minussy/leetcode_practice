@@ -52,7 +52,7 @@ class Solution {
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: while loop
+// Solution 1: iteration loop
 class Solution1 {
     public ListNode reverseList(ListNode head) {
         // iteration
