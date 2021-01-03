@@ -85,28 +85,28 @@ class Solution {
 		boolean[][] atlantic = new boolean[rows][cols];
 		Queue<Integer> queue = new LinkedList<>();
 		
-		int i = 0;
-		int j = 0;
-		for (i = 0; i < rows; i++) {// left
-			queue.offer(i * cols + j);
-			pacific[i][j] = true;
+		int row = 0;
+		int col = 0; // column
+		for (row = 0; row < rows; row++) {// left
+			queue.offer(row * cols + col);
+			pacific[row][col] = true;
 		}
-		i = 0;
-		for (j = 1; j < cols; j++) {// top
-			queue.offer(i * cols + j);
-			pacific[i][j] = true;
+		row = 0;
+		for (col = 1; col < cols; col++) {// top
+			queue.offer(row * cols + col);
+			pacific[row][col] = true;
 		}
 		bfs(res, queue, pacific, atlantic, matrix);
 		
-		j = cols - 1;
-		for (i = 0; i < rows; i++) {//right
-			queue.offer(i * cols + j);
-			atlantic[i][j] = true;
+		col = cols - 1;
+		for (row = 0; row < rows; row++) {//right
+			queue.offer(row * cols + col);
+			atlantic[row][col] = true;
 		}
-		i = rows - 1;
-		for (j = 0; j < cols - 1; j++) {// bottom
-			queue.offer(i * cols + j);
-			atlantic[i][j] = true;
+		row = rows - 1;
+		for (col = 0; col < cols - 1; col++) {// bottom
+			queue.offer(row * cols + col);
+			atlantic[row][col] = true;
 		}
 		bfs(res, queue, atlantic, pacific, matrix);
 		
