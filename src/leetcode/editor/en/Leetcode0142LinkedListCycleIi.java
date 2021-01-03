@@ -90,14 +90,12 @@ public class Solution {
         if (fast == null || fast.next == null) {
             return null;
         }
-        else { // fast == slow
-            ListNode temp = head;
-            while (temp != slow) {
-                temp = temp.next;
-                slow = slow.next;
-            }
-            return temp;
+        ListNode temp = head;
+        while (temp != slow) {
+            temp = temp.next;
+            slow = slow.next;
         }
+        return temp;
 
     }
 }
