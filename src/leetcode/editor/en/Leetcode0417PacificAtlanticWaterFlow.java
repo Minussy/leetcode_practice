@@ -63,6 +63,11 @@ public class Leetcode0417PacificAtlanticWaterFlow {
 	}
 	
 //leetcode submit region begin(Prohibit modification and deletion)
+// bfs, T(m,n) = O(m,n), S(m, n) = O(m, n)
+// 6 ms,击败了46.67% 的Java用户, 40.4 MB,击败了56.91% 的Java用户
+/*
+用bfs遍历一边能到达pacific的地方，对atlantic也一样，两个重复的地方就是所求的坐标
+ */
 class Solution {
 	
 	private final int[][] DIRECTIONS = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
@@ -76,11 +81,10 @@ class Solution {
 		
 		int rows = matrix.length;
 		int cols = matrix[0].length;
-		
 		boolean[][] pacific = new boolean[rows][cols];
 		boolean[][] atlantic = new boolean[rows][cols];
-		
 		Queue<Integer> queue = new LinkedList<>();
+		
 		int i = 0;
 		int j = 0;
 		for (i = 0; i < rows; i++) {// left
@@ -88,7 +92,7 @@ class Solution {
 			pacific[i][j] = true;
 		}
 		i = 0;
-		for (j = 0; j < cols; j++) {// top
+		for (j = 1; j < cols; j++) {// top
 			queue.offer(i * cols + j);
 			pacific[i][j] = true;
 		}
