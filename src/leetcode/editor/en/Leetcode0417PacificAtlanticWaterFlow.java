@@ -96,7 +96,7 @@ class Solution {
 			queue.offer(row * cols + col);
 			pacific[row][col] = true;
 		}
-		bfs(res, queue, pacific, atlantic, matrix);
+		bfs(queue, pacific, atlantic, matrix, res);
 		
 		col = cols - 1;
 		for (row = 0; row < rows; row++) {//right
@@ -108,13 +108,13 @@ class Solution {
 			queue.offer(row * cols + col);
 			atlantic[row][col] = true;
 		}
-		bfs(res, queue, atlantic, pacific, matrix);
+		bfs(queue, atlantic, pacific, matrix, res);
 		
 		return res;
 	}
 	
-	private void bfs(List<List<Integer>> res, Queue<Integer> queue, boolean[][] self,
-			boolean[][] other, int[][] matrix) {
+	private void bfs(Queue<Integer> queue, boolean[][] self, boolean[][] other,
+			int[][] matrix, List<List<Integer>> res) {
 		int rows = matrix.length;
 		int cols = matrix[0].length;
 		
