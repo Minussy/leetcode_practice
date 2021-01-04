@@ -54,9 +54,8 @@ class Solution {
 //leetcode submit region end(Prohibit modification and deletion)
 // Solution 1: iteration loop
 class Solution1 {
+    
     public ListNode reverseList(ListNode head) {
-        // iteration
-        
         // corner case
         if (head == null || head.next == null) {
             return head;
@@ -73,11 +72,13 @@ class Solution1 {
         }
         return pre;
     }
+    
 }
 
 
 // Solution 2_1: head recursion
 class Solution2_1 {
+    
     public ListNode reverseList(ListNode head) {
         if (head == null || head.next == null) {
             return head;
@@ -87,6 +88,7 @@ class Solution2_1 {
         head.next = null;
         return tail;
     }
+    
 }
 
 // Solution 2_2: tail recursion
@@ -99,7 +101,7 @@ class Solution2_2 {
         }
         ListNode next = head.next;
         head.next = null;
-        return  reverseList(head, next);
+        return reverseList(head, next);
     }
     
     private ListNode reverseList(ListNode prev, ListNode cur) {
@@ -111,5 +113,6 @@ class Solution2_2 {
         }
         return reverseList(cur, next);
     }
+    
 }
 }

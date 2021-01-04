@@ -95,8 +95,39 @@ public class Leetcode0133CloneGraph{
         System.out.println();
     }
 //leetcode submit region begin(Prohibit modification and deletion)
-// BFS
 class Solution {
+    
+    public Node cloneGraph(Node node) {
+        // corner case
+        if (node == null) {
+            return null;
+        }
+        
+        HashMap<Node, Node> visited = new HashMap<>();
+        return dfs(node, visited);
+    }
+    
+    private Node dfs(Node cur, HashMap<Node, Node> visited) {
+        if (visited.containsKey(cur)) {
+            return visited.get(cur);
+        }
+        
+        visited.put(cur, new Node(cur.val));
+        
+        for (Node next : cur.neighbors) {
+            Node neighbor = dfs(next, visited);
+            visited.get(cur).neighbors.add(neighbor); // next的clone = dfs(next, visited)
+        }
+        return visited.get(cur);
+    }
+    
+}
+//leetcode submit region end(Prohibit modification and deletion)
+/**面试的时候用Solution 2 **/
+
+// Solution 1: BFS: DFS, T(n) = O(n), S(n) = O(n)
+// 23 ms,击败了99.96% 的Java用户, 39.3 MB,击败了52.79% 的Java用户
+class Solution1 {
     public Node cloneGraph(Node node) {
         if (node == null) {
             return null;
@@ -108,7 +139,7 @@ class Solution {
         bfs(cur, oldToNew);
         return curCopy;
     }
-
+    
     private void bfs(Node cur, HashMap<Node, Node> map) {
         Queue<Node> queue = new LinkedList<>();
         Node curCopy;
@@ -129,7 +160,37 @@ class Solution {
         }
     }
 }
-//leetcode submit region end(Prohibit modification and deletion)
+
+// Solution 2: DFS, T(n) = O(n), S(n) = O(n)
+// 24 ms,击败了98.88% 的Java用户, 39.1 MB,击败了66.66% 的Java用户
+class Solution2 {
+    
+    public Node cloneGraph(Node node) {
+        // corner case
+        if (node == null) {
+            return null;
+        }
+        
+        HashMap<Node, Node> visited = new HashMap<>();
+        return dfs(node, visited);
+    }
+    
+    private Node dfs(Node cur, HashMap<Node, Node> visited) {
+        if (visited.containsKey(cur)) {
+            return visited.get(cur);
+        }
+        
+        visited.put(cur, new Node(cur.val));
+        
+        for (Node next : cur.neighbors) {
+            Node neighbor = dfs(next, visited);
+            visited.get(cur).neighbors.add(neighbor); // next的clone = dfs(next, visited)
+        }
+        return visited.get(cur);
+    }
+    
+}
+
 // Definition for a Node.
 private class Node {
     public int val;

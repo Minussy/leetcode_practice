@@ -52,33 +52,136 @@ public class Leetcode0025ReverseNodesInKGroup{
  * }
  */
 class Solution {
+    
     public ListNode reverseKGroup(ListNode head, int k) {
-        // S2: recursion,先reverse再recursion，reverse里面用recursion做
-        if(head == null || head.next == null) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(-1, head);
+        ListNode prevTail = dummy;
+        ListNode tail = head;
+        while (tail != null) {
+            for (int i = 0; i < k - 1; i++) {
+                tail = tail.next;
+                if (tail == null) {
+                    return dummy.next;
+                }
+            }
+            ListNode followingHead = tail.next; // next is first node of next k node or NULL
+            tail.next = null; // 断开这段和下一段
+            prevTail.next = null; // 断开上一段和这一段
+            prevTail.next = reverseList(head); // reverse这一段，并且和上一段连起来
+            head.next = followingHead; // 连接这一段和下一段
+            prevTail = head; // 更新上一段
+            tail = followingHead;// 更新这段的tail
+            head = followingHead; // 更新这段的head
+        }
+        return dummy.next;
+    }
+    
+    private ListNode reverseList(ListNode head) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        ListNode next;
+        
+        while (cur != null) {
+            next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+    
+}
+//leetcode submit region end(Prohibit modification and deletion)
+// Solution 1: recursion. T(n) = O(n), S(n) = O(max(k, n/k))
+// 0 ms,击败了100.00% 的Java用户, 39.6 MB,击败了20.14% 的Java用户
+class Solution1 {
+    
+    public ListNode reverseKGroup(ListNode head, int k) {
+        // corner case
+        if (head == null || head.next == null) {
             return head;
         }
         ListNode cur = head;
-        //这个也可以当做base case
-        for(int i = 0; i < k-1; i++){
+        for (int i = 0; i < k - 1; i++) {
             cur = cur.next;
-            if(cur == null){
+            if (cur == null) {
                 return head;
             }
         }
         ListNode next = cur.next; // next is first node of next k node or NULL
-        cur.next = null;
-        ListNode newHead = reverse(head);
-        head.next = reverseKGroup(next, k);
+        cur.next = null;  // 与前k个断开，分别reverse
+        ListNode newHead = reverse(head); // reverse前k个
+        head.next = reverseKGroup(next, k); // recursion后面n个k group，并与前k个接上
         return newHead;
     }
-    private ListNode reverse(ListNode head){
-        if(head == null || head.next == null) return head;
+    
+    private ListNode reverse(ListNode head) {
+        if (head == null || head.next == null) {
+            return head;
+        }
         ListNode reversedHead = reverse(head.next);
         head.next.next = head;
         head.next = null;
         return reversedHead;
     }
+    
 }
-//leetcode submit region end(Prohibit modification and deletion)
 
+// Solution 2: iteration, T(n) = O(n), S(n) = O(1)
+class Solution2 {
+    
+    public ListNode reverseKGroup(ListNode head, int k) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(-1, head);
+        ListNode prevTail = dummy;
+        ListNode tail = head;
+        while (tail != null) {
+            for (int i = 0; i < k - 1; i++) {
+                tail = tail.next;
+                if (tail == null) {
+                    return dummy.next;
+                }
+            }
+            ListNode followingHead = tail.next; // next is first node of next k node or NULL
+            tail.next = null; // 断开这段和下一段
+            prevTail.next = null; // 断开上一段和这一段
+            prevTail.next = reverseList(head); // reverse这一段，并且和上一段连起来
+            head.next = followingHead; // 连接这一段和下一段
+            prevTail = head; // 更新上一段
+            tail = followingHead;// 更新这段的tail
+            head = followingHead; // 更新这段的head
+        }
+        return dummy.next;
+    }
+    
+    private ListNode reverseList(ListNode head) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        ListNode next;
+        
+        while (cur != null) {
+            next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+    
+}
 }

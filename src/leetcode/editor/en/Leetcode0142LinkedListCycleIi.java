@@ -50,6 +50,8 @@
 
 package leetcode.editor.en;
 
+import java.util.HashSet;
+import java.util.Set;
 import leetcode.editor.ListNode;
 
 // 2020-08-04 11:35:47
@@ -75,6 +77,7 @@ public class Leetcode0142LinkedListCycleIi{
  * }
  */
 public class Solution {
+    
     public ListNode detectCycle(ListNode head) {
         if (head == null || head.next == null) {
             return null;
@@ -90,15 +93,98 @@ public class Solution {
         if (fast == null || fast.next == null) {
             return null;
         }
-        ListNode temp = head;
-        while (temp != slow) {
-            temp = temp.next;
-            slow = slow.next;
-        }
-        return temp;
-
+        return findCycleStart(slow, head);
     }
+    
+    private ListNode findCycleStart(ListNode slow, ListNode head) {
+        while (head != slow) {
+            slow = slow.next;
+            head = head.next;
+        }
+        return slow;
+    }
+    
 }
 //leetcode submit region end(Prohibit modification and deletion)
+// Solution 1: HashSet, T(n) = O(n), S(n) = Θ(n)
+// 4 ms,击败了13.83% 的Java用户, 39.9 MB,击败了20.82% 的Java用户
+public class Solution1 {
+    public ListNode detectCycle(ListNode head) {
+        Set<ListNode> visited = new HashSet<>();
+        while (head != null) {
+            if (visited.contains(head)) {
+                return head;
+            }
+            visited.add(head);
+            head = head.next;
+        }
+        return null;
+    }
+}
+
+// Solution 2: slow and fast pointer, T(n) = O(n), S(n) = O(1)
+// 0 ms,击败了100.00% 的Java用户，39 MB,击败了67.12% 的Java用户
+public class Solution2 {
+    
+    public ListNode detectCycle(ListNode head) {
+        if (head == null || head.next == null) {
+            return null;
+        }
+        ListNode slow = head;
+        ListNode fast = head;
+        slow = slow.next;
+        fast = fast.next.next;
+        while (fast != null && fast.next != null && fast != slow) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+        if (fast == null || fast.next == null) {
+            return null;
+        }
+        return findCycleStart(slow, head);
+    }
+    
+    private ListNode findCycleStart(ListNode slow, ListNode head) {
+        while (head != slow) {
+            slow = slow.next;
+            head = head.next;
+        }
+        return slow;
+    }
+    
+}
+
+// follow up: find the length of the cycle
+class FindCycleLength {
+    
+    public int cycleLength(ListNode head) {
+        // corner case
+        if (head == null || head.next == null) {
+            return 0;
+        }
+        
+        ListNode slow = head;
+        ListNode fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) {
+                return getLength(slow);
+            }
+        }
+        return 0;
+    }
+    
+    private int getLength(ListNode slow) {
+        ListNode cur = slow.next;
+        int len = 1;
+        while (cur != slow) {
+            cur = cur.next;
+            len++;
+        }
+        return len;
+    }
+    
+}
 
 }

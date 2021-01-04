@@ -83,58 +83,47 @@ public class Leetcode0138CopyListWithRandomPointer{
         }
     }
     */
-// Solution 3: iteration, 3 pass by insert them to original list and separate them
 class Solution {
-    // Solution 3: 3 pass by insert them to oringinal list and seperate them
+    
     public Node copyRandomList(Node head) {
         // corner case
         if (head == null) {
             return null;
         }
-
-        // general case
-        // 1st pass to copy the nodes and connect them with next pointers
-        Node head1 = head;
-        Node cur1 = head1;
+        
+        HashMap<Node, Node> map = new HashMap<>(); // original node to copy node
+        Node cur1 = head;
+        
+        Node dummy = new Node(-1);
+        Node prev2 = dummy;
         Node cur2;
+        
         while(cur1 != null) {
-            cur2 = new Node(cur1.val);
-            cur2.next = cur1.next;
-            cur1.next = cur2;
-            cur1 = cur2.next;
-        }
-        Node head2 = head1.next;
-
-        // 2nd pass to connect them with random pointers
-        cur1 = head1;
-        cur2 = head2;
-        while (cur1 != null) {
-            cur2 = cur1.next;
-            cur2.random = (cur1.random != null ? cur1.random.next : null);
-            cur1 = cur1.next.next;
-        }
-
-        // 3rd pass to seperate copied node and oringinal nodes
-        cur1 = head1;
-        cur2 = head2;
-        while (cur1 != null) {
-            cur1.next = cur2.next;
-            if (cur2.next != null && cur2.next.next != null) {
-                cur2.next = cur2.next.next;
+            int val = cur1.val;
+            cur2 = map.computeIfAbsent(cur1, k -> new Node(val));
+            prev2.next = cur2;
+            
+            if (cur1.random != null) {
+                Node random1 = cur1.random;
+                int randomVal = random1.val;
+                cur2.random = map.computeIfAbsent(random1, k-> new Node(randomVal));
             }
+            
             cur1 = cur1.next;
-            cur2 = cur2.next;
+            prev2 = cur2;
         }
-        return head2;
+        return map.get(head);
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
+/** 面试的时候用Solution 1或者Solution 2 **/
 
-// Solution 1: recursion
+// Solution 1: recursion(DFS), T(n) = O(n), S(n) = O(n)
+// 0 ms,击败了100.00% 的Java用户, 39.1 MB,击败了25.91% 的Java用户
 class Solution1 {
-    // Solution 1: recursion
 
     HashMap<Node, Node> map = new HashMap<>();
+    
     public Node copyRandomList(Node head) {
         // corner case
         if (head == null) {
@@ -155,43 +144,45 @@ class Solution1 {
     }
 }
 
-// Solution 2: iteration, 1 pass by hashMap
+// Solution 2: iteration, 1 pass by hashMap, T(n) = O(n), S(n) = O(n)
+// 2 ms,击败了9.04% 的Java用户, 39 MB,击败了34.51% 的Java用户
 class Solution2 {
-    // Solution 2: 1 pass, connect node while copy them
+
     public Node copyRandomList(Node head) {
         // corner case
         if (head == null) {
             return null;
         }
 
-        // general case
-        HashMap<Node, Node> map = new HashMap<>();
-        Node cur = head;
+        HashMap<Node, Node> map = new HashMap<>(); // original node to copy node
+        Node cur1 = head;
+        
+        Node dummy = new Node(-1);
+        Node prev2 = dummy;
+        Node cur2;
 
-        while(cur != null) {
-            if (!map.containsKey(cur)) {
-                map.put(cur, new Node(cur.val));
+        while(cur1 != null) {
+            int val = cur1.val;
+            cur2 = map.computeIfAbsent(cur1, k -> new Node(val));
+            prev2.next = cur2;
+            
+            if (cur1.random != null) {
+                Node random1 = cur1.random;
+                int randomVal = random1.val;
+                cur2.random = map.computeIfAbsent(random1, k-> new Node(randomVal));
             }
-
-            if(cur.next != null && !map.containsKey(cur.next)) {
-                map.put(cur.next, new Node(cur.next.val));
-            }
-            map.get(cur).next = map.get(cur.next);
-
-            if(cur.random != null && !map.containsKey(cur.random)) {
-                map.put(cur.random, new Node(cur.random.val));
-            }
-            map.get(cur).random = map.get(cur.random);
-
-            cur = cur.next;
+            
+            cur1 = cur1.next;
+            prev2 = cur2;
         }
         return map.get(head);
     }
 }
 
 // Solution 3: iteration, 3 pass by insert them to original list and separate them
+// 0 ms,击败了100.00% 的Java用户, 38.3 MB,击败了94.80% 的Java用户
 class Solution3 {
-    // Solution 3: 3 pass by insert them to oringinal list and seperate them
+
     public Node copyRandomList(Node head) {
         // corner case
         if (head == null) {
@@ -206,6 +197,7 @@ class Solution3 {
         while(cur1 != null) {
             cur2 = new Node(cur1.val);
             cur2.next = cur1.next;
+            
             cur1.next = cur2;
             cur1 = cur2.next;
         }
@@ -220,7 +212,7 @@ class Solution3 {
             cur1 = cur1.next.next;
         }
 
-        // 3rd pass to seperate copied node and oringinal nodes
+        // 3rd pass to separate copied node and original nodes
         cur1 = head1;
         cur2 = head2;
         while (cur1 != null) {
@@ -234,6 +226,8 @@ class Solution3 {
         return head2;
     }
 }
+
+
 private class Node {
     int val;
     Node next;

@@ -123,28 +123,13 @@ public class Solution {
             }
         }
         return null;
-        // // visited p and its ancestors
-        // ListNode p = headA;
-        // while (p != null) {
-        //     visited.add(p);
-        //     p = p.next;
-        // }
-        //
-        // // visited q and its ancestors
-        // ListNode q = headB;
-        // while (q != null) {
-        //     if (visited.contains(q)) {
-        //         return q;
-        //     }
-        //     visited.add(q);
-        //     q = q.next;
-        // }
-        // return q;
     }
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
-//Soluion 1: T(n) = O(n), S(n) = O(1)
+// 面试的时候，用Solution 2
+
+//Solution 1: T(n) = O(n), S(n) = O(1)
 /*
  * 先计算A和B的长度，让长的那个减到和短的那个一样的长度，
  * 然后同时往前走，重合的时候就是intersection

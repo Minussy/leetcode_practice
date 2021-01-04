@@ -103,8 +103,18 @@ class Solution {
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
+
+/*
+1. 用一个HashMap来建图，key就是图上的点，value就是这个点左右的neighbors list。
+2. 这道题最tricky的地方在于用一个timestamp来查环，当cur的timestamp <= return timestamp，则表示没有环，存在critical edge；反之则是有环。
+3. 在遍历neighbors的过程中，不能直接往回走，即cur == prev的情况要用continue直接跳过。
+4. 当符合上述条件进行加答案时，由于初始值prev我们设定了一个假想值-1，所以要判断一开始的时候不能加答案。
+5. dfs()返回的是一个最小值，所以一定要在最后返回的时候将cur和return timestamp进行比较，拿到最小值
+
+ */
+// Solution 1: DFS with list denoting neighbors
 class Solution1 {
-    // Solution 1: DFS with list denoting neighbors
+    
     public List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
         List<List<Integer>> graph = new ArrayList<>();
         for (int i = 0; i < n; i++) {
@@ -131,8 +141,8 @@ class Solution1 {
      * @param res: result
      * @return: the # of the vertex cur
      */
-    private int dfs(int vertexID, int prev, int cur, int[] id,
-            List<List<Integer>> graph, List<List<Integer>> res) {
+    private int dfs(int vertexID, int prev, int cur, int[] id, List<List<Integer>> graph,
+            List<List<Integer>> res) {
         if (id[cur] > 0) { // pruning, look up the form
             return id[cur];
         }
@@ -154,8 +164,9 @@ class Solution1 {
     }
 }
 
+// Solution 2: DFS with HashSet denoting neighbors
 class Solution2 {
-    // Solution 2: DFS with HashSet denoting neighbors
+    
     public List<List<Integer>> criticalConnections(int n, List<List<Integer>> connections) {
         Map<Integer, Set<Integer>> graph = new HashMap<>();
         buildGraph(connections, graph);
@@ -166,9 +177,9 @@ class Solution2 {
         dfs(1, -1, 0, id, graph, res);
         return res;
     }
-
+    
     private void buildGraph(List<List<Integer>> con, Map<Integer, Set<Integer>> graph) {
-        for (List<Integer> edge: con) {
+        for (List<Integer> edge : con) {
             int n1 = edge.get(0);
             int n2 = edge.get(1);
             if (!graph.containsKey(n1)) {
@@ -193,8 +204,8 @@ class Solution2 {
      * @param res: result
      * @return: the # of the vertex cur
      */
-    private int dfs(int vertexID, int prev, int cur, int[] id,
-            Map<Integer, Set<Integer>> graph, List<List<Integer>> res) {
+    private int dfs(int vertexID, int prev, int cur, int[] id, Map<Integer, Set<Integer>> graph,
+            List<List<Integer>> res) {
         if (id[cur] > 0) { // pruning, look up the form
             return id[cur];
         }

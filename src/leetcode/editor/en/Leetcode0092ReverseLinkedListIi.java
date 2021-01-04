@@ -37,37 +37,137 @@ public class Leetcode0092ReverseLinkedListIi{
  * }
  */
 class Solution {
+    
     public ListNode reverseBetween(ListNode head, int m, int n) {
-        if(head == null || head.next == null) return head;
+        if (head == null || head.next == null) {
+            return head;
+        }
         ListNode cur = head;
         ListNode prev = null;
-        for(int i = 0; i < m-1; i++){
+        // find mth ListNode
+        for (int i = 0; i < m - 1; i++) {
             prev = cur;
             cur = cur.next;
         }
-        if(prev != null){
+        if (prev != null) {
             prev.next = reverseByN(cur, n - m + 1);
             return head;
-        }else{
+        } else {
             return reverseByN(head, n - m + 1);
         }
     }
-    private ListNode reverseByN(ListNode head, int n){
-        if(head.next == null) return head;
+    
+    /*
+    reverse n node from ListNode head,
+    n is the length of ListNodes need reverse (including start end end)
+     */
+    private ListNode reverseByN(ListNode head, int n) {
+        if (head.next == null) {
+            return head;
+        }
         ListNode cur = head;
         ListNode next = null;
         ListNode prev = null;
-        for(int i = 0; i < n; i++){
+        for (int i = 0; i < n; i++) {
             next = cur.next;
             cur.next = prev;
             prev = cur;
             cur = next;
         }
         head.next = next;
-
+        
         return prev;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
+// Solution 1: find the mth ListNode, and reverse following n-m nodes, T(n) = O(n), S(n) = O(1)
+// Solution 1_1: without dummy node
+// 0 ms,击败了100.00% 的Java用户, 36.6 MB,击败了48.56% 的Java用户
+class Solution1_1 {
+    
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode cur = head;
+        ListNode prev = null;
+        // find mth ListNode
+        for (int i = 0; i < m - 1; i++) {
+            prev = cur;
+            cur = cur.next;
+        }
+        if (prev != null) {
+            prev.next = reverseByN(cur, n - m + 1);
+            return head;
+        } else {
+            return reverseByN(head, n - m + 1);
+        }
+    }
+    
+    /*
+    reverse n node from ListNode head,
+    n is the length of ListNodes need reverse (including start end end)
+     */
+    private ListNode reverseByN(ListNode head, int n) {
+        if (head.next == null) {
+            return head;
+        }
+        ListNode cur = head;
+        ListNode next = null;
+        ListNode prev = null;
+        for (int i = 0; i < n; i++) {
+            next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        head.next = next;
+        
+        return prev;
+    }
+}
+
+// SOlution 1_2 with dummy node
+// 0 ms,击败了100.00% 的Java用户, 36.5 MB,击败了80.17% 的Java用户
+class Solution1_2 {
+    
+    public ListNode reverseBetween(ListNode head, int m, int n) {
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(-1, head);
+        ListNode prev = dummy;
+        ListNode cur = head;
+        // find mth ListNode
+        for (int i = 0; i < m - 1; i++) {
+            prev = cur;
+            cur = cur.next;
+        }
+        prev.next = reverseByN(cur, n - m + 1);
+        return dummy.next;
+    }
+    
+    /*
+    reverse n node from ListNode head,
+    n is the length of ListNodes need reverse (including start end end)
+     */
+    private ListNode reverseByN(ListNode head, int n) {
+        if (head.next == null) {
+            return head;
+        }
+        ListNode cur = head;
+        ListNode next = null;
+        ListNode prev = null;
+        for (int i = 0; i < n; i++) {
+            next = cur.next;
+            cur.next = prev;
+            prev = cur;
+            cur = next;
+        }
+        head.next = next;
+        
+        return prev;
+    }
+}
 }
