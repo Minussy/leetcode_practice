@@ -60,47 +60,53 @@ class Solution {
         }
         ListNode dummy = new ListNode(-1, head);
         ListNode prevTail = dummy;
-        ListNode tail = head;
-        while (tail != null) {
-            for (int i = 0; i < k - 1; i++) {
-                tail = tail.next;
-                if (tail == null) {
-                    return dummy.next;
-                }
+        while (head != null) {
+            ListNode tail = reverseListByK(prevTail, head, k);
+            if (tail == null) {
+                reverseListByK(prevTail, prevTail.next, k);
+                break;
             }
-            ListNode followingHead = tail.next; // next is first node of next k node or NULL
-            tail.next = null; // 断开这段和下一段
-            prevTail.next = null; // 断开上一段和这一段
-            prevTail.next = reverseList(head); // reverse这一段，并且和上一段连起来
-            head.next = followingHead; // 连接这一段和下一段
-            prevTail = head; // 更新上一段
-            tail = followingHead;// 更新这段的tail
-            head = followingHead; // 更新这段的head
+            prevTail = tail;
+            head = prevTail.next;
         }
         return dummy.next;
     }
     
-    private ListNode reverseList(ListNode head) {
+    /**
+     * let prevTail connect to this reversed k group LinkedList,
+     * and return the tail of k group, if the length of left listNode < k, return null
+     * @param prevTail previous tail before this k group
+     * @param head head of this k group
+     * @param k the length of LinkedList we need to reverse
+     * @return the tail of the reversed LinkedList or null if the length of left listNode < k
+     */
+    private ListNode reverseListByK(ListNode prevTail, ListNode head, int k) {
         // corner case
         if (head == null || head.next == null) {
-            return head;
+            return null;
         }
         ListNode pre = null;
         ListNode cur = head;
         ListNode next;
-        
-        while (cur != null) {
+        int count = 0;
+        while (cur != null && count++ < k) {
             next = cur.next;
             cur.next = pre;
-            pre = cur;
-            cur = next;
+            
+            pre = cur; // update pre
+            cur = next; // update cur
         }
-        return pre;
+        prevTail.next = pre;
+        head.next = cur;
+        if (count < k) {
+            return null;
+        }
+        return head;
     }
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: recursion. T(n) = O(n), S(n) = O(max(k, n/k))
+// Solution 1: recursion. T(n) = O(n), S(n) = O(max(k, n/k)), 2 pass
 // 0 ms,击败了100.00% 的Java用户, 39.6 MB,击败了20.14% 的Java用户
 class Solution1 {
     
@@ -135,7 +141,8 @@ class Solution1 {
     
 }
 
-// Solution 2: iteration, T(n) = O(n), S(n) = O(1)
+// Solution 2: iteration, T(n) = O(n), S(n) = O(1), one pass
+// 0 ms,击败了100.00% 的Java用户, 39.5 MB,击败了28.72% 的Java用户
 class Solution2 {
     
     public ListNode reverseKGroup(ListNode head, int k) {
@@ -145,42 +152,48 @@ class Solution2 {
         }
         ListNode dummy = new ListNode(-1, head);
         ListNode prevTail = dummy;
-        ListNode tail = head;
-        while (tail != null) {
-            for (int i = 0; i < k - 1; i++) {
-                tail = tail.next;
-                if (tail == null) {
-                    return dummy.next;
-                }
+        while (head != null) {
+            ListNode tail = reverseListByK(prevTail, head, k);
+            if (tail == null) {
+                reverseListByK(prevTail, prevTail.next, k);
+                break;
             }
-            ListNode followingHead = tail.next; // next is first node of next k node or NULL
-            tail.next = null; // 断开这段和下一段
-            prevTail.next = null; // 断开上一段和这一段
-            prevTail.next = reverseList(head); // reverse这一段，并且和上一段连起来
-            head.next = followingHead; // 连接这一段和下一段
-            prevTail = head; // 更新上一段
-            tail = followingHead;// 更新这段的tail
-            head = followingHead; // 更新这段的head
+            prevTail = tail;
+            head = prevTail.next;
         }
         return dummy.next;
     }
     
-    private ListNode reverseList(ListNode head) {
+    /**
+     * let prevTail connect to this reversed k group LinkedList,
+     * and return the tail of k group, if the length of left listNode < k, return null
+     * @param prevTail previous tail before this k group
+     * @param head head of this k group
+     * @param k the length of LinkedList we need to reverse
+     * @return the tail of the reversed LinkedList or null if the length of left listNode < k
+     */
+    private ListNode reverseListByK(ListNode prevTail, ListNode head, int k) {
         // corner case
         if (head == null || head.next == null) {
-            return head;
+            return null;
         }
         ListNode pre = null;
         ListNode cur = head;
         ListNode next;
-        
-        while (cur != null) {
+        int count = 0;
+        while (cur != null && count++ < k) {
             next = cur.next;
             cur.next = pre;
-            pre = cur;
-            cur = next;
+            
+            pre = cur; // update pre
+            cur = next; // update cur
         }
-        return pre;
+        prevTail.next = pre;
+        head.next = cur;
+        if (count < k) {
+            return null;
+        }
+        return head;
     }
     
 }
