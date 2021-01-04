@@ -142,7 +142,7 @@ class Solution1 {
 }
 
 // Solution 2: iteration, T(n) = O(n), S(n) = O(1), one pass
-// 0 ms,击败了100.00% 的Java用户, 39.5 MB,击败了28.72% 的Java用户
+// 0 ms,击败了100.00% 的Java用户, 39.1 MB,击败了68.16% 的Java用户
 class Solution2 {
     
     public ListNode reverseKGroup(ListNode head, int k) {
