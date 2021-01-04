@@ -106,6 +106,7 @@ class Solution {
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
+
 // Solution 1: recursion. T(n) = O(n), S(n) = O(max(k, n/k)), 2 pass
 // 0 ms,击败了100.00% 的Java用户, 39.6 MB,击败了20.14% 的Java用户
 class Solution1 {
@@ -141,9 +142,60 @@ class Solution1 {
     
 }
 
-// Solution 2: iteration, T(n) = O(n), S(n) = O(1), one pass
+// Solution 2: iteration, T(n) = O(n), S(n) = O(1), 1 pass
 // 0 ms,击败了100.00% 的Java用户, 39.1 MB,击败了68.16% 的Java用户
-class Solution2 {
+// 2 pass
+class Solution2_1 {
+    
+    public ListNode reverseKGroup(ListNode head, int k) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode dummy = new ListNode(-1, head);
+        ListNode prevTail = dummy;
+        ListNode tail = head;
+        while (tail != null) {
+            for (int i = 0; i < k - 1; i++) {
+                tail = tail.next;
+                if (tail == null) {
+                    return dummy.next;
+                }
+            }
+            ListNode followingHead = tail.next; // next is first node of next k node or NULL
+            tail.next = null; // 断开这段和下一段
+            prevTail.next = null; // 断开上一段和这一段
+            prevTail.next = reverseList(head); // reverse这一段，并且和上一段连起来
+            head.next = followingHead; // 连接这一段和下一段
+            prevTail = head; // 更新上一段
+            tail = followingHead;// 更新这段的tail
+            head = followingHead; // 更新这段的head
+        }
+        return dummy.next;
+    }
+    
+    private ListNode reverseList(ListNode head) {
+        // corner case
+        if (head == null || head.next == null) {
+            return head;
+        }
+        ListNode pre = null;
+        ListNode cur = head;
+        ListNode next;
+        
+        while (cur != null) {
+            next = cur.next;
+            cur.next = pre;
+            pre = cur;
+            cur = next;
+        }
+        return pre;
+    }
+    
+}
+
+// 1 pass
+class Solution2_2 {
     
     public ListNode reverseKGroup(ListNode head, int k) {
         // corner case
