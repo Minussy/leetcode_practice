@@ -211,7 +211,8 @@ class Solution1 {
 }
 
 // Solution 2_1: quick selection to find middle value and then arrange the whole nums
-// Average T(n) = O(n), worst case T(n) = O(n^2), S(n) = O(lg(n)), worst S(n) = O(n)
+// Average T(n) = O(n), worst case T(n) = O(n^2),
+// S(n) = O(1) tail recursion所以空间复杂度是O(1)，可以改成while循环
 // 34 ms,击败了22.34% 的Java用户, 43.6 MB,击败了11.28% 的Java用户
 /*
 使用quick selection，中位数对应的两个数字middleLeft和middleRight,
@@ -324,7 +325,8 @@ class Solution2_1 {
 }
 
 // Solution 2_1: quick selection to find middle value and then arrange the whole nums
-// Average T(n) = O(n), worst case T(n) = O(k * n), S(n) = O(lg(k)), worst S(n) = O(k)
+// Average T(n) = O(n), worst case T(n) = O(n^2),
+// S(n) = O(1) tail recursion所以空间复杂度是O(1)，可以改成while循环
 // 5 ms,击败了45.97% 的Java用户, 42.4 MB,击败了30.25% 的Java用户
 /*
 使用quick selection，中位数对应的两个数字middleLeft和middleRight,
