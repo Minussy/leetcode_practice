@@ -177,7 +177,7 @@ class Solution {
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// 面试的时候，先写Solution 1, 要follow up，要T(n) = O(n)解的时候，再写Solution 2
+// 面试的时候，先写Solution 1, 要follow up，要T(n) = O(n)解的时候，再写Solution 2_2
 
 
 // Solution 1:T(n) = O(nlg(n)), S(n) = O(n)
