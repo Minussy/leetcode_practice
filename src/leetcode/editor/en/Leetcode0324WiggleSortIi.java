@@ -215,7 +215,7 @@ class Solution1 {
 // 34 ms,击败了22.34% 的Java用户, 43.6 MB,击败了11.28% 的Java用户
 /*
 使用quick selection，中位数对应的两个数字middleLeft和middleRight,
-    分成2个point找middle left，一个<=,一个>
+    分成2个point找middle left，一个 <,一个 >=
 把所有比中位数小的数字从前往后放到奇数位置上
 把所有比中位数大的数字，从后往前放到偶数位置上
  */
