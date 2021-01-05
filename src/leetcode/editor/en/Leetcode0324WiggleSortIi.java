@@ -24,14 +24,13 @@
 package leetcode.editor.en;
 
 import java.util.Arrays;
-import java.util.Random;
 
 // 2020-12-30 18:54:20
 // Zeshi Yang
 public class Leetcode0324WiggleSortIi{
     // Java: wiggle-sort-ii
     public static void main(String[] args) {
-        Solution1 sol1 = new Leetcode0324WiggleSortIi().new Solution1();
+        /*Solution1 sol1 = new Leetcode0324WiggleSortIi().new Solution1();
         Solution2_1 sol2_1 = new Leetcode0324WiggleSortIi().new Solution2_1();
         Solution2_2 sol2_2 = new Leetcode0324WiggleSortIi().new Solution2_2();
     
@@ -56,11 +55,11 @@ public class Leetcode0324WiggleSortIi{
         
         System.out.println(time1 - time0 + "ms");
         System.out.println(time2_1 - time1 + "ms");
-        System.out.println(time2_2 - time2_1 + "ms");
-        /*Solution sol = new Leetcode0324WiggleSortIi().new Solution();
-        int[] nums = {4,5,2,2,3,3,1};
+        System.out.println(time2_2 - time2_1 + "ms");*/
+        Solution sol = new Leetcode0324WiggleSortIi().new Solution();
+        int[] nums = {1,5,1,1,6,4};
         sol.wiggleSort(nums);
-        System.out.println(Arrays.toString(nums));*/
+        System.out.println(Arrays.toString(nums));
         
     }
 //leetcode submit region begin(Prohibit modification and deletion)
@@ -138,6 +137,7 @@ class Solution {
         int larger;
         for (larger = left; larger < right; larger++) {
             if (nums[larger] < pivot) {
+                // 只能按照这个顺序，或者逆顺序。不能先less和larger交换, 否则不满足equal >= less
                 swap(nums, equal, larger);
                 swap(nums, less, equal);
                 equal++;
@@ -406,6 +406,7 @@ class Solution2_2 {
         int larger;
         for (larger = left; larger < right; larger++) {
             if (nums[larger] < pivot) {
+                // 只能按照这个顺序，或者逆顺序。不能先less和larger交换, 否则不满足equal >= less
                 swap(nums, equal, larger);
                 swap(nums, less, equal);
                 equal++;
