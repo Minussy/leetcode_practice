@@ -57,11 +57,11 @@ public class Leetcode0324WiggleSortIi{
         System.out.println(time2_1 - time1 + "ms");
         System.out.println(time2_2 - time2_1 + "ms");*/
         Solution sol = new Leetcode0324WiggleSortIi().new Solution();
-        int[] nums = {1,5,1,1,6,4};
+        int[] nums = {0,1,2,3,4,5};
         sol.wiggleSort(nums);
         System.out.println(Arrays.toString(nums));
-        
     }
+    
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     
@@ -73,7 +73,7 @@ class Solution {
         int len = nums.length;
         int k = (len + 1) / 2;
         int middleLeft = findPosPartition(k, 0, len - 1, nums); // kth smallest value
-        int middleRight = findMiddleRight(k, nums);
+        int middleRight = findPosPartition(k + 1, 0, len - 1, nums);
         /*
         将偶数index数字都设置成 <= middleLeft
             == middleLeft的部分都尽可能放在左边
@@ -116,58 +116,62 @@ class Solution {
         for (int i = left; i <= evenP; i += 2) {
             nums[i] = middleLeft;
         }
+        
     }
     
     // using quick selection to find kth smallest value in nums and put it the right place
     // average T(n) = O(n), worst T(n) = O(n^2), average S(n) = O(lg(n)), worst S(n) = O(n)
     private int findPosPartition(int k, int left, int right, int[] nums) {
-        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivot = nums[pivotIndex];
-        swap(nums, pivotIndex, right);
-        
-        //use less, equal, larger pointers, 3 pointers forward
-        /*
-         * [left, less) < pivot
-         * [less, equal) = pivot
-         * [equal, larger) > pivot
-         * [fast, right) to check
-         */
-        int less = left;
-        int equal = left;
-        int larger;
-        for (larger = left; larger < right; larger++) {
-            if (nums[larger] < pivot) {
-                // 只能按照这个顺序，或者逆顺序。不能先less和larger交换, 否则不满足equal >= less
-                swap(nums, equal, larger);
-                swap(nums, less, equal);
-                equal++;
-                less++;
-            } else if (nums[larger] == pivot) {
-                swap(nums, equal, larger);
-                equal++;
+        boolean firstloop = true;
+        while (true) {
+            int pivotIndex = firstloop ? k - 1 : left + (int) (Math.random() * (right - left + 1));
+            firstloop = false;
+            int pivot = nums[pivotIndex];
+            swap(nums, pivotIndex, right);
+            
+            //use less, equal, larger pointers, 3 pointers forward
+            /*
+             * [left, less) < pivot
+             * [less, equal) = pivot
+             * [equal, larger] remain to check
+             * (larger, right - 1] > pivot
+             */
+            int less = left;
+            int equal = left;
+            int larger = right - 1;
+            while (equal <= larger) {
+                if (nums[equal] < pivot) {
+                    swap(nums, less, equal);
+                    equal++;
+                    less++;
+                } else if (nums[equal] == pivot) {
+                    equal++;
+                } else { // nums[equal] > pivot
+                    swap(nums, equal, larger);
+                    larger--;
+                }
             }
-        }
-        swap(nums, equal, right); // move the pivot from right to the real place
-        // [left, less) < pivot,
-        // [less, equal] == pivot,
-        // (equal, right] > pivot
-        // After operation, the target(pivot) 's index is equal;
-        if (less <= k - 1 && k - 1 <= equal) {
-            return nums[less];
-        } else if (k - 1 > equal) {
-            return findPosPartition(k, equal + 1, right, nums);
-        } else {
-            return findPosPartition(k, left, less - 1, nums);
+            swap(nums, equal, right); // move the pivot from right to the real place
+            // [left, less) < pivot,
+            // [less, equal] == pivot,
+            // (equal, right] > pivot
+            // After operation, the target(pivot) 's index is equal;
+            if (less <= k - 1 && k - 1 <= equal) {
+                return nums[less];
+            } else if (k - 1 > equal) {
+                left = equal + 1;
+            } else {
+                right = less - 1;
+            }
         }
     }
     
-    // find the smallest number that >= target
-    private int findMiddleRight(int k, int[] nums) {
-        int res = Integer.MAX_VALUE;
-        for (int i = k; i < nums.length; i++) {
-            res = Math.min(res, nums[i]);
+    private int mapIndex(int i, int k, int len) {
+        if (i <= k) {
+            return - 2 * i + 2 * k;
+        } else {
+            return -2 * i + 2 * k + len + 1;
         }
-        return res;
     }
     
     private void swap(int[] array, int i, int j) {
@@ -211,12 +215,11 @@ class Solution1 {
 }
 
 // Solution 2_1: quick selection to find middle value and then arrange the whole nums
-// Average T(n) = O(n), worst case T(n) = O(n^2),
-// S(n) = O(1) tail recursion所以空间复杂度是O(1)，可以改成while循环
-// 34 ms,击败了22.34% 的Java用户, 43.6 MB,击败了11.28% 的Java用户
+// Average T(n) = O(n), worst case T(n) = O(n^2), S(n) = O(1)
+// 4 ms,击败了50.59% 的Java用户, 42.6 MB,击败了23.21% 的Java用户
 /*
 使用quick selection，中位数对应的两个数字middleLeft和middleRight,
-    分成2个point找middle left，一个 <,一个 >=
+    分成3个point找middle left，一个 <,一个 =, 一个 >, unstable的方法
 把所有比中位数小的数字从前往后放到奇数位置上
 把所有比中位数大的数字，从后往前放到偶数位置上
  */
@@ -228,9 +231,9 @@ class Solution2_1 {
             return;
         }
         int len = nums.length;
-        int k = (len + 1) / 2;
-        int middleLeft = findPosPartition(k, 0, len - 1, nums); // kth smallest value
-        int middleRight = findMiddleRight(k, nums);
+        int k = (len - 1) / 2;
+        int middleLeft = findPosPartition(k, 0, len - 1, nums);
+        int middleRight = findPosPartition(k + 1, 0, len - 1, nums);
         /*
         将偶数index数字都设置成 <= middleLeft
             == middleLeft的部分都尽可能放在左边
@@ -240,8 +243,8 @@ class Solution2_1 {
         int left = 0; // [0, left] is middleLeft, even pointer
         int right = (len % 2 == 0 ? len - 1 : len - 2); //[right, end] is middleRight, pdd pointer
         
-        swap(nums, k - 1, left);
-        swap(nums, k, right);
+        swap(nums, k, left);
+        swap(nums, k + 1, right);
         
         int evenP = (len % 2 == 0 ? len - 2 : len - 1); // even pointer, <-
         int oddP = 1; // odd pointer, ->
@@ -275,46 +278,52 @@ class Solution2_1 {
         }
     }
     
-    // using quick selection to find kth smallest value in nums and put it the right place
+    // using quick selection to find kth smallest(start from 0) value in nums
+    // and put it the right place
     // average T(n) = O(n), worst T(n) = O(n^2), average S(n) = O(lg(n)), worst S(n) = O(n)
     private int findPosPartition(int k, int left, int right, int[] nums) {
-        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivot = nums[pivotIndex];
-        swap(nums, pivotIndex, right);
-        
-        // S2: use slow and fast pointers, two pointers forward, stable
-        /*
-         * [0, slow) < pivot
-         * [slow, fast) >= pivot
-         * [fast, length - 2) to check
-         */
-        int slow = left;
-        int fast;
-        for (fast = left; fast < right; fast++) {
-            if (nums[fast] < pivot) {
-                swap(nums, slow, fast);
-                slow++;
+        boolean firstloop = true;
+        while (true) {
+            int pivotIndex = firstloop ? k : left + (int) (Math.random() * (right - left + 1));
+            firstloop = false;
+            int pivot = nums[pivotIndex];
+            swap(nums, pivotIndex, right);
+            
+            //use less, equal, larger pointers, 3 pointers forward
+            /*
+             * [left, less) < pivot
+             * [less, equal) = pivot
+             * [equal, larger] remain to check
+             * (larger, right - 1] > pivot
+             */
+            int less = left;
+            int equal = left;
+            int larger = right - 1;
+            while (equal <= larger) {
+                if (nums[equal] < pivot) {
+                    swap(nums, less, equal);
+                    equal++;
+                    less++;
+                } else if (nums[equal] == pivot) {
+                    equal++;
+                } else { // nums[equal] > pivot
+                    swap(nums, equal, larger);
+                    larger--;
+                }
+            }
+            swap(nums, equal, right); // move the pivot from right to the real place
+            // [left, less) < pivot,
+            // [less, equal] == pivot,
+            // (equal, right] > pivot
+            // After operation, the target(pivot) 's index is equal;
+            if (less <= k && k <= equal) {
+                return nums[less];
+            } else if (k > equal) {
+                left = equal + 1;
+            } else {
+                right = less - 1;
             }
         }
-        swap(nums, slow, right); // move the pivot from right to the real place
-        
-        // After operation, the target(pivot) 's index is slow;
-        if (k == slow + 1) {
-            return nums[slow];
-        } else if (k > slow + 1) {
-            return findPosPartition(k, slow + 1, right, nums);
-        } else {
-            return findPosPartition(k, left, slow - 1, nums);
-        }
-    }
-    
-    // find the smallest number that >= target
-    private int findMiddleRight(int k, int[] nums) {
-        int res = Integer.MAX_VALUE;
-        for (int i = k; i < nums.length; i++) {
-            res = Math.min(res, nums[i]);
-        }
-        return res;
     }
     
     private void swap(int[] array, int i, int j) {
@@ -324,13 +333,12 @@ class Solution2_1 {
     }
 }
 
-// Solution 2_1: quick selection to find middle value and then arrange the whole nums
-// Average T(n) = O(n), worst case T(n) = O(n^2),
-// S(n) = O(1) tail recursion所以空间复杂度是O(1)，可以改成while循环
-// 5 ms,击败了45.97% 的Java用户, 42.4 MB,击败了30.25% 的Java用户
+// Solution 2_2: quick selection to find middle value and then arrange the whole nums
+// Average T(n) = O(n), worst case T(n) = O(n^2),S(n) = O(1)
+// 5 ms,击败了45.56% 的Java用户, 42.6 MB,击败了23.21% 的Java用户
 /*
 使用quick selection，中位数对应的两个数字middleLeft和middleRight,
-    分成3个pointer找middle left, 一个 < , 一个 =, 一个>
+    分成3个pointer找middle left, 一个 < , 一个 =, 一个> stable的方法
 把所有比中位数小的数字从前往后放到奇数位置上
 把所有比中位数大的数字，从后往前放到偶数位置上
  */
@@ -342,9 +350,9 @@ class Solution2_2 {
             return;
         }
         int len = nums.length;
-        int k = (len + 1) / 2;
+        int k = (len - 1) / 2;
         int middleLeft = findPosPartition(k, 0, len - 1, nums); // kth smallest value
-        int middleRight = findMiddleRight(k, nums);
+        int middleRight = findPosPartition(k + 1, 0, len - 1, nums);
         /*
         将偶数index数字都设置成 <= middleLeft
             == middleLeft的部分都尽可能放在左边
@@ -354,8 +362,8 @@ class Solution2_2 {
         int left = 0; // [0, left] is middleLeft, even pointer
         int right = (len % 2 == 0 ? len - 1 : len - 2); //[right, end] is middleRight, pdd pointer
         
-        swap(nums, k - 1, left);
-        swap(nums, k, right);
+        swap(nums, k, left);
+        swap(nums, k + 1, right);
         
         int evenP = (len % 2 == 0 ? len - 2 : len - 1); // even pointer, <-
         int oddP = 1; // odd pointer, ->
@@ -389,56 +397,52 @@ class Solution2_2 {
         }
     }
     
-    // using quick selection to find kth smallest value in nums and put it the right place
+    // using quick selection to find kth smallest(start from 0) value in nums
+    // and put it the right place
     // average T(n) = O(n), worst T(n) = O(n^2), average S(n) = O(lg(n)), worst S(n) = O(n)
     private int findPosPartition(int k, int left, int right, int[] nums) {
-        int pivotIndex = left + (int) (Math.random() * (right - left + 1));
-        int pivot = nums[pivotIndex];
-        swap(nums, pivotIndex, right);
+        boolean firstloop = true;
+        while (true) {
+            int pivotIndex = firstloop ? k : left + (int) (Math.random() * (right - left + 1));
+            firstloop = false;
+            int pivot = nums[pivotIndex];
+            swap(nums, pivotIndex, right);
         
-        //use less, equal, larger pointers, 3 pointers forward
-        /*
-         * [left, less) < pivot
-         * [less, equal) = pivot
-         * [equal, larger) > pivot
-         * [fast, right) to check
-         */
-        int less = left;
-        int equal = left;
-        int larger;
-        for (larger = left; larger < right; larger++) {
-            if (nums[larger] < pivot) {
-                // 只能按照这个顺序，或者逆顺序。不能先less和larger交换, 否则不满足equal >= less
-                swap(nums, equal, larger);
-                swap(nums, less, equal);
-                equal++;
-                less++;
-            } else if (nums[larger] == pivot) {
-                swap(nums, equal, larger);
-                equal++;
+            //use less, equal, larger pointers, 3 pointers forward
+            /*
+             * [left, less) < pivot
+             * [less, equal) = pivot
+             * [equal, larger) > pivot
+             * [fast, right) remain to check
+             */
+            int less = left;
+            int equal = left;
+            int larger;
+            for (larger = left; larger < right; larger++) {
+                if (nums[larger] < pivot) {
+                    // 只能按照这个顺序，或者逆顺序。不能先less和larger交换, 否则不满足equal >= less
+                    swap(nums, equal, larger);
+                    swap(nums, less, equal);
+                    equal++;
+                    less++;
+                } else if (nums[larger] == pivot) {
+                    swap(nums, equal, larger);
+                    equal++;
+                }
+            }
+            swap(nums, equal, right); // move the pivot from right to the real place
+            // [left, less) < pivot,
+            // [less, equal] == pivot,
+            // (equal, right] > pivot
+            // After operation, the target(pivot) 's index is equal;
+            if (less <= k && k <= equal) {
+                return nums[less];
+            } else if (k > equal) {
+                left = equal + 1;
+            } else {
+                right = less - 1;
             }
         }
-        swap(nums, equal, right); // move the pivot from right to the real place
-        // [left, less) < pivot,
-        // [less, equal] == pivot,
-        // (equal, right] > pivot
-        // After operation, the target(pivot) 's index is equal;
-        if (less <= k - 1 && k - 1 <= equal) {
-            return nums[less];
-        } else if (k - 1 > equal) {
-            return findPosPartition(k, equal + 1, right, nums);
-        } else {
-            return findPosPartition(k, left, less - 1, nums);
-        }
-    }
-    
-    // find the smallest number that >= target
-    private int findMiddleRight(int k, int[] nums) {
-        int res = Integer.MAX_VALUE;
-        for (int i = k; i < nums.length; i++) {
-            res = Math.min(res, nums[i]);
-        }
-        return res;
     }
     
     private void swap(int[] array, int i, int j) {
@@ -447,4 +451,5 @@ class Solution2_2 {
         array[j] = temp;
     }
 }
+
 }

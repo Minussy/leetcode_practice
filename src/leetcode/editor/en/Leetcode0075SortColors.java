@@ -40,33 +40,32 @@ public class Leetcode0075SortColors{
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
     public void sortColors(int[] nums) {
-    /*pOne, pTwo, pThree
-    0 in [0,pZero)
-    1 in [pZero,pOne)
-    2 in [pOne, pTwo)
-    to be checked in [pTwo, pThree)
-    */
+        
+        /*pOne, pTwo, pThree
+        0 in [0,pZero)
+        1 in [pZero,pOne)
+        to be checked in [pOne, pTwo)
+        2 in (pTwo, right]
+        */
         if (nums == null || nums.length == 0) {
             return;
         }
-
+        int right = nums.length - 1;
         int pZero = 0;
         int pOne = 0;
-        int pTwo = 0;
-        int right = nums.length - 1;
-        for (pTwo = right; pOne <= pTwo; ) {
+        int pTwo = right;
+        while (pOne <= pTwo) {
             if (nums[pOne] == 0) {
                 swap(nums, pZero++, pOne++);
-            }
-            else if (nums[pOne] == 1) {
+            } else if (nums[pOne] == 1) {
                 pOne++;
-            }
-            else { // nums[pTwo] ==2
+            } else { // nums[pTwo] ==2
                 swap(nums, pOne, pTwo--);
             }
         }
-
+        
     }
     public void swap(int[] nums, int i, int j) {
         int temp = nums[i];
