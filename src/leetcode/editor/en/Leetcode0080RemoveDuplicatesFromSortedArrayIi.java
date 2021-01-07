@@ -61,6 +61,12 @@ public class Leetcode0080RemoveDuplicatesFromSortedArrayIi{
         System.out.println();
     }
 //leetcode submit region begin(Prohibit modification and deletion)
+/*
+[0, slow) solution so far
+[slow, fast) i don't care 可以被reuse的区域
+[fast, array.length - 1] remain to check 不能被override的区域
+*/
+
 class Solution {
     public int removeDuplicates(int[] nums) {
         // corner case
