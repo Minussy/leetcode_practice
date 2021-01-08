@@ -33,15 +33,22 @@ public class Leetcode0011ContainerWithMostWater{
         
         System.out.println();
     }
-    //leetcode submit region begin(Prohibit modification and deletion)
-// 2 pointers
+//leetcode submit region begin(Prohibit modification and deletion)
+// 2 pointers T(n) = O(n), S(n) = O(1)
+/**
+ * left和right分别初始化为最左边和最右两边的板。
+ * 然后移动left和right的板里面短的那个。因为水桶的高度= min(left的高度，right的高度) * (right - left)
+ * 往中间找更高的板的长度
+ * 证明：https://leetcode-cn.com/problems/container-with-most-water/solution/shuang-zhi-zhen-fa-zheng-que-xing-zheng-ming-by-r3/
+ */
 class Solution {
     public int maxArea(int[] height) {
         int maxArea = 0;
         int left = 0;
         int right = height.length - 1;
         while (left < right) {
-            maxArea = Math.max(maxArea, (right - left) * Math.min(height[left], height[right]));
+            int area = (right - left) * Math.min(height[left], height[right]);
+            maxArea = Math.max(maxArea, area);
             if (height[left] < height[right]) {
                 left++;
             } else {
