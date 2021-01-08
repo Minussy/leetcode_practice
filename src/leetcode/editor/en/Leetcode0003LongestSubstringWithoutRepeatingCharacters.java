@@ -135,7 +135,8 @@ class Solution2 {
             return 0;
         }
         int len = s.length();
-        // use moving window[left, right], the char inside has not duplicates, and traverse the s
+        // use moving window[left, right],
+        // the char inside does not have duplicates, and traverse the String s
         int left = 0;
         int right = 0;
         int maxLen = 0;
