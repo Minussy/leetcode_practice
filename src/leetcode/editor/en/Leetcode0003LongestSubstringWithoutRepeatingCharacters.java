@@ -71,21 +71,18 @@ class Solution {
             return 0;
         }
         int len = s.length();
-        // use moving window[left, right), the char inside has not duplicates, and traverse the s
+        // use moving window[left, right], the char inside has not duplicates, and traverse the s
         int left = 0;
-        int right = 1;
-        int maxLen = 1;
-        Set<Character> visited = new HashSet<>(); // to store the char in the window
-        visited.add(s.charAt(left));
-        while (right < len) {
-            if (!visited.contains(s.charAt(right))) {
-                visited.add(s.charAt(right));
-                right++;
-            } else {
-                visited.remove(s.charAt(left));
-                left++;
+        int right = 0;
+        int maxLen = 0;
+        Map<Character, Integer> charToIndex = new HashMap<>();
+        for (right = 0; right < len; right++) {
+            char ch = s.charAt(right);
+            if (charToIndex.containsKey(ch)) {
+                left = Math.max(left, charToIndex.get(ch) + 1);// 注意：start可能在上次出现位置之后！
             }
-            maxLen = Math.max(maxLen, visited.size());
+            maxLen = Math.max(maxLen, right - left + 1);
+            charToIndex.put(ch, right);
         }
         return maxLen;
     }
@@ -140,18 +137,16 @@ class Solution2 {
         int len = s.length();
         // use moving window[left, right], the char inside has not duplicates, and traverse the s
         int left = 0;
-        int right = 1;
-        int maxLen = 1;
+        int right = 0;
+        int maxLen = 0;
         Map<Character, Integer> charToIndex = new HashMap<>();
-        charToIndex.put(s.charAt(left), left);
-        while (right < len) {
+        for (right = 0; right < len; right++) {
             char ch = s.charAt(right);
             if (charToIndex.containsKey(ch)) {
                 left = Math.max(left, charToIndex.get(ch) + 1);// 注意：start可能在上次出现位置之后！
             }
             maxLen = Math.max(maxLen, right - left + 1);
             charToIndex.put(ch, right);
-            right++;
         }
         return maxLen;
     }
