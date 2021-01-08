@@ -59,6 +59,8 @@ class Solution {
     
 }
 //leetcode submit region end(Prohibit modification and deletion)
+// 面试的时候，用Solution 2_2
+
 // Solution 1: dp, leftMax, rightMax, T(n) =  O(n), S(n) = O(n), 3 pass, can be reduced to 2 pass.
 // 1 ms,击败了83.33% 的Java用户, 38.5 MB,击败了58.35% 的Java用户
 class Solution1 {
