@@ -144,19 +144,6 @@ enum Status {
     DONE
 }
 
-class Node {
-    
-    int label;
-    List<Integer> precourses;
-    Status status;
-    
-    public Node(int label) {
-        this.label = label;
-        precourses = new ArrayList<>();
-        status = Status.INITIAL;
-    }
-}
-
 class Solution1 {
     
     public int[] findOrder(int numCourses, int[][] prerequisites) {
@@ -218,6 +205,19 @@ class Solution1 {
         courses[idx].status = Status.DONE;
         res.addFirst(idx);
         return false;
+    }
+    
+    class Node {
+        
+        int label;
+        List<Integer> precourses;
+        Status status;
+        
+        public Node(int label) {
+            this.label = label;
+            precourses = new ArrayList<>();
+            status = Status.INITIAL;
+        }
     }
     
 }
