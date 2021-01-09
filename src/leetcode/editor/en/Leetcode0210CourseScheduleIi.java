@@ -103,13 +103,13 @@ class Solution {
             }
         }
         int count = 0; // 查环用
-        int[] res = new int[numCourses];
+        int[] res = new int[numCourses]; // topologicalOrder
         
         // BFS
         while (!queue.isEmpty()) {
             int cur = queue.poll();
             res[count++] = cur;
-            if (graph.containsKey(cur)) {
+            if (graph.containsKey(cur)) { // else this course is not prerequisites of any other
                 for (int course : graph.get(cur)) {
                     inDegree[course]--;
                     if (inDegree[course] == 0) {
@@ -160,7 +160,7 @@ class Node {
 class Solution1 {
     
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        LinkedList<Integer> res = new LinkedList<>();
+        LinkedList<Integer> res = new LinkedList<>();// topologicalOrder
         if (prerequisites == null || prerequisites.length == 0 || prerequisites[0] == null
                 || prerequisites[0].length == 0) {
             int[] ans = new int[numCourses];
@@ -245,13 +245,13 @@ class Solution2 {
             }
         }
         int count = 0; // 查环用
-        int[] res = new int[numCourses];
+        int[] res = new int[numCourses]; // topologicalOrder
         
         // BFS
         while (!queue.isEmpty()) {
             int cur = queue.poll();
             res[count++] = cur;
-            if (graph.containsKey(cur)) {
+            if (graph.containsKey(cur)) { // else this course is not prerequisites of any other
                 for (int course : graph.get(cur)) {
                     inDegree[course]--;
                     if (inDegree[course] == 0) {
