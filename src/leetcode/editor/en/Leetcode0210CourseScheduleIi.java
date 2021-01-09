@@ -57,9 +57,11 @@ package leetcode.editor.en;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Queue;
 
 // 2020-09-07 00:37:45
@@ -76,8 +78,8 @@ public class Leetcode0210CourseScheduleIi {
 	public static void main(String[] args) {
 		Solution sol = new Leetcode0210CourseScheduleIi().new Solution();
 		// TO TEST
-		int numCourses = 4;
-		int[][] prerequeisites = {{1, 0}, {2, 0}, {3, 1}, {3, 2}};
+		int numCourses = 2;
+		int[][] prerequeisites = {{1, 0}};
 		int[] res = sol.findOrder(numCourses, prerequeisites);
 		System.out.println(Arrays.toString(res));
 	}
@@ -86,15 +88,12 @@ public class Leetcode0210CourseScheduleIi {
 class Solution {
     
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        // corner case
-        
         //init
         int[] inDegree = new int[numCourses];
         
         // step 1: build in-degree table
-        for (int[] p : prerequisites) {
-            inDegree[p[0]]++;
-        }
+        // map: key -> value, prerequisites -> next course, update inDegree
+        Map<Integer, List<Integer>> graph = buildGraph(numCourses, prerequisites, inDegree);
         
         // step 2: put points of inDegree == 0 into the queue
         Queue<Integer> queue = new LinkedList<>();
@@ -110,11 +109,11 @@ class Solution {
         while (!queue.isEmpty()) {
             int cur = queue.poll();
             res[count++] = cur;
-            for (int[] p : prerequisites) {
-                if (p[1] == cur) {
-                    inDegree[p[0]]--;
-                    if (inDegree[p[0]] == 0) {
-                        queue.offer(p[0]);
+            if (graph.containsKey(cur)) {
+                for (int course : graph.get(cur)) {
+                    inDegree[course]--;
+                    if (inDegree[course] == 0) {
+                        queue.offer(course);
                     }
                 }
             }
@@ -123,10 +122,22 @@ class Solution {
         return count == numCourses ? res : new int[0];
     }
     
+    private Map<Integer, List<Integer>> buildGraph(int numCourses, int[][] prerequisites,
+            int[] inDegree) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int[] prerequisite : prerequisites) {
+            int prev = prerequisite[1];
+            int cur = prerequisite[0];
+            inDegree[cur]++;
+            map.computeIfAbsent(prev, k -> new LinkedList<>()).add(cur);
+        }
+        return map;
+    }
+    
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: DFS，检测环并且建图
-// 3 ms,击败了93.93% 的Java用户, 40.7 MB,击败了22.31% 的Java用户
+// Solution 1: DFS，检测环并且建图, T(v,e) = O(v + e), S(v, e) = O(v + e)
+// 3 ms,击败了93.93% 的Java用户, 40.3 MB,击败了51.13% 的Java用户
 enum Status {
     INITIAL,
     PROCESSING,
@@ -212,22 +223,19 @@ class Solution1 {
 }
 
 // Solution 2: in-Degree
-// 19 ms,击败了14.99% 的Java用户, 40.3 MB,击败了48.22% 的Java用户
+// 5 ms,击败了67.96% 的Java用户, 39.5 MB,击败了96.71% 的Java用户
 /**
  * 每次都选则没有先修课要求，或者自己已经满足先修课要求的课一次次往更高level的课选课
  */
 class Solution2 {
     
     public int[] findOrder(int numCourses, int[][] prerequisites) {
-        // corner case
-        
         //init
         int[] inDegree = new int[numCourses];
         
         // step 1: build in-degree table
-        for (int[] p : prerequisites) {
-            inDegree[p[0]]++;
-        }
+        // map: key -> value, prerequisites -> next course, update inDegree
+        Map<Integer, List<Integer>> graph = buildGraph(numCourses, prerequisites, inDegree);
         
         // step 2: put points of inDegree == 0 into the queue
         Queue<Integer> queue = new LinkedList<>();
@@ -243,17 +251,29 @@ class Solution2 {
         while (!queue.isEmpty()) {
             int cur = queue.poll();
             res[count++] = cur;
-            for (int[] p : prerequisites) {
-                if (p[1] == cur) {
-                    inDegree[p[0]]--;
-                    if (inDegree[p[0]] == 0) {
-                        queue.offer(p[0]);
+            if (graph.containsKey(cur)) {
+                for (int course : graph.get(cur)) {
+                    inDegree[course]--;
+                    if (inDegree[course] == 0) {
+                        queue.offer(course);
                     }
                 }
             }
         }
         
         return count == numCourses ? res : new int[0];
+    }
+    
+    private Map<Integer, List<Integer>> buildGraph(int numCourses, int[][] prerequisites,
+            int[] inDegree) {
+        Map<Integer, List<Integer>> map = new HashMap<>();
+        for (int[] prerequisite : prerequisites) {
+            int prev = prerequisite[1];
+            int cur = prerequisite[0];
+            inDegree[cur]++;
+            map.computeIfAbsent(prev, k -> new LinkedList<Integer>()).add(cur);
+        }
+        return map;
     }
     
 }
