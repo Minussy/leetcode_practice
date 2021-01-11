@@ -1859,6 +1859,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0432AllOoneDataStructure.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0432AllOoneDataStructure.java" />
+              <option name="questionId" value="432" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0435NonOverlappingIntervals.java">
           <value>
             <LeetcodeEditor>
@@ -2192,6 +2200,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0721AccountsMerge.java" />
               <option name="questionId" value="721" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0732MyCalendarIii.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0732MyCalendarIii.java" />
+              <option name="questionId" value="732" />
             </LeetcodeEditor>
           </value>
         </entry>

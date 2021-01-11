@@ -40,51 +40,227 @@ public class Leetcode0472ConcatenatedWords{
     public static void main(String[] args) {
         Solution sol = new Leetcode0472ConcatenatedWords().new Solution();
         // TO TEST
-        String[] words = {"cat","cats","catsdogcats","dog","dogcatsdog","hippopotamuses","rat","ratcatdogcat"};
+        String[] words = {"rfkqyuqfjkx",""};
         List<String> res = sol.findAllConcatenatedWordsInADict(words);
-        System.out.println(res);
+        System.out.println(res.size());
     }
 //leetcode submit region begin(Prohibit modification and deletion)
-// Solution 1: DFS
 class Solution {
     
-    int min; // the min length of the word
-    
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        
-        Set<String> set = new HashSet<>(10000);
         List<String> res = new ArrayList<>();
-        min = Integer.MAX_VALUE;
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.add(word);
-            min = Math.min(min, word.length());
+        // corner case
+        if (words == null || words.length <= 1) {
+            return res;
         }
+        Trie trie = new Trie();
         for (String word : words) {
-            if (check(set, word, 0)) {
+            trie.insert(word);
+        }
+        
+        for (String word : words) {
+            if (dfs(trie, word.toCharArray(), 0, false, new Boolean[word.length() + 1])) {
                 res.add(word);
             }
         }
         return res;
     }
     
-    private boolean check(Set<String> set, String word, int start) {
-        for (int i = start + min; i <= word.length() - min; i++) {
-            if (set.contains(word.substring(start, i)) &&
-                    (set.contains(word.substring(i)) || check(set, word, i))) {
-                return true;
+    // search from word[start, end] including
+    private boolean dfs(Trie trie, char[] word, int start, boolean isCut, Boolean[] dp) {
+        int len = word.length;
+        if (dp[start] != null) {
+            return dp[start];
+        }
+        // base case
+        if (start == len) {
+            dp[start] = isCut; // 不能return true;因为如果这个字符是""（空字符）的时候会有问题
+            return isCut;
+        }
+        
+        for (int i = start; i < word.length; i++) {
+            if (i == len - 1 && !isCut) {
+                dp[start] = false;
+                return false;
+            }
+            if (trie.search(word, start, i)) {
+                // cut = true;
+                if (dfs(trie, word, i + 1, true, dp)) {
+                    dp[start] = true;
+                    return true;
+                }
             }
         }
+        dp[start] = false;
         return false;
+    }
+    
+    class Trie {
+        
+        class TrieNode {
+            
+            boolean isWord = false;
+            TrieNode[] children;
+            
+            TrieNode() {
+                children = new TrieNode[26];
+            }
+        }
+        
+        TrieNode root;
+        
+        Trie() {
+            root = new TrieNode();
+        }
+        
+        public void insert(String word) {
+            TrieNode node = root;
+            for (char ch : word.toCharArray()) {
+                if (node.children[ch - 'a'] == null) {
+                    node.children[ch - 'a'] = new TrieNode();
+                }
+                node = node.children[ch - 'a'];
+            }
+            node.isWord = true;
+        }
+        
+        public boolean search(char[] word, int start, int end) {
+            TrieNode node = root;
+            for (int i = start; i <= end; i++) {
+                char ch = word[i];
+                if (node.children[ch - 'a'] == null) {
+                    return false;
+                }
+                node = node.children[ch - 'a'];
+            }
+            return node.isWord;
+            
+        }
+        
+        public boolean startsWith(String prefix) {
+            TrieNode node = root;
+            for (char ch : prefix.toCharArray()) {
+                if (node.children[ch - 'a'] == null) {
+                    return false;
+                }
+                node = node.children[ch - 'a'];
+            }
+            return true;
+        }
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
+// Solution 1_1: DFS + pruning 24ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
+// 656 ms,击败了15.25% 的Java用户, 145.4 MB,击败了5.04% 的Java用户
+/*
+先算出单词的最小长度min，dfs的时候，带着这个参数，会快很多，每次至少检测长度为min的单词
+ */
+class Solution1_1 {
+    
+    int min; // the min length of the word
+    
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        List<String> res = new ArrayList<>();
+        if (words == null || words.length == 1) {
+            return res;
+        }
+        Set<String> set = new HashSet<>(Arrays.asList(words));
+        min = Integer.MAX_VALUE;
+        for (String word : words) {
+            if (word.length() > 0) {
+                min = Math.min(min, word.length());
+            }
+        }
+        // min = 1;
+        for (String word : words) {
+            if (word.length() == 0) {
+                continue;
+            }
+            set.remove(word);
+            if (check(0, word, set, new Boolean[word.length() + 1])) {
+                res.add(word);
+            }
+            set.add(word);
+        }
+        return res;
+    }
+    
+    private boolean check(int start, String word, Set<String> set, Boolean[] memo) {
+        if (memo[start] != null) {
+            return memo[start];
+        }
+        for (int i = start + min; i <= word.length() - min; i++) {
+            if (set.contains(word.substring(start, i)) &&
+                    (set.contains(word.substring(i)) || check(i, word, set, memo))) {
+                memo[start] = true;
+                return true;
+            }
+        }
+        memo[start] = false;
+        return false;
+    }
+}
 
-// Solution 1: DP, 477ms, 算法复杂度为O(nm^2)。n为数组长度,m为数组中字符串平均长度
-class Solution1 {
+// Solution 1_2: DFS + pruning, 31ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
+// 381 ms,击败了34.72% 的Java用户, 45.2 MB,击败了89.70% 的Java用户
+class Solution1_2 {
+    
+    int min; // the min length of the word
+    
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        List<String> res = new ArrayList<>();
+        if (words == null || words.length == 1) {
+            return res;
+        }
+        Set<String> set = new HashSet<>(Arrays.asList(words));
+        min = Integer.MAX_VALUE;
+        for (String word : words) {
+            if (word.length() > 0) {
+                min = Math.min(min, word.length());
+            }
+        }
+        // min = 1;
+        for (String word : words) {
+            if (word.length() == 0) {
+                continue;
+            }
+            set.remove(word);
+            if (dfs(0, word, set, new Boolean[word.length() + 1])) {
+                res.add(word);
+            }
+            set.add(word);
+        }
+        return res;
+    }
+    
+    private boolean dfs(int start, String word, Set<String> set, Boolean[] memo) {
+        if (memo[start] != null) {
+            return memo[start];
+        }
+        // base case, success case
+        if (start == word.length() || set.contains(word.substring(start))) {
+            memo[start] = true;
+            return true;
+        }
+        
+        for (int i = Math.max(start + min, 1); i <= word.length() - Math.max(min, 1); i++) {
+            String str = word.substring(start, i); // [idx, i)
+            if (set.contains(str)) {
+                if (dfs(i, word, set, memo)) { // only difference between this and Solution1_1
+                    memo[start] = true;
+                    return true;
+                }
+            }
+        }
+        memo[start] = false;
+        return false;
+    }
+}
+
+// Solution 2: DP, T(n, m) = O(nm^2)。n为数组长度,m为数组中字符串平均长度
+// 644 ms,击败了17.38% 的Java用户,47.5 MB,击败了36.22% 的Java用户
+class Solution2 {
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
         List<String> res = new ArrayList<>();
         // corner case
@@ -123,168 +299,70 @@ class Solution1 {
     }
 }
 
-// Solution 2_1: DFS 24ms, 算法复杂度为O(nm)。n为数组长度,m为数组中字符串平均长度
-/*
-先算出单词的最小长度min，dfs的时候，带着这个参数，会快很多，每次至少检测长度为min的单词
- */
-class Solution2_1 {
-    
-    int min; // the min length of the word
-    
-    public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        
-        Set<String> set = new HashSet<>(10000);
-        List<String> res = new ArrayList<>();
-        min = Integer.MAX_VALUE;
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.add(word);
-            min = Math.min(min, word.length());
-        }
-        for (String word : words) {
-            if (check(set, word, 0)) {
-                res.add(word);
-            }
-        }
-        return res;
-    }
-    
-    private boolean check(Set<String> set, String word, int start) {
-        for (int i = start + min; i <= word.length() - min; i++) {
-            if (set.contains(word.substring(start, i)) &&
-                    (set.contains(word.substring(i)) || check(set, word, i))) {
-                return true;
-            }
-        }
-        return false;
-    }
-}
 
-// Solution 2_2: DFS in my template, 31ms, 算法复杂度为O(nm)。n为数组长度,m为数组中字符串平均长度
-class Solution2_2 {
-    
-    int min; // the min length of the word
-    
-    public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        List<String> res = new ArrayList<>();
-        if (words == null || words.length == 1) {
-            return res;
-        }
-        Set<String> set = new HashSet<>(10000);
-        min = Integer.MAX_VALUE;
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.add(word);
-            min = Math.min(min, word.length());
-        }
-        // min = 1;
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.remove(word);
-            if (dfs(set, word, 0)) {
-                res.add(word);
-            }
-            set.add(word);
-        }
-        return res;
-    }
-    
-    private boolean dfs(Set<String> set, String word, int idx) {
-        // base case, success case
-        if (idx == word.length() || set.contains(word.substring(idx))) {
-            return true;
-        }
-        
-        for (int i = idx + min; i <= word.length() - min; i++) {
-            String str = word.substring(idx, i); // [idx, i)
-            if (set.contains(str)) {
-                if (dfs(set, word, i)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-}
-
-// Solution 2_3: DFS in my template with pruning,65ms, 算法复杂度为O(nm)。n为数组长度,m为数组中字符串平均长度
-class Solution1_4 {
-    
-    int min; // the min length of the word
-    
-    public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        List<String> res = new ArrayList<>();
-        if (words == null || words.length == 1) {
-            return res;
-        }
-        Set<String> set = new HashSet<>(10000);
-        min = Integer.MAX_VALUE;
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.add(word);
-            min = Math.min(min, word.length());
-        }
-        for (String word : words) {
-            if (word.length() == 0) {
-                continue;
-            }
-            set.remove(word);
-            int len = word.length();
-            Boolean[] memo = new Boolean[len + 1];
-            if (dfs(set, word, 0, memo)) {
-                res.add(word);
-            }
-            set.add(word);
-        }
-        return res;
-    }
-    
-    private boolean dfs(Set<String> set, String word, int idx, Boolean[] memo) {
-        if (memo[idx] != null) {
-            return memo[idx];
-        }
-        // base case, success case
-        if (set.contains(word.substring(idx))) {
-            memo[idx] = true;
-            return true;
-        }
-        
-        for (int i = idx + min; i <= word.length() - min; i++) {
-            String str = word.substring(idx, i); // [idx, i)
-            if (set.contains(str)) {
-                if (dfs(set, word, i, memo)) {
-                    memo[i] = true;
-                    return true;
-                }
-            }
-        }
-        memo[idx] = false;
-        return false;
-    }
-}
-
-// Solution 3: Trie + DFS, 142ms, 算法复杂度为O(nm)。n为数组长度,m为数组中字符串平均长度
+// Solution 3: Trie + DFS, 142ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
+// 740 ms,击败了13.80% 的Java用户, 48.5 MB,击败了29.60% 的Java用户
 class Solution3 {
     
-    class TrieNode {
-        
-        boolean isWord = false;
-        TrieNode[] children;
-        
-        TrieNode() {
-            children = new TrieNode[26];
+    public List<String> findAllConcatenatedWordsInADict(String[] words) {
+        List<String> res = new ArrayList<>();
+        // corner case
+        if (words == null || words.length <= 1) {
+            return res;
         }
+        Trie trie = new Trie();
+        for (String word : words) {
+            trie.insert(word);
+        }
+        
+        for (String word : words) {
+            if (dfs(trie, word.toCharArray(), 0, false, new Boolean[word.length() + 1])) {
+                res.add(word);
+            }
+        }
+        return res;
+    }
+    
+    // search from word[start, end] including
+    private boolean dfs(Trie trie, char[] word, int start, boolean isCut, Boolean[] dp) {
+        int len = word.length;
+        if (dp[start] != null) {
+            return dp[start];
+        }
+        // base case
+        if (start == len) {
+            dp[start] = isCut; // 不能return true;因为如果这个字符是""（空字符）的时候会有问题
+            return isCut;
+        }
+        
+        for (int i = start; i < word.length; i++) {
+            if (i == len - 1 && !isCut) {
+                dp[start] = false;
+                return false;
+            }
+            if (trie.search(word, start, i)) {
+                // cut = true;
+                if (dfs(trie, word, i + 1, true, dp)) {
+                    dp[start] = true;
+                    return true;
+                }
+            }
+        }
+        dp[start] = false;
+        return false;
     }
     
     class Trie {
+        
+        class TrieNode {
+            
+            boolean isWord = false;
+            TrieNode[] children;
+            
+            TrieNode() {
+                children = new TrieNode[26];
+            }
+        }
         
         TrieNode root;
         
@@ -303,9 +381,10 @@ class Solution3 {
             node.isWord = true;
         }
         
-        public boolean search(String word) {
+        public boolean search(char[] word, int start, int end) {
             TrieNode node = root;
-            for (char ch : word.toCharArray()) {
+            for (int i = start; i <= end; i++) {
+                char ch = word[i];
                 if (node.children[ch - 'a'] == null) {
                     return false;
                 }
@@ -325,41 +404,6 @@ class Solution3 {
             }
             return true;
         }
-    }
-    
-    public List<String> findAllConcatenatedWordsInADict(String[] words) {
-        Trie trie = new Trie();
-        for (String word : words) {
-            trie.insert(word);
-        }
-        List<String> res = new ArrayList<>();
-        
-        for (String word : words) {
-            if (dfs(trie, word, false)) {
-                res.add(word);
-            }
-        }
-        return res;
-    }
-    
-    private boolean dfs(Trie trie, String word, boolean isCut) {
-        // base case
-        if (word.equals("")) {
-            return isCut;
-        }
-        for (int i = 0; i < word.length(); i++) {
-            String pre = word.substring(0, i + 1);
-            if (i == word.length() - 1 && !isCut) {
-                return false;
-            }
-            if (trie.search(pre)) {
-                // cut = true;
-                if (dfs(trie, word.substring(i + 1), true)) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }
 }
