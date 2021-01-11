@@ -47,106 +47,47 @@ public class Leetcode0472ConcatenatedWords{
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     
+    int min; // the min length of the word
+    
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
         List<String> res = new ArrayList<>();
-        // corner case
-        if (words == null || words.length <= 1) {
+        if (words == null || words.length == 1) {
             return res;
         }
-        Trie trie = new Trie();
+        Set<String> set = new HashSet<>(Arrays.asList(words));
+        min = Integer.MAX_VALUE;
         for (String word : words) {
-            trie.insert(word);
+            if (word.length() > 0) {
+                min = Math.min(min, word.length());
+            }
         }
-        
+        // min = 1;
         for (String word : words) {
-            if (dfs(trie, word.toCharArray(), 0, false, new Boolean[word.length() + 1])) {
+            if (word.length() == 0) {
+                continue;
+            }
+            set.remove(word);
+            if (check(0, word, set, new Boolean[word.length() + 1])) {
                 res.add(word);
             }
+            set.add(word);
         }
         return res;
     }
     
-    // search from word[start, end] including
-    private boolean dfs(Trie trie, char[] word, int start, boolean isCut, Boolean[] dp) {
-        int len = word.length;
-        if (dp[start] != null) {
-            return dp[start];
+    private boolean check(int start, String word, Set<String> set, Boolean[] memo) {
+        if (memo[start] != null) {
+            return memo[start];
         }
-        // base case
-        if (start == len) {
-            dp[start] = isCut; // 不能return true;因为如果这个字符是""（空字符）的时候会有问题
-            return isCut;
-        }
-        
-        for (int i = start; i < word.length; i++) {
-            if (i == len - 1 && !isCut) {
-                dp[start] = false;
-                return false;
-            }
-            if (trie.search(word, start, i)) {
-                // cut = true;
-                if (dfs(trie, word, i + 1, true, dp)) {
-                    dp[start] = true;
-                    return true;
-                }
+        for (int i = start + min; i <= word.length() - min; i++) {
+            if (set.contains(word.substring(start, i)) &&
+                    (set.contains(word.substring(i)) || check(i, word, set, memo))) {
+                memo[start] = true;
+                return true;
             }
         }
-        dp[start] = false;
+        memo[start] = false;
         return false;
-    }
-    
-    class Trie {
-        
-        class TrieNode {
-            
-            boolean isWord = false;
-            TrieNode[] children;
-            
-            TrieNode() {
-                children = new TrieNode[26];
-            }
-        }
-        
-        TrieNode root;
-        
-        Trie() {
-            root = new TrieNode();
-        }
-        
-        public void insert(String word) {
-            TrieNode node = root;
-            for (char ch : word.toCharArray()) {
-                if (node.children[ch - 'a'] == null) {
-                    node.children[ch - 'a'] = new TrieNode();
-                }
-                node = node.children[ch - 'a'];
-            }
-            node.isWord = true;
-        }
-        
-        public boolean search(char[] word, int start, int end) {
-            TrieNode node = root;
-            for (int i = start; i <= end; i++) {
-                char ch = word[i];
-                if (node.children[ch - 'a'] == null) {
-                    return false;
-                }
-                node = node.children[ch - 'a'];
-            }
-            return node.isWord;
-            
-        }
-        
-        public boolean startsWith(String prefix) {
-            TrieNode node = root;
-            for (char ch : prefix.toCharArray()) {
-                if (node.children[ch - 'a'] == null) {
-                    return false;
-                }
-                node = node.children[ch - 'a'];
-            }
-            return true;
-        }
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
@@ -241,7 +182,7 @@ class Solution1_2 {
         if (memo[start] != null) {
             return memo[start];
         }
-        // base case, success case
+        // base case, success case, difference between this Solution and Solution1_1
         if (start == word.length() || set.contains(word.substring(start))) {
             memo[start] = true;
             return true;
@@ -250,7 +191,7 @@ class Solution1_2 {
         for (int i = Math.max(start + min, 1); i <= word.length() - Math.max(min, 1); i++) {
             String str = word.substring(start, i); // [idx, i)
             if (set.contains(str)) {
-                if (dfs(i, word, set, memo)) { // only difference between this and Solution1_1
+                if (dfs(i, word, set, memo)) { // difference between this Solution and Solution1_1
                     memo[start] = true;
                     return true;
                 }
