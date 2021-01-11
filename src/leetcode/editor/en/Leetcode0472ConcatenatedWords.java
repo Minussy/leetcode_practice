@@ -243,7 +243,6 @@ class Solution2 {
     }
 }
 
-
 // Solution 3: Trie + DFS, 142ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
 // 740 ms,击败了13.80% 的Java用户, 48.5 MB,击败了29.60% 的Java用户
 class Solution3 {
@@ -336,17 +335,6 @@ class Solution3 {
             }
             return node.isWord;
             
-        }
-        
-        public boolean startsWith(String prefix) {
-            TrieNode node = root;
-            for (char ch : prefix.toCharArray()) {
-                if (node.children[ch - 'a'] == null) {
-                    return false;
-                }
-                node = node.children[ch - 'a'];
-            }
-            return true;
         }
     }
 }
