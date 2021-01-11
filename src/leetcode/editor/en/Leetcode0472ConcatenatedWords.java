@@ -151,7 +151,10 @@ class Solution {
 }
 //leetcode submit region end(Prohibit modification and deletion)
 
-// Solution 1_1: DFS + pruning 24ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
+/**面试的时候，用Solution 1_2 **/
+
+
+// Solution 1_1: DFS + pruning, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
 // 656 ms,击败了15.25% 的Java用户, 145.4 MB,击败了5.04% 的Java用户
 /*
 先算出单词的最小长度min，dfs的时候，带着这个参数，会快很多，每次至少检测长度为min的单词
@@ -202,7 +205,7 @@ class Solution1_1 {
     }
 }
 
-// Solution 1_2: DFS + pruning, 31ms, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
+// Solution 1_2: DFS + pruning, T(n, m) = O(nm)。n为数组长度,m为数组中字符串平均长度
 // 381 ms,击败了34.72% 的Java用户, 45.2 MB,击败了89.70% 的Java用户
 class Solution1_2 {
     
@@ -258,7 +261,7 @@ class Solution1_2 {
     }
 }
 
-// Solution 2: DP, T(n, m) = O(nm^2)。n为数组长度,m为数组中字符串平均长度
+// Solution 2: DP, T(n, m) = O(nm^2)。n为数组长度,m为数组中字符串最大长度
 // 644 ms,击败了17.38% 的Java用户,47.5 MB,击败了36.22% 的Java用户
 class Solution2 {
     public List<String> findAllConcatenatedWordsInADict(String[] words) {
@@ -267,7 +270,7 @@ class Solution2 {
         if (words == null || words.length <= 2) {
             return res;
         }
-        Set<String> set = new HashSet(Arrays.asList(words));
+        Set<String> set = new HashSet<>(Arrays.asList(words));
         for (String word: words) {
             set.remove(word);
             if (wordBreak(word, set)) {
