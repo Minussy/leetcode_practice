@@ -107,7 +107,10 @@ public class MyCalendarTwo {
  */
 //leetcode submit region end(Prohibit modification and deletion)
 
-/** 面试的时候，用Solution 1 **/
+/*
+面试的时候，好解释的话，用Solution 1
+要最优解的话，用Solution 3
+ */
 
 // Solution 1: count boundaries
 // T(n) = O(n^2), S(n) = O(n)
@@ -186,7 +189,7 @@ public class MyCalendarTwo2 {
 }
 
 // Solution 3: 最优解，increment the intersection regions
-// T(n) = O(n^2), 只有在每次加入一个区间要更新所有点的时候,才会到O(n^2), S(n) = O(n)
+// T(n) = O(n), 因为每个地方的高度最多只有3, S(n) = O(n)
 // 44 ms,击败了91.73% 的Java用户, 40.7 MB,击败了18.43% 的Java用户
 /*
 只有在每次加入一个区间要更新所有点的时候,才会到O(n^2)
