@@ -82,9 +82,7 @@ class MyCalendarThree {
         int height = map.get(prevPoint) + 1;
         maxHeight = Math.max(maxHeight, height);
         map.put(start, map.get(prevPoint) + 1);
-        if (start != 0 && map.lowerEntry(start).getValue().equals(map.get(start))) {
-            map.remove(start);
-        }
+        
         Integer cur = map.higherKey(start);
         
         while (cur != null && cur < end) {
@@ -98,11 +96,20 @@ class MyCalendarThree {
         if (cur == null || cur > end) { // cur > end
             map.put(end, map.lowerEntry(end).getValue() - 1);
         }
-        if (cur != null && cur == end && map.get(end).equals(map.lowerEntry(end).getValue())) {//
-            // 如果end这个地方一样的话，合并区间
+        mergeSameHeight(start, end, cur);
+        return maxHeight;
+    }
+    
+    private void mergeSameHeight(int start, int end, Integer cur) {
+        // if height at start and height at start's previous point is same, merge it
+        if (start != 0 && map.lowerEntry(start).getValue().equals(map.get(start))) {
+            map.remove(start);
+        }
+        
+        // if height at end and height at end' next point is same, merge it
+        if (cur != null && cur == end && map.get(end).equals(map.lowerEntry(end).getValue())) {
             map.remove(end);
         }
-        return maxHeight;
     }
     
 }
@@ -161,9 +168,7 @@ class MyCalendarThree2 {
         int height = map.get(prevPoint) + 1;
         maxHeight = Math.max(maxHeight, height);
         map.put(start, map.get(prevPoint) + 1);
-        if (start != 0 && map.lowerEntry(start).getValue().equals(map.get(start))) {
-            map.remove(start);
-        }
+        
         Integer cur = map.higherKey(start);
         
         while (cur != null && cur < end) {
@@ -172,16 +177,25 @@ class MyCalendarThree2 {
             map.put(cur, height);
             cur = map.higherKey(cur);
         }
-        
+    
         // post processing, update map -end
         if (cur == null || cur > end) { // cur > end
             map.put(end, map.lowerEntry(end).getValue() - 1);
         }
-        if (cur != null && cur == end && map.get(end).equals(map.lowerEntry(end).getValue())) {//
-            // 如果end这个地方一样的话，合并区间
+        mergeSameHeight(start, end, cur);
+        return maxHeight;
+    }
+    
+    private void mergeSameHeight(int start, int end, Integer cur) {
+        // if height at start and height at start's previous point is same, merge it
+        if (start != 0 && map.lowerEntry(start).getValue().equals(map.get(start))) {
+            map.remove(start);
+        }
+        
+        // if height at end and height at end' next point is same, merge it
+        if (cur != null && cur == end && map.get(end).equals(map.lowerEntry(end).getValue())) {
             map.remove(end);
         }
-        return maxHeight;
     }
     
 }

@@ -44,8 +44,6 @@
 
 package leetcode.editor.en;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TreeMap;
 // 2021-01-11 16:25:39
 // Zeshi Yang
@@ -56,7 +54,6 @@ public class Leetcode0729MyCalendarI{
         // TO TEST
         int[][] testData = {{877997,881496},{964833,967071}};
         test(calendar, testData);
-        System.out.println();
     }
     
     private static void test(MyCalendar calendar, int[][] testData) {
@@ -67,9 +64,12 @@ public class Leetcode0729MyCalendarI{
     }
     
 //leetcode submit region begin(Prohibit modification and deletion)
+// Solution: TreeMap to find 2 candidates which may overlap which current one
+// T(n) = O(nlog(n))， S(n) = O(n)
+// 2 ms,击败了71.65% 的Java用户, 40.1 MB,击败了29.35% 的Java用户
 class MyCalendar {
     
-    TreeMap<Integer, Integer> calendar;
+    private final TreeMap<Integer, Integer> calendar;
     
     MyCalendar() {
         calendar = new TreeMap<>();
@@ -94,23 +94,4 @@ class MyCalendar {
  */
 //leetcode submit region end(Prohibit modification and deletion)
 
-// Solution 1: Brute Force, T(n) = O(n^2), S(n) = O(n)
-// 120 ms,击败了9.43% 的Java用户, 51.5 MB,击败了10.66% 的Java用户
-class MyCalendar1 {
-    List<int[]> calendar;
-    
-    MyCalendar1() {
-        calendar = new ArrayList<>();
-    }
-    
-    public boolean book(int start, int end) {
-        for (int[] interval : calendar) {
-            if (Integer.compare(start, interval[1]) * Integer.compare(end, interval[0]) < 0)  {
-                return false;
-            }
-        }
-        calendar.add(new int[]{start, end});
-        return true;
-    }
-}
 }
