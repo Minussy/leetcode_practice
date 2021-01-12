@@ -161,7 +161,7 @@ count overlap，各维护一个表示overlap区间，和存在的calendar的数�
 同时检查查interval和calendar有没有重叠，可能要更新overlap数组
 return true;
  */
-public class MyCalendarTwo2 {
+class MyCalendarTwo2 {
     
     private final List<int[]> calendar;
     private final List<int[]> overlaps;
