@@ -31,6 +31,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Queue;
+import java.util.TreeMap;
+import org.jetbrains.annotations.NotNull;
 
 // 2020-07-27 17:43:01
 // Zeshi Yang
@@ -50,54 +52,35 @@ class Solution {
     
     public int minMeetingRooms(int[][] intervals) {
         // corner case
-        if (intervals == null || intervals.length == 0 ||
-                intervals[0] == null || intervals[0].length == 0) {
+        if (intervals.length == 0) {
             return 0;
         }
-        // general case
-        List<Point> list = new ArrayList<>();
+        
+        PriorityQueue<Integer> allocator = new PriorityQueue<>(intervals.length); // min heap
+        
+        Arrays.sort(intervals, Comparator.comparingInt(a -> a[0])); // (a, b) -> a[0] - b[0]
         for (int[] interval : intervals) {
-            list.add(new Point(interval[0], true));
-            list.add(new Point(interval[1], false));
-        }
-        Collections.sort(list);
-        int count = 0;
-        int max = 0;
-        for (Point point : list) {
-            count = point.isStart ? count + 1: count - 1;
-            max = Math.max(max, count);
-        }
-        return max;
-    }
-    
-    class Point implements Comparable<Point> {
-        
-        int val;
-        boolean isStart;
-        
-        public Point(int val, boolean isStart) {
-            this.val = val;
-            this.isStart = isStart;
-        }
-        
-        @Override
-        public int compareTo(Point o) {
-            if (this.val != o.val) {
-                return this.val - o.val;
-            } else {
-                return this.isStart ? 1 : -1;
+            if (!allocator.isEmpty() && interval[0] >= allocator.peek()) {
+                allocator.poll();
             }
+            allocator.add(interval[1]);
         }
+        return allocator.size();
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: interval打散成point进行排序 T(n) = O(nlog(n)), S(n) = O(n)
+
+/*面试的时候，用Sotluion 1_2 */
+
+
+// Solution 1_1: interval打散成point进行排序
+// T(n) = O(nlog(n)), S(n) = O(n)
 // 7 ms,击败了38.84% 的Java用户, 40.3 MB,击败了8.55% 的Java用户
 /**
  * 把interval打散成point，按照point的时间升序排序，如果时间相同的话，right优先
  * 然后从前往后遍历，遇到start需要多加一个房间，遇到end，减小一个房间。 global max就是最小房间数
  */
-class Solution1 {
+class Solution1_1 {
     
     public int minMeetingRooms(int[][] intervals) {
         // corner case
@@ -142,7 +125,39 @@ class Solution1 {
     }
 }
 
-// Solution 2: 把interval按照start time的升序排序, T(n) = O(nlog(n)), S(n) = O(n)
+// Solution 1_2: count boundaries, 对point进行排序，放到Map里面，start的话+1， end - 1
+// T(n) = O(nlog(n)), S(n) = O(n)
+// 12 ms,击败了13.98% 的Java用户, 40.2 MB,击败了15.62% 的Java用户
+class Solution1_2 {
+    
+    public int minMeetingRooms(int[][] intervals) {
+        // corner case
+        if (intervals == null || intervals.length == 0 ||
+                intervals[0] == null || intervals[0].length == 0) {
+            return 0;
+        }
+        Map<Integer, Integer> map = new TreeMap<>();
+        for (int[] interval : intervals) {
+            int start = interval[0];
+            int end = interval[1];
+            map.put(start, map.getOrDefault(start, 0) + 1);
+            map.put(end, map.getOrDefault(end, 0) - 1);
+        }
+        int max = 0;
+        int count = 0;
+        for (int time : map.values()) {
+            count += time;
+            max = Math.max(max, count);
+        }
+        return max;
+    }
+    
+}
+
+
+// Solution 2: 把interval按照start time的升序排序
+// T(n) = O(nlog(n)), S(n) = O(n)
+
 // Solution 2_1 消耗资源： 6 ms,击败了74.49% 的Java用户，39 MB,击败了41.59% 的Java用户
 /**
  * 把interval按照start time的升序排序遍历，
@@ -151,7 +166,6 @@ class Solution1 {
  *      没有空出来的话，就加个房间。
  *  房间数只会增加，不会减小，所以只要return最后的房间数就行了。
  */
-
 class Solution2_1 {
     
     public int minMeetingRooms(int[][] intervals) {
@@ -215,7 +229,7 @@ class Solution2_2 {
 /**
  * 设置一个List<Room>
  * 打散点之后排序的方法，
- * 每次遇到一个新的interval，就检测List里面有没有可用的room
+ * 每次遇到一个新的interval，就检测Queue里面有没有可用的room
  *      如果有可用的room，就那一个出来，放当前的interval
  *      如果没有可用的room，就创建一个room出来，放当前的interval
  * 每次结束一个interval，就把这个interval对应的room放到List里面，表示这个room里面的会议结束了，可以用了
@@ -230,7 +244,7 @@ class FollowupSolution1 {
             return null;
         }
     
-        List<Point> points = getAndSortPointes(intervals);
+        List<Point> points = getAndSortPoints(intervals);
         Map<Integer, int[]> intervalIdMap = getIdToInterval(intervals);
     
         int roomId = 0;
@@ -251,7 +265,7 @@ class FollowupSolution1 {
         return roomAndIntervals(roomId, roomToInterval);
     }
     
-    private List<Point> getAndSortPointes(int[][] intervals) {
+    private List<Point> getAndSortPoints( @NotNull int[][] intervals) {
         List<Point> points = new ArrayList<>();
         for (int i = 0; i < intervals.length; i++) {
             int[] interval = intervals[i]; // --> O(n)

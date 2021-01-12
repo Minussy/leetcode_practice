@@ -57,59 +57,113 @@ public class Leetcode0732MyCalendarIii{
     public static void main(String[] args) {
         MyCalendarThree calendar = new Leetcode0732MyCalendarIii().new MyCalendarThree();
         // TO TEST
-        System.out.println(calendar.book(10,20));
-        System.out.println(calendar.book(50,60));
-        System.out.println(calendar.book(10,40));
-        System.out.println(calendar.book(5,15));
+        System.out.println(calendar.book(10, 20));
+        System.out.println(calendar.book(50, 60));
+        System.out.println(calendar.book(10, 40));
+        System.out.println(calendar.book(5, 15));
         System.out.println(calendar.book(5, 10));
         System.out.println(calendar.book(25, 55));
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class MyCalendarThree {
     
-    private TreeMap<Integer, Integer> map; // point(start, end) to height
-    private int maxHeight;
+    SegmentTree segmentTree;
     
     public MyCalendarThree() {
-        map = new TreeMap<>();
-        map.put(0, 0);
-        maxHeight = 0;
+        segmentTree = new SegmentTree(0, 1000000000);
     }
     
     public int book(int start, int end) {
-        // pre-processing, update map-start
-        int prevPoint = map.floorKey(start);
-        int height = map.get(prevPoint) + 1;
-        maxHeight = Math.max(maxHeight, height);
-        map.put(start, map.get(prevPoint) + 1);
-        
-        Integer cur = map.higherKey(start);
-        
-        while (cur != null && cur < end) {
-            height = map.getOrDefault(cur, 0) + 1;
-            maxHeight = Math.max(maxHeight, height);
-            map.put(cur, height);
-            cur = map.higherKey(cur);
-        }
-        
-        // post processing, update map -end
-        if (cur == null || cur > end) { // cur > end
-            map.put(end, map.lowerEntry(end).getValue() - 1);
-        }
-        mergeSameHeight(start, end, cur);
-        return maxHeight;
+        segmentTree.add(start, end, 1);
+        return segmentTree.getMax();
     }
     
-    private void mergeSameHeight(int start, int end, Integer cur) {
-        // if height at start and height at start's previous point is same, merge it
-        if (start != 0 && map.lowerEntry(start).getValue().equals(map.get(start))) {
-            map.remove(start);
+    class SegmentTree {
+        
+        TreeNode root;
+        
+        public SegmentTree(int left, int right) {
+            root = new TreeNode(left, right);
         }
         
-        // if height at end and height at end' next point is same, merge it
-        if (cur != null && cur == end && map.get(end).equals(map.lowerEntry(end).getValue())) {
-            map.remove(end);
+        public void add(int start, int end, int val) {
+           TreeNode event = new TreeNode(start, end);
+            add(root, event, val);
         }
+        
+        private void add(TreeNode cur, TreeNode event, int val) {
+            if (cur == null) {
+                return;
+            }
+            /**
+             * If current node's range lies completely in update query range.
+             */
+            if (cur.inside(event)) {
+                cur.booked += val;
+                cur.savedRes += val;
+            }
+            /**
+             * If current node's range overlaps with update range, follow the same approach as
+             * above simple update.
+             */
+            if (cur.intersect(event)) {
+                // Recur for left and right children.
+                int mid = (cur.start + cur.end) / 2;
+                if (cur.left == null) {
+                    cur.left = new TreeNode(cur.start, mid);
+                }
+                add(cur.left, event, val);
+                if (cur.right == null) {
+                    cur.right = new TreeNode(mid, cur.end);
+                }
+                add(cur.right, event, val);
+                // Update current node using results of left and right calls.
+                cur.savedRes = Math.max(cur.left.savedRes, cur.right.savedRes) + cur.booked;
+            }
+        }
+        
+        public int getMax() {
+            return root.savedRes;
+        }
+        
+        /**
+         * find maximum for nums[i] (start <= i <= end) is not required. so i did not implement
+         * it.
+         */
+        public int get(int start, int right) {
+            return 0;
+        }
+    
+    }
+    
+    class TreeNode {
+        
+        int start;
+        int end;
+        TreeNode left = null;
+        TreeNode right = null;
+        /**
+         * How much number is added to this interval(node)
+         */
+        int booked = 0;
+        /**
+         * The maximum number in this interval(node).
+         */
+        int savedRes = 0;
+        
+        public TreeNode(int start, int end) {
+            this.start = start;
+            this.end = end;
+        }
+        
+        public boolean inside(TreeNode event) {
+            return event.start <= start && end <= event.end;
+        }
+        
+        public boolean intersect(TreeNode event) {
+            return !inside(event) && end > event.start && event.end > start;
+        }
+        
     }
     
 }
@@ -122,7 +176,8 @@ class MyCalendarThree {
 //leetcode submit region end(Prohibit modification and deletion)
 // 讲解，没有java code: https://zxi.mytechroad.com/blog/geometry/732-my-calendar-iii/
 
-// Solution 1: count boundaries, T(n) = O(n^2), S(n) = O(n)
+// Solution 1: count boundaries
+// T(n) = O(n^2), S(n) = O(n)
 // 126 ms,击败了27.33% 的Java用户, 39.5 MB,击败了82.89% 的Java用户
 class MyCalendarThree1 {
     
@@ -149,7 +204,8 @@ class MyCalendarThree1 {
     
 }
 
-// Solution 2: increment the intersection regions, T(n) = O(n^2), S(n) = O(n)
+// Solution 2: increment the intersection regions
+// T(n) = O(n^2), S(n) = O(n)
 // 41 ms,击败了85.56% 的Java用户, 40.1 MB,,击败了17.11% 的Java用户
 class MyCalendarThree2 {
     

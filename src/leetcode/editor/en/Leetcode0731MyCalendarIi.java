@@ -151,7 +151,7 @@ class MyCalendarTwo1 {
 }
 
 // Solution 2: count overlap，各维护一个表示overlap区间，和存在的calendar的数组
-// T(n) = O(n^2), S(n) = O(n)
+// T(n) = O(n^2  * log(k)), S(n) = O(n)
 // 64 ms,击败了66.67% 的Java用户, 39.8 MB,击败了67.70% 的Java用户
 /*
 count overlap，各维护一个表示overlap区间，和存在的calendar的数组，
