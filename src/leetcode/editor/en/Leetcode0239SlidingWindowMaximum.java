@@ -36,7 +36,9 @@
 
 package leetcode.editor.en;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 // 2020-07-26 14:05:02
 // Zeshi Yang
 public class Leetcode0239SlidingWindowMaximum{
