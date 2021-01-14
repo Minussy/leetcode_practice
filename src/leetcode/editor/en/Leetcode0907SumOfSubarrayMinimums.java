@@ -80,7 +80,7 @@ class Solution {
         if (arr == null || arr.length == 0) {
             return 0;
         }
-        int MOD = 1_000_000_007;
+        int MOD = 1_000_000_007; // 1e9 + 7
         int len = arr.length;
         
         int[] leftCount = new int[len];
@@ -167,7 +167,7 @@ res += weightedSum;
  */
 class Solution1 {
     public int sumSubarrayMins(int[] arr) {
-        int MOD = 1_000_000_007;
+        int MOD = 1_000_000_007; // 1e9 + 7
         Stack<Integer> stackNum = new Stack<>(); // keep a increasing stack from bottom
         Stack<Integer> stackWeight = new Stack<>();
         int weightedSum = 0; // weighted sum of stackNum and stackWeight
