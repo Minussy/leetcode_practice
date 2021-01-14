@@ -59,7 +59,7 @@
 
 package leetcode.editor.en;
 
-import java.util.*;
+import java.util.Stack;
 // 2021-01-13 17:47:44
 // Zeshi Yang
 public class Leetcode0907SumOfSubarrayMinimums{
@@ -67,53 +67,25 @@ public class Leetcode0907SumOfSubarrayMinimums{
     public static void main(String[] args) {
         Solution sol = new Leetcode0907SumOfSubarrayMinimums().new Solution();
         // TO TEST
-        int[] arr = {3, 1, 2, 4};
+        int[] arr = {3,1,2,4};
         int res = sol.sumSubarrayMins(arr);
         System.out.println(res);
     }
 //leetcode submit region begin(Prohibit modification and deletion)
-
-
 class Solution {
-    
     public int sumSubarrayMins(int[] arr) {
-        if (arr == null || arr.length == 0) {
-            return 0;
-        }
         int MOD = 1_000_000_007; // 1e9 + 7
         int len = arr.length;
-        
-        int[] leftCount = new int[len];
-        int[] rightCount = new int[len];
-        
-        Stack<Integer> stack = new Stack<>(); // 存idx, 但是放进stack之前，比较栈顶idx对应的值的大小
-        //count length of continuous bigger number at the left side
-        for (int i = 0; i < leftCount.length; i++) {
-            leftCount[i] = 1;
-            while (!stack.isEmpty() && arr[stack.peek()] >= arr[i]) {
-                leftCount[i] += leftCount[stack.peek()];
-                stack.pop();
+        int res = 0;
+        for (int i = 0; i < len; i++) {
+            int min = arr[i];
+            for (int j = i; j < len; j++) {
+                min = Math.min(min, arr[j]);
+                res += min;
+                res %= MOD;
             }
-            stack.push(i);
         }
-        stack.clear();
-        //count length of continuous bigger number at the right side
-        for (int i = rightCount.length - 1; i >= 0; i--) {
-            rightCount[i] = 1;
-            while (!stack.isEmpty() && arr[stack.peek()] > arr[i]) {
-                rightCount[i] += rightCount[stack.peek()];
-                stack.pop();
-            }
-            stack.push(i);
-        }
-        
-        long sum = 0;
-        for (int i = 0; i < arr.length; i++) {
-            long partialSum = ((long)arr[i] * (leftCount[i] * rightCount[i])) % MOD;
-            sum += partialSum;
-            sum = sum % MOD;
-        }
-        return (int)sum;
+        return res;
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
