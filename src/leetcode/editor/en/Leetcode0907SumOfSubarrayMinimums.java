@@ -137,6 +137,8 @@ res += weightedSum;
 
 举例， arr 是 3, 1, 2, 4
 
+每次进来一个新的数字，把它pop的所有元素的weight求和，再加上它自己的权重1，就是这个新数字的weight
+
 进来3的时候；
     stackNum    3
     stackWeight 1
