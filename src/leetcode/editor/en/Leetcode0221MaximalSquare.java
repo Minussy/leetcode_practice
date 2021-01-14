@@ -29,7 +29,7 @@ public class Leetcode0221MaximalSquare{
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
-    // solution 2: dynamic programming with reduced memory
+
     public int maximalSquare(char[][] matrix) {
         // corner case
         if(matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
@@ -64,7 +64,7 @@ class Solution {
 //leetcode submit region end(Prohibit modification and deletion)
 // Solution 1: dynamic programming， 初始化单独写
 class Solution1_1 {
-    // solution 1: dynamic programming
+
     public int maximalSquare(char[][] matrix) {
         // corner case
         if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
@@ -103,9 +103,9 @@ class Solution1_1 {
     }
 }
 
-// Solution 1.2: dynamic programmingm，初始化合在一起写
+// Solution 1.2: dynamic programming，初始化合在一起写
 class Solution1_2 {
-    // solution 2: dynamic programming， 初始化合在一起写
+
     public int maximalSquare(char[][] matrix) {
         // corner case
         if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
@@ -133,9 +133,9 @@ class Solution1_2 {
     }
 }
 
-// Solution 2: dynamic programming with reduced space complxity
+// Solution 2: dynamic programming with reduced space complexity
 class Solution2 {
-    // solution 2: dynamic programming with reduced memory
+
     public int maximalSquare(char[][] matrix) {
         // corner case
         if(matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
@@ -155,8 +155,7 @@ class Solution2 {
                 if (i == 0 || j == 0 || matrix[i][j] == '0') {
                     result[(j - 1 + cols) % cols] = prev;
                     prev = matrix[i][j] - '0';
-                }
-                else {
+                } else {
                     int temp = prev;
                     prev = Math.min(result[j - 1], Math.min(prev, result[j])) + 1;
                     result[j - 1] = temp;

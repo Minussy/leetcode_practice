@@ -61,7 +61,7 @@ class Solution {
         }
 
         // general case
-        Deque<Integer> deque = new ArrayDeque<Integer>();
+        Deque<Integer> deque = new ArrayDeque<>();
         int[] res = new int [len - k + 1];
 
         for(int i = 0; i < k; i++) {
