@@ -72,6 +72,8 @@ public class Leetcode0907SumOfSubarrayMinimums{
         System.out.println(res);
     }
 //leetcode submit region begin(Prohibit modification and deletion)
+
+// maintain a increasing stack to record the min value of all subarray ends in current value
 // T(n) = O(n), S(n) = O(n)
 // 23 ms,击败了77.55% 的Java用户, 46.9 MB,击败了42.77% 的Java用户
 /*

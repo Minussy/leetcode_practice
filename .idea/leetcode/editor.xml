@@ -1283,6 +1283,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0221MaximalSquare.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0221MaximalSquare.java" />
+              <option name="questionId" value="221" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0224BasicCalculator.java">
           <value>
             <LeetcodeEditor>
@@ -2304,6 +2312,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0894AllPossibleFullBinaryTrees.java" />
               <option name="questionId" value="930" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0907SumOfSubarrayMinimums.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0907SumOfSubarrayMinimums.java" />
+              <option name="questionId" value="943" />
             </LeetcodeEditor>
           </value>
         </entry>
