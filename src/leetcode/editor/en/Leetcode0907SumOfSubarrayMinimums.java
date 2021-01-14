@@ -75,15 +75,24 @@ public class Leetcode0907SumOfSubarrayMinimums{
 class Solution {
     public int sumSubarrayMins(int[] arr) {
         int MOD = 1_000_000_007; // 1e9 + 7
-        int len = arr.length;
+        Stack<Integer> stackNum = new Stack<>(); // keep a increasing stack from bottom
+        Stack<Integer> stackWeight = new Stack<>();
+        int weightedSum = 0; // weighted sum of stackNum and stackWeight
         int res = 0;
-        for (int i = 0; i < len; i++) {
-            int min = arr[i];
-            for (int j = i; j < len; j++) {
-                min = Math.min(min, arr[j]);
-                res += min;
-                res %= MOD;
+        for (int num: arr) {
+            int weight = 0;
+            while (!stackNum.isEmpty() &&stackNum.peek() >= num) {
+                int prevNum = stackNum.pop();
+                int prevWeight = stackWeight.pop();
+                weightedSum -=  prevWeight * prevNum;
+                weight += prevWeight;
             }
+            weight += 1;
+            stackNum.push(num);
+            stackWeight.push(weight);
+            weightedSum += weight * num;
+            res += weightedSum;
+            res %= MOD;
         }
         return res;
     }
