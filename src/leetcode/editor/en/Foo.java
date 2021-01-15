@@ -91,10 +91,10 @@ class Solution {
 				numStack.push(cal(top, num1, num2));
 			}
 		} else { // case 3: + - * /
-			while (true) {
-				if (optrStack.isEmpty()) {
+			while (!optrStack.isEmpty()) {
+				/*if (optrStack.isEmpty()) {
 					break; // 无运算符，不用计算
-				}
+				}*/
 				String top = optrStack.peek(); // 先peek出来比较优先级，能算再pop()
 				Integer topWeight = optrMap.get(top); // top为 ‘(’时，topWeight == null
 				if (topWeight == null || topWeight < optrMap.get(optr)) {
