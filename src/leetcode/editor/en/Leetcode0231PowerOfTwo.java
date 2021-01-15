@@ -74,7 +74,6 @@ class Solution2 {
 // Solution 3: Hamming weight
 class Solution3 {
     public boolean isPowerOfTwo(int n) {
-        // S3: Hamming weight
         if (n <= 0) {
             return false;
         }

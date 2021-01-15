@@ -40,46 +40,32 @@ public class Leetcode0084LargestRectangleInHistogram{
         stack.push(3);
         System.out.println(stack.get(1));
     }
-    //leetcode submit region begin(Prohibit modification and deletion)
+//leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int largestRectangleArea(int[] heights) {
-        if (heights.length == 0) {
+        // corner case
+        if (heights == null || heights.length == 0) {
             return 0;
         }
-        //求每个柱子的左边第一个小的柱子的下标
-        int[] leftLessMin = new int[heights.length];
-        leftLessMin[0] = -1;
-        for (int i = 1; i < heights.length; i++) {
-            int l = i - 1;
-            while (l >= 0 && heights[l] >= heights[i]) {
-                l = leftLessMin[l];
-            }
-            leftLessMin[i] = l;
-        }
-
-        //求每个柱子的右边第一个小的柱子的下标
-        int[] rightLessMin = new int[heights.length];
-        rightLessMin[heights.length - 1] = heights.length;
-        for (int i = heights.length - 2; i >= 0; i--) {
-            int r = i + 1;
-            while (r <= heights.length - 1 && heights[r] >= heights[i]) {
-                r = rightLessMin[r];
-            }
-            rightLessMin[i] = r;
-        }
-
-        //求包含每个柱子的矩形区域的最大面积，选出最大的
+        // general case
+        Stack<Integer> stack = new Stack<>();
+        int len = heights.length;
         int maxArea = 0;
-        for (int i = 0; i < heights.length; i++) {
-            int area = (rightLessMin[i] - leftLessMin[i] - 1) * heights[i];
-            maxArea = Math.max(area, maxArea);
+        for (int i = 0; i <= len; i++) {
+            int height = i < len ? heights[i] : 0; // 最后加一个高度是0的柱形图，强制把所有的柱形图弹出来
+            while (!stack.isEmpty() && heights[stack.peek()] >= height) {
+                int top = stack.pop();
+                int area = heights[top] * (stack.isEmpty() ? i : (i - stack.peek() - 1));
+                maxArea = Math.max(maxArea, area);
+            }
+            stack.push(i);
         }
         return maxArea;
     }
-
 }
 //leetcode submit region end(Prohibit modification and deletion)
-// Solution 1: 1 ms, O(n). 设置两个array，分别存柱子左边和右边第一个比它小的柱子的index
+// Solution 1: 1 ms, O(n). 对于每个柱形，往左和往右找到第一个比自己高度低的柱子
+// 7 ms,击败了75.56% 的Java用户, 48.4 MB,击败了9.23% 的Java用户
 /*
 分别求出包含每个柱子的矩形区域的最大面积，然后选最大的。要包含这个柱子，也就是这个柱子是当前矩形区域的高度。
 也就是，这个柱子是当前矩形区域中柱子最高的。如下图中包含橙色柱子的矩形区域的最大面积。
@@ -128,11 +114,21 @@ class Solution1 {
 }
 
 
-// Solution 2: 8 ms, stack里面存高度递增的index
+// Solution 2: stack
+// 8 ms, stack里面存高度递增的index
 /*
+如何由Solution 1 --> Solution 2 :
+除了用dp方法找到每一个柱形图左边第一个比它自己小的柱子index以外，还可以用stack来做
+    keep stack为一个increasing stack,这样可以update pop stack使得stack.peek() < current number
+    stack的top索引就是左边第一个比自己小的数字
+    然后发现某个元素自己被pop()出来的时候，那个current的值就是右边第一个比它自己低的柱形
+    拿这个时候，包含它自己的最大长方形的面积就可以直接算了
+    
 1. 本题用一个有序栈来做，从底到顶是升序，如果进来的值比栈顶元素小，则一直pop()到比进来的元素小为止。
-2. 每次弹栈都要计算对应延伸出来的面积。如果栈不为空，则宽度为 i - stack.peek() - 1；如果此时栈已清空，则宽度为 i，而高度则为弹栈元素作为index所在的高度。
-3. 本题最大的另一个trick在于，要人为地在最后引入一个0，保证所有在栈内的元素一一都弹出去，从而一一计算对应的面积，所以在循环遍历的时候，要多遍历一次，即 i 可以取[0, len]。
+2. 每次弹栈都要计算对应延伸出来的面积。如果栈不为空，则宽度为 i - stack.peek() - 1；
+        如果此时栈已清空，则宽度为 i，而高度则为弹栈元素作为index所在的高度。
+3. 本题最大的另一个trick在于，要人为地在最后引入一个0，保证所有在栈内的元素一一都弹出去，
+        从而一一计算对应的面积，所以在循环遍历的时候，要多遍历一次，即 i 可以取[0, len]。
  */
 class Solution2 {
     public int largestRectangleArea(int[] heights) {
@@ -146,7 +142,7 @@ class Solution2 {
         int maxArea = 0;
         for (int i = 0; i <= len; i++) {
             int height = i < len ? heights[i] : 0; // 最后加一个高度是0的柱形图，强制把所有的柱形图弹出来
-            while (!stack.isEmpty() && heights[stack.peek()] > height) {
+            while (!stack.isEmpty() && heights[stack.peek()] >= height) {
                 int top = stack.pop();
                 int area = heights[top] * (stack.isEmpty() ? i : (i - stack.peek() - 1));
                 maxArea = Math.max(maxArea, area);
