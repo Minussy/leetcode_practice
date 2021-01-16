@@ -217,7 +217,7 @@ class Solution3 {
         int col;
 
         //BFS
-        PriorityQueue<Integer> minHeap = new PriorityQueue<Integer>((n1, n2) -> matrix[n1 / cols][n1 % cols] - matrix[n2 / cols][n2 % cols]);
+        PriorityQueue<Integer> minHeap = new PriorityQueue<>((n1, n2) -> matrix[n1 / cols][n1 % cols] - matrix[n2 / cols][n2 % cols]);
         minHeap.offer(0);
 
         HashSet<Integer> visited = new HashSet<>();
