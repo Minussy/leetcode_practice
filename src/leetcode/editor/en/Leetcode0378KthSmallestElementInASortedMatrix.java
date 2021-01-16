@@ -40,7 +40,7 @@ public class Leetcode0378KthSmallestElementInASortedMatrix{
     }
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
-    // Solution 4: binary search
+    
     public int kthSmallest(int[][] matrix, int k) {
 
         int n = matrix.length;
@@ -146,6 +146,7 @@ class Solution1 {
         return minHeap.peek().value;
     }
 }
+
 // Solution 2: minHeap + check whether hashSet visited  contains i * cols + j
 class Solution2 {
     // S2: check visited by i * cols + j
@@ -200,10 +201,10 @@ class Solution2 {
 
     }
 }
+
 // Solution 3: creating a heap to store the index of the matrix，简化S2
 class Solution3 {
 
-    // S3: creating a heap to store the index of the matrix
     public int kthSmallest(int[][] matrix, int k) {
 
         if (matrix == null || matrix.length == 0 || matrix[0] == null || matrix[0].length == 0) {
@@ -246,6 +247,7 @@ class Solution3 {
         return matrix[row][col];
     }
 }
+
 // Solution 4: binary search (把matrix看成是一个sorted array就行了）
 class Solution4 {
     // Solution 4: binary search

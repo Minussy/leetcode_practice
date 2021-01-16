@@ -27,9 +27,7 @@
 
 package leetcode.editor.en;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
@@ -49,113 +47,71 @@ public class Leetcode0772BasicCalculatorIii {
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int calculate(String s) {
-        HashMap<Character, Integer> map = new HashMap<>();
-        List<String> list = new ArrayList<>();
-        int preType = -1;
-        int type = 0;
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < s.length(); i++) {
-            char ch = s.charAt(i);
-            type = getType(ch);
-            if (preType != type) {
-                if (sb.length() != 0) {
-                    list.add(sb.toString());
-                }
-                if (type == 0) {
-                    preType = -1;
-                } else {
-                    preType = type;
-                }
-                sb.setLength(0);
-            }
-            sb.append(ch);
-        }
-        list.add(sb.toString());
-        return calculate(list.toArray(new String[0]));
-    }
-    
-    private int getType(char ch) {
-        if (ch == '(' || ch == ')') { // parenthesis 0
-            return 0;
-        } else if (ch == '+' || ch == '-' || ch == '*' || ch == '/') { // operation 1
-            return 1;
-        } else if (ch >= '0' && ch <= '9'){ // number 2
-            return 2;
-        } else { // empty string 3
-            return 3;
-        }
-    }
-    
-	   
-    private int calculate(String[] s) {
         // corner case
         if (s == null) {
             throw new IllegalArgumentException();
         }
         
         // initialization
-        HashMap<String, Integer> optrMap = new HashMap<>();
-        optrMap.put("+", 1);
-        optrMap.put("-", 1);
-        optrMap.put("*", 2);
-        optrMap.put("/", 2);
+        HashMap<Character, Integer> optrMap = new HashMap<>();
+        optrMap.put('+', 1);
+        optrMap.put('-', 1);
+        optrMap.put('*', 2);
+        optrMap.put('/', 2);
         
         Stack<Integer> numStack = new Stack<>();
-        Stack<String> optrStack = new Stack<>();
+        Stack<Character> optrStack = new Stack<>();
         
         // traversal
-        addOptr(numStack, optrStack, optrMap, "(", s, -1);
-        int len = s.length;
-        for (int i = 0; i < len; i++) {
-            String str = s[i];
-            str = str.trim();
-            if (str.equals("")) { // case 1: " ", 如果没有空String的话，这句话可以省去
-                // do nothing
-                continue;
-            } else if (str.equals("(") || str.equals(")") || optrMap.containsKey(str)) {
-                // case 2: ( ) + - * /
-                addOptr(numStack, optrStack, optrMap, str, s, i);
-            } else if (str.charAt(0) >= '0' && str.charAt(0) <= '9') { // case 3: numbers
+        int i = 0;
+        addOptr(numStack, optrStack, optrMap, '(', s, i - 1);
+        
+        while (i < s.length()) {
+            char ch = s.charAt(i);
+            if (ch == ' ') { // case 1: ' '
+                i++;
+            } else if (ch == '(' || ch == ')' || optrMap.containsKey(ch)) { // case 2: ( ) + - * /
+                addOptr(numStack, optrStack, optrMap, ch, s, i);
+                i++;
+            } else if (ch >= '0' && ch <= '9') { // case 3: numbers
                 // 拼数
-                int val = Integer.parseInt(str);
+                int val = 0;
+                while (i < s.length() && s.charAt(i) >= '0' && s.charAt(i) <= '9') {
+                    val = val * 10 + s.charAt(i) - '0';
+                    i++;
+                }
                 numStack.push(val);
             } else { // case 4: exception
                 throw new IllegalArgumentException();
             }
         }
         
-        addOptr(numStack, optrStack, optrMap, ")", s, len); // i = s.length()
+        addOptr(numStack, optrStack, optrMap, ')', s, i); // i = s.length()
         return numStack.pop();
     }
     
-    private void addOptr(Stack<Integer> numStack, Stack<String> optrStack,
-            HashMap<String, Integer> optrMap, String optr, String[] s, int i) {
-        if (optr.equals("(")) { // case 1: (, 还得看后面的紧接着的符号是不是-，是的话，要加上 0 -
+    private void addOptr(Stack<Integer> numStack, Stack<Character> optrStack,
+            HashMap<Character, Integer> optrMap, char optr, String s, int i) {
+        // case 1: (
+        if (optr == '(') {
             optrStack.push(optr);
             int idx = i + 1;
-            /* Option 1: 题目可能有空String " " */
-            while (idx < s.length) {
-                String ch = s[idx];
-                if (ch.equals(" ")) {
+            while (idx < s.length()) { // 看 ( 后面要不要加 "-"
+                char ch = s.charAt(idx);
+                if (ch == ' ') {
                     idx++;
-                } else if (ch.equals("-")) {
+                    continue;
+                } else if (ch == '-') {
                     numStack.push(0);
                     break;
-                } else {
+                } else { // 检测到数字，其他运算符，就不用了
                     break;
                 }
             }
-            /* end */
-            
-            /* Option 2: 题目如果没有String " ", 上面的代码可以简化成start */
-            if (s[idx].equals("-")) {
-                numStack.push(0);
-            }
-            /* end */
-        } else if (optr.equals(")")) { // case 2: )
+        } else if (optr == ')') { // case 2: )
             while (true) {
-                String top = optrStack.pop();
-                if (top.equals("(")) {
+                char top = optrStack.pop();
+                if (top == '(') {
                     break;
                 }
                 int num2 = numStack.pop();
@@ -163,11 +119,8 @@ class Solution {
                 numStack.push(cal(top, num1, num2));
             }
         } else { // case 3: + - * /
-            while (true) {
-                if (optrStack.isEmpty()) {
-                    break; // 无运算符，不用计算
-                }
-                String top = optrStack.peek(); // 先peek出来比较优先级，能算再pop()
+            while (!optrStack.isEmpty()) {
+                char top = optrStack.peek(); // 先peek出来比较优先级，能算再pop()
                 Integer topWeight = optrMap.get(top); // top为 ‘(’时，topWeight == null
                 if (topWeight == null || topWeight < optrMap.get(optr)) {
                     break; // 优先级比现在进来的optr要低，不用计算
@@ -180,15 +133,15 @@ class Solution {
         }
     }
     
-    private int cal(String optr, int num1, int num2) {
+    private int cal(char optr, int num1, int num2) {
         switch (optr) {
-            case "+":
+            case '+':
                 return num1 + num2;
-            case "-":
+            case '-':
                 return num1 - num2;
-            case "*":
+            case '*':
                 return num1 * num2;
-            case "/":
+            case '/':
                 return num1 / num2;
             default:
                 throw new IllegalArgumentException();
@@ -199,6 +152,7 @@ class Solution {
 //leetcode submit region end(Prohibit modification and deletion)
 // Solution 1: number of stack, operation of stack
 // time = O(n), space = O(n)
+// 6 ms,击败了50.17% 的Java用户, 39.2 MB,击败了32.28% 的Java用户
 class Solution1 {
     
     Map<Character, Integer> priorityMap;
@@ -298,6 +252,7 @@ class Solution1 {
 
 // Solution 2:
 // time = O(n), space = O(n)
+// 5 ms,击败了65.69% 的Java用户, 38 MB,击败了83.46% 的Java用户
 /*
 1. 计算器3这个题，主要借助1个optrMap来存除括号以外的所有操作运算符极其有限权值(分别用int来表示)，
     以及2个stack分别来存取数字和非数字的字符(运算符，括号以及空格)。
@@ -418,9 +373,9 @@ class Solution2 {
 // followup input 是 String[]的写法, 已经测试通过了
 class Followup {
     
-    /*
-    加了这一段代码之后，可以放到LC772里面测试
-    public int calculate(String s) {
+    
+    // 加了下面这一段代码之后，可以放到LC772里面测试
+    /*public int calculate(String s) {
         HashMap<Character, Integer> map = new HashMap<>();
         List<String> list = new ArrayList<>();
         int preType = -1;
