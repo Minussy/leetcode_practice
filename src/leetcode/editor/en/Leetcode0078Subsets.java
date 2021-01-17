@@ -42,52 +42,56 @@ public class Leetcode0078Subsets {
 	}
 
 //leetcode submit region begin(Prohibit modification and deletion)
-// Solution 3: 0ms, DFS 第1类搜索树
 class Solution {
-
-    //S1: DFS1
-    //                          {}
-    // level0           {a}     {b}     {c}     1st can choose either a b c    i = 0, 1, 2
-    // level1       {a,b}{a,c}  {b,c}           2st can choose what's left      i = 1, 2
-    // level2   {a,b,c}                         i = 2
-    // null
+    
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
+        
+        // corner case
         if (nums == null) {
             return result;
         }
-        result.add(new ArrayList<>());
-        dfs(0, new ArrayList<Integer>(), nums, result);
+        getResult(nums, 0, new ArrayList<Integer>(), result);
+        
         return result;
+        
     }
-
-    private void dfs(int idx, List<Integer> list, int[] nums, List<List<Integer>> result) {
-        if (idx == nums.length) {
+    
+    private void getResult(int[] nums, int level, List<Integer> list,
+            List<List<Integer>> result) {
+        if (level == nums.length) {
+            result.add(new ArrayList<>(list));
             return;
         }
-        for (int i = idx; i < nums.length; i++) {
-            list.add(nums[i]);
-            result.add(new ArrayList<>(list));
-            dfs(i + 1, list, nums, result);
-            // wall
-            list.remove(list.size() - 1);
-        }
-        return;
+        
+        // case 2: not add num at level
+        getResult(nums, level + 1, list, result);
+        
+        // case 1: add character at index
+        list.add(nums[level]);
+        getResult(nums, level + 1, list, result);
+        
+        // wall
+        // remove the added character when backtracking to the upper level
+        // backtracking，不能用list.remove(level)，因为有可能出现{a, b}，level = 3的情况
+        list.remove(list.size() - 1);
     }
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
 
 // Solution 1: 1ms, BFS 第1类搜索树
+// 5 ms,击败了5.30% 的Java用户, 40.2 MB,击败了5.99% 的Java用户
+/*
+        [a,b,c]
+                          {}
+ level0           {a}     {b}     {c}     1st can choose either a b c    i = 0, 1, 2
+ level1       {a,b}{a,c}  {b,c}           2st can choose what's left     i = 1, 2
+ level2   {a,b,c}                         i = 2
+ null
+*/
 class Solution1 {
 
-    //Zeshi Yang's code
-    //S3: BFS1
-    //                          {}
-    // level0           {a}     {b}     {c}     1st can choose either a b c    i = 0, 1, 2
-    // level1       {a,b}{a,c}  {b,c}           2st can choose what's left     i = 1, 2
-    // level2   {a,b,c}                         i = 2
-    // null
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
 
@@ -142,17 +146,18 @@ class Solution1 {
     }
 }
 
+
 // Solution 2: 1ms, BFS 第2类搜索树
+// 3 ms,击败了5.30% 的Java用户, 40.8 MB,击败了5.99% 的Java用户
+/*
+ [a,b,c]
+                                      {}
+ level 0				    {a}                         {}
+ level 1          {a, b}          {a}            {b}	    {}
+ level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
+ null
+*/
 class Solution2 {
-
-    // S2: BFS2
-    // [a,b,c]
-
-    //                                      {}
-    // level 0				    {a}                         {}
-    // level 1          {a, b}          {a}            {b}	    {}
-    // level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
-    // null
 
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> res = new ArrayList<>();
@@ -189,15 +194,20 @@ class Solution2 {
     }
 }
 
+
 // Solution 3: 0ms, DFS 第1类搜索树
+// 1 ms,击败了61.94% 的Java用户, 40.8 MB,击败了5.99% 的Java用户
+/*
+ [a,b,c]
+                          {}
+ level0           {a}     {b}     {c}     1st can choose either a b c    i = 0, 1, 2
+ level1       {a,b}{a,c}  {b,c}           2st can choose what's left      i = 1, 2
+ level2   {a,b,c}                         i = 2
+ null
+*/
 class Solution3 {
 
-    //S1: DFS1
-    //                          {}
-    // level0           {a}     {b}     {c}     1st can choose either a b c    i = 0, 1, 2
-    // level1       {a,b}{a,c}  {b,c}           2st can choose what's left      i = 1, 2
-    // level2   {a,b,c}                         i = 2
-    // null
+    
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
         if (nums == null) {
@@ -224,17 +234,18 @@ class Solution3 {
     }
 }
 
+
 // Solution 4_1: 0ms, DFS 第2类搜索树
+// 1 ms,击败了61.94% 的Java用户, 38.9 MB,击败了97.07% 的Java用户
+/*
+ [a,b,c]
+                                      {}
+ level 0				    {a}                         {}
+ level 1          {a, b}          {a}            {b}	    {}
+ level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
+ null
+*/
 class Solution4_1 {
-
-    // S2: DFS2
-    // [a,b,c]
-
-    //                                      {}
-    // level 0				    {a}                         {}
-    // level 1          {a, b}          {a}            {b}	    {}
-    // level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
-    // null
 
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
@@ -270,17 +281,18 @@ class Solution4_1 {
 
 // Solution 4_2: 0ms, DFS 第2类搜索树
 //先加右边也要backtracking
+// 0 ms,击败了100.00% 的Java用户,39.3 MB,击败了45.56% 的Java用户
+// [a,b,c]
+
+/*
+                                      {}
+ level 0				    {a}                         {}
+ level 1          {a, b}          {a}            {b}	    {}
+ level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
+ null
+*/
 class Solution4_2 {
-
-    // S2: DFS2
-    // [a,b,c]
-
-    //                                      {}
-    // level 0				    {a}                         {}
-    // level 1          {a, b}          {a}            {b}	    {}
-    // level 2  {a, b, c}   {a, b}  {a,c}   {a}  {b, c}  {b}  {c} {}
-    // null
-
+    
     public List<List<Integer>> subsets(int[] nums) {
         List<List<Integer>> result = new ArrayList<>();
 
@@ -314,6 +326,5 @@ class Solution4_2 {
         list.remove(list.size() - 1);
     }
 }
-
 
 }
