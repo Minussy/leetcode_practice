@@ -123,6 +123,8 @@ class Solution {
 }
 
 //leetcode submit region end(Prohibit modification and deletion)
+/* 面试的时候，用Solution 1 */
+
 // Solution 1: top down merge sort
 class Solution1 {
     public ListNode sortList(ListNode head) {
