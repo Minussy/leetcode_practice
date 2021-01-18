@@ -101,6 +101,7 @@ class Solution {
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
+/** 面试的时候，用Solution 3 **/
 
 //Solution 1: BFS 第1类搜索树
 // 6 ms,击败了10.29% 的Java用户,38.9 MB,击败了93.48% 的Java用户
@@ -231,7 +232,7 @@ class Solution3 {
         }
         Integer prev = idx;
         for (int i = idx; i < nums.length; i++) {
-            if (i != idx && nums[i] == nums[prev]) {
+            if (i != idx && nums[i] == nums[prev]) { // 去重
                 continue;
             }
             prev = i;
@@ -280,7 +281,7 @@ class Solution4 {
 
         // find next i that nums[i] != nums[idx];
         int i = idx + 1;
-        while (i < len && nums[i] == nums[idx]) {
+        while (i < len && nums[i] == nums[idx]) { // 去重
             i++;
         }
         dfs(i, nums, list, result);

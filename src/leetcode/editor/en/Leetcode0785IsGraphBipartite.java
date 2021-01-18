@@ -80,23 +80,18 @@ class Solution {
                 Queue<Integer> queue = new LinkedList<>();
                 queue.offer(i);
                 
-                while (queue.isEmpty() == false) {
+                while (!queue.isEmpty()) {
                     int node = queue.poll();
                     for (int j : graph[node]) {
                         if (color[j] != notColored) {
                             if (color[j] == color[node]) {
                                 return false;
-                            } else {
-                                continue;
                             }
                         } else {
                             color[j] = 1 - color[node];
                             queue.offer(j);
-                            
                         }
-                        
                     }
-                    
                 }
             }
         }
