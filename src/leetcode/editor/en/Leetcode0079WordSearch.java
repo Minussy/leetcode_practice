@@ -78,32 +78,30 @@ class Solution {
 	
 	private boolean dfs(int idx, int row, int col, String word, char[][] matrix,
 			boolean[][] visited) {
-		
 		int rows = matrix.length;
 		int cols = matrix[0].length;
 		int len = word.length();
-		// base case
-		// success case
+		// base case - success case
 		if (idx == len) {
 			return true;
 		}
-		// failure case
+		// base case - failure case
 		if (row < 0 || row >= rows || col < 0 || col >= cols || word.charAt(idx) != matrix[row][col]
 				|| visited[row][col]) {
 			return false;
 		}
 		visited[row][col] = true;
-		// Solution 1:
-		 boolean res = false;
-		 for (int[] dir : DIRECTIONS) {
-		 	int i = row + dir[0];
-		 	int j = col + dir[1];
-		 	res = dfs(idx + 1, i, j, word, matrix, visited);
-		 	if (res) {
-		 		break;
-		 	}
-		 }
-
+		
+		boolean res = false;
+		for (int[] dir : DIRECTIONS) {
+			int i = row + dir[0];
+			int j = col + dir[1];
+			res = dfs(idx + 1, i, j, word, matrix, visited);
+			if (res) {
+				break;
+			}
+		}
+		
 		visited[row][col] = false;
 		return res;
 	}
