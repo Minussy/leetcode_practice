@@ -68,7 +68,7 @@ class Solution {
 		boolean[][] visited = new boolean[rows][cols];
 		for (int i = 0; i < rows; i++) {
 			for (int j = 0; j < cols; j++) {
-				if (dfs(board, i, j, word, 0, visited)) {
+				if (dfs(0, i, j, word, board, visited)) {
 					return true;
 				}
 			}
@@ -76,7 +76,7 @@ class Solution {
 		return false;
 	}
 	
-	private boolean dfs(char[][] matrix, int i, int j, String word, int idx,
+	private boolean dfs(int idx, int row, int col, String word, char[][] matrix,
 			boolean[][] visited) {
 		
 		int rows = matrix.length;
@@ -87,28 +87,24 @@ class Solution {
 		if (idx == len) {
 			return true;
 		}
-		// failture case
-		if (i < 0 || i >= rows || j < 0 || j >= cols || word.charAt(idx) != matrix[i][j]
-				|| visited[i][j]) {
+		// failure case
+		if (row < 0 || row >= rows || col < 0 || col >= cols || word.charAt(idx) != matrix[row][col]
+				|| visited[row][col]) {
 			return false;
 		}
-		visited[i][j] = true;
+		visited[row][col] = true;
 		// Solution 1:
 		 boolean res = false;
 		 for (int[] dir : DIRECTIONS) {
-		 	int row = i + dir[0];
-		 	int col = j + dir[1];
-		 	res = dfs(matrix, row, col, word, idx + 1, visited);
+		 	int i = row + dir[0];
+		 	int j = col + dir[1];
+		 	res = dfs(idx + 1, i, j, word, matrix, visited);
 		 	if (res) {
 		 		break;
 		 	}
 		 }
-		// Solution 2: 或者改成
-//		boolean res = dfs(matrix, i - 1, j, word, idx + 1, visited)
-//				|| dfs(matrix, i + 1, j, word, idx + 1, visited)
-//				|| dfs(matrix, i, j - 1, word, idx + 1, visited)
-//				|| dfs(matrix, i, j + 1, word, idx + 1, visited);
-		visited[i][j] = false;
+
+		visited[row][col] = false;
 		return res;
 	}
 	
