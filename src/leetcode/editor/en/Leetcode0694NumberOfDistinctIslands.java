@@ -102,9 +102,9 @@ class Solution {
     }
     
     private void normalize(List<List<Integer>> shape) {
-        shape.sort((o1, o2) -> o1.get(0) - o2.get(0) != 0 ?
+        /*shape.sort((o1, o2) -> o1.get(0) - o2.get(0) != 0 ?
                 o1.get(0) - o2.get(0) :
-                o1.get(1) - o2.get(1));
+                o1.get(1) - o2.get(1));*/
         // the coordinate of the most left point in first row of the shape
         List<Integer> upperLeft = new ArrayList<>(shape.get(0));
         for (List<Integer> list: shape) {
@@ -187,7 +187,7 @@ class Solution1 {
 
 // Solution 2: dfs, 把所有的shape normalize，先按照行排序，然后列排序，每个值减掉这个shape的上面最左边的点
 // T(m, n) = O(m, n), S(m, n) = O(m, n)
-// 23 ms,击败了10.93% 的Java用户, 40.3 MB,击败了34.54% 的Java用户
+// 16 ms,击败了25.15% 的Java用户, 39.4 MB,击败了95.47% 的Java用户
 class Solution2 {
     
     public int numDistinctIslands(int[][] grid) {
@@ -212,19 +212,6 @@ class Solution2 {
         return shapes.size();
     }
     
-    private void normalize(List<List<Integer>> shape) {
-        shape.sort((o1, o2) -> o1.get(0) - o2.get(0) != 0 ?
-                o1.get(0) - o2.get(0) :
-                o1.get(1) - o2.get(1));
-        // the coordinate of the most left point in first row of the shape
-        List<Integer> upperLeft = new ArrayList<>(shape.get(0));
-        for (List<Integer> list: shape) {
-            for (int i = 0; i < list.size(); i++) {
-                list.set(i, list.get(i) - upperLeft.get(i));
-            }
-        }
-    }
-    
     private void dfs(int[][] board, int row, int col, List<List<Integer>> shape,
             Set<Integer> visited) {
         int rows = board.length;
@@ -243,6 +230,16 @@ class Solution2 {
         dfs(board, row, col + 1, shape, visited); // go right
         dfs(board, row + 1, col, shape, visited); // go down
         dfs(board, row, col - 1, shape, visited); // go left
+    }
+    
+    private void normalize(List<List<Integer>> shape) {
+        // the coordinate of the most left point in first row of the shape
+        List<Integer> upperLeft = new ArrayList<>(shape.get(0));
+        for (List<Integer> list: shape) {
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, list.get(i) - upperLeft.get(i));
+            }
+        }
     }
     
 }

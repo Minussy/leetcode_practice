@@ -483,6 +483,14 @@
             </LeetcodeEditor>
           </value>
         </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0073SetMatrixZeroes.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0073SetMatrixZeroes.java" />
+              <option name="questionId" value="73" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
         <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0074SearchA2dMatrix.java">
           <value>
             <LeetcodeEditor>
@@ -1240,6 +1248,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0208ImplementTriePrefixTree.java" />
               <option name="questionId" value="208" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0209MinimumSizeSubarraySum.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0209MinimumSizeSubarraySum.java" />
+              <option name="questionId" value="209" />
             </LeetcodeEditor>
           </value>
         </entry>
@@ -2216,6 +2232,14 @@
             <LeetcodeEditor>
               <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0707DesignLinkedList.java" />
               <option name="questionId" value="838" />
+            </LeetcodeEditor>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0711NumberOfDistinctIslandsIi.java">
+          <value>
+            <LeetcodeEditor>
+              <option name="path" value="$PROJECT_DIR$/src/leetcode/editor/en/Leetcode0711NumberOfDistinctIslandsIi.java" />
+              <option name="questionId" value="711" />
             </LeetcodeEditor>
           </value>
         </entry>
