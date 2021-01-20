@@ -174,7 +174,7 @@ class Solution {
             if (i == 4) {
                 temp = upReflect(temp);
             } else {
-                temp = rotation90(temp);
+                temp = rotateBy90(temp);
             }
             shapes.add(temp);
         }
@@ -184,7 +184,12 @@ class Solution {
         return shapes;
     }
     
-    private List<List<Integer>> rotation90(List<List<Integer>> shape) {
+    /**
+     * return the List<Point>, for every point(x, y), map to (y, -x)
+     * @param shape given shape List<List<Integer>>
+     * @return return new List<List<Integer>> represent shape that rotated by 90 of given shape
+     */
+    private List<List<Integer>> rotateBy90(List<List<Integer>> shape) {
         List<List<Integer>> res = new ArrayList<>();
         for (List<Integer> list : shape) {
             List<Integer> temp = new ArrayList<>();
@@ -195,6 +200,11 @@ class Solution {
         return res;
     }
     
+    /**
+     * return the List<Point>, for every point(x, y), map to (-x, y)
+     * @param shape given shape List<List<Integer>>
+     * @return return new List<List<Integer>> represent shape that up reflected given shape
+     */
     private List<List<Integer>> upReflect(List<List<Integer>> shape) {
         List<List<Integer>> res = new ArrayList<>();
         for (List<Integer> list : shape) {
