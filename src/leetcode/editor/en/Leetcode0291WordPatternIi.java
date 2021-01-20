@@ -171,8 +171,7 @@ class Solution2 {
                     }
                 }
             } else { // new key --> val
-                
-                if (dict.values().contains(word)) {
+                if (dict.containsValue(word)) {
                     continue;
                 }
                 dict.put(key, word);

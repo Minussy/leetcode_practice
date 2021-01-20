@@ -45,8 +45,11 @@ public class Leetcode0079WordSearch {
 		Solution sol = new Leetcode0079WordSearch().new Solution();
 		// TO TEST
 		
-		char[][] board = new char[][]{{'A', 'B', 'C', 'E'}, {'S', 'F', 'C', 'S'},
-				{'A', 'D', 'E', 'E'}};
+		char[][] board = new char[][]{
+				{'A', 'B', 'C', 'E'},
+				{'S', 'F', 'C', 'S'},
+				{'A', 'D', 'E', 'E'}
+		};
 		String word = "ABCB";
 		boolean res = sol.exist(board, word);
 		System.out.println(res);

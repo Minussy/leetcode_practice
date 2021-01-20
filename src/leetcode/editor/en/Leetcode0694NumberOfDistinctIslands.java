@@ -43,8 +43,10 @@
 
 package leetcode.editor.en;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 // 2020-08-27 20:48:52
@@ -55,7 +57,12 @@ public class Leetcode0694NumberOfDistinctIslands {
 	public static void main(String[] args) {
 		Solution sol = new Leetcode0694NumberOfDistinctIslands().new Solution();
 		// TO TEST
-        int[][] grid = {{1,1,0},{0,1,1},{0,0,0},{1,1,1},{0,1,0}};
+        int[][] grid = {
+                {1,1,0,0,0},
+                {1,1,0,0,0},
+                {0,0,0,1,1},
+                {0,0,0,1,1}
+        };
         for (int[] row: grid) {
             System.out.println(Arrays.toString(row));
         }
@@ -66,6 +73,74 @@ public class Leetcode0694NumberOfDistinctIslands {
 
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
+    
+    public int numDistinctIslands(int[][] grid) {
+        // corner case
+        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) {
+            return 0;
+        }
+        int rows = grid.length;
+        int cols = grid[0].length;
+    
+        /*
+        里面的只能是List<List<Integer>>, 不能是List<int[]>，否则HashSet去重会出问题
+        因为两个值相同的Array并不能equals相同
+         */
+        Set<List<List<Integer>>> shapes = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!visited.contains(i * cols + j) && grid[i][j] == 1) {
+                    List<List<Integer>> shape = new ArrayList<>();
+                    dfs(grid, i, j, shape, visited);
+                    normalize(shape);
+                    shapes.add(shape);
+                }
+            }
+        }
+        return shapes.size();
+    }
+    
+    private void normalize(List<List<Integer>> shape) {
+        shape.sort((o1, o2) -> o1.get(0) - o2.get(0) != 0 ?
+                o1.get(0) - o2.get(0) :
+                o1.get(1) - o2.get(1));
+        // the coordinate of the most left point in first row of the shape
+        List<Integer> upperLeft = new ArrayList<>(shape.get(0));
+        for (List<Integer> list: shape) {
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, list.get(i) - upperLeft.get(i));
+            }
+        }
+    }
+    
+    private void dfs(int[][] board, int row, int col, List<List<Integer>> shape,
+            Set<Integer> visited) {
+        int rows = board.length;
+        int cols = board[0].length;
+        // no success case
+        
+        // base case - fail
+        if (row < 0 || row >= rows || col < 0 || col >= cols || board[row][col] == 0
+                || visited.contains(row * cols + col)) {
+            return;
+        }
+        visited.add(row * cols + col);
+        shape.add(Arrays.asList(row, col));
+        
+        dfs(board, row - 1, col, shape, visited); // go upper
+        dfs(board, row, col + 1, shape, visited); // go right
+        dfs(board, row + 1, col, shape, visited); // go down
+        dfs(board, row, col - 1, shape, visited); // go left
+    }
+    
+}
+//leetcode submit region end(Prohibit modification and deletion)
+// Solution 1: dfs 带方向表示从头开始的转向
+// T(m, n) = O(m, n), S(m, n) = O(m, n)
+// 11 ms,击败了39.40% 的Java用户, 39.9 MB,击败了60.93% 的Java用户
+class Solution1 {
+    
     public int numDistinctIslands(int[][] grid) {
         // corner case
         if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) {
@@ -86,27 +161,90 @@ class Solution {
         }
         return shapes.size();
     }
-
-    private void dfs(int[][] board, int i, int j, StringBuilder path, String dir,
+    
+    private void dfs(int[][] board, int row, int col, StringBuilder path, String turn,
             Set<Integer> visited) {
         int rows = board.length;
         int cols = board[0].length;
         // no success case
-
+        
         // base case - fail
-        if (i < 0 || i >= rows || j < 0 || j >= cols || board[i][j] == 0 || visited.contains(i * cols + j)) {
+        if (row < 0 || row >= rows || col < 0 || col >= cols || board[row][col] == 0
+                || visited.contains(row * cols + col)) {
             return;
         }
-        visited.add(i * cols + j);
-        path.append(dir);
-        dfs(board, i - 1, j, path, "u", visited); // go upper
-        dfs(board, i + 1, j, path, "d", visited); // go down
-        dfs(board, i, j - 1, path, "l", visited); // go left
-        dfs(board, i, j + 1, path, "r", visited); // go right
+        visited.add(row * cols + col);
+        path.append(turn);
+        
+        dfs(board, row - 1, col, path, "u", visited); // go upper
+        dfs(board, row, col + 1, path, "r", visited); // go right
+        dfs(board, row + 1, col, path, "d", visited); // go down
+        dfs(board, row, col - 1, path, "l", visited); // go left
         path.append("end");
     }
-
+    
 }
-//leetcode submit region end(Prohibit modification and deletion)
+
+// Solution 2: dfs, 把所有的shape normalize，先按照行排序，然后列排序，每个值减掉这个shape的上面最左边的点
+// T(m, n) = O(m, n), S(m, n) = O(m, n)
+// 23 ms,击败了10.93% 的Java用户, 40.3 MB,击败了34.54% 的Java用户
+class Solution2 {
+    
+    public int numDistinctIslands(int[][] grid) {
+        // corner case
+        if (grid == null || grid.length == 0 || grid[0] == null || grid[0].length == 0) {
+            return 0;
+        }
+        int rows = grid.length;
+        int cols = grid[0].length;
+        Set<List<List<Integer>>> shapes = new HashSet<>();
+        Set<Integer> visited = new HashSet<>();
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                if (!visited.contains(i * cols + j) && grid[i][j] == 1) {
+                    List<List<Integer>> shape = new ArrayList<>();
+                    dfs(grid, i, j, shape, visited);
+                    normalize(shape);
+                    shapes.add(shape);
+                }
+            }
+        }
+        return shapes.size();
+    }
+    
+    private void normalize(List<List<Integer>> shape) {
+        shape.sort((o1, o2) -> o1.get(0) - o2.get(0) != 0 ?
+                o1.get(0) - o2.get(0) :
+                o1.get(1) - o2.get(1));
+        // the coordinate of the most left point in first row of the shape
+        List<Integer> upperLeft = new ArrayList<>(shape.get(0));
+        for (List<Integer> list: shape) {
+            for (int i = 0; i < list.size(); i++) {
+                list.set(i, list.get(i) - upperLeft.get(i));
+            }
+        }
+    }
+    
+    private void dfs(int[][] board, int row, int col, List<List<Integer>> shape,
+            Set<Integer> visited) {
+        int rows = board.length;
+        int cols = board[0].length;
+        // no success case
+        
+        // base case - fail
+        if (row < 0 || row >= rows || col < 0 || col >= cols || board[row][col] == 0
+                || visited.contains(row * cols + col)) {
+            return;
+        }
+        visited.add(row * cols + col);
+        shape.add(Arrays.asList(row, col));
+        
+        dfs(board, row - 1, col, shape, visited); // go upper
+        dfs(board, row, col + 1, shape, visited); // go right
+        dfs(board, row + 1, col, shape, visited); // go down
+        dfs(board, row, col - 1, shape, visited); // go left
+    }
+    
+}
 
 }

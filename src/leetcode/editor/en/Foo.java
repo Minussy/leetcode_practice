@@ -11,7 +11,9 @@ package leetcode.editor.en;
 public class Foo {
 	
 	public static void main(String[] args) {
-	
+		int[] nums1 = new int[] {1, 2};
+		int[] nums2 = new int[] {1, 2};
+		System.out.println(nums1.equals(nums2));
 	}
 	
 
